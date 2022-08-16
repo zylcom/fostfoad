@@ -1,7 +1,12 @@
-<script setup></script>
+<script setup>
+import SearchBar from "../components/SearchBar.vue";
+</script>
 
 <template>
-  <main>
+  <header class="mx-5">
+    <SearchBar />
+  </header>
+  <main class="mx-[18px]">
     <h1>Home Page</h1>
   </main>
 </template>
