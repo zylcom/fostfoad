@@ -4,15 +4,15 @@ import SearchFilterButton from "./SearchFilterButton.vue";
 </script>
 
 <template>
-  <div class="flex relative">
+  <div class="relative flex w-full">
     <input
       type="text"
-      class="w-full h-10 bg-white rounded-[10px] pl-8 focus:ring-1 focus:outline-none placeholder:text-sm placeholder:italic"
+      class="h-10 w-full rounded-[10px] bg-white pl-8 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-1"
       placeholder="Search foods"
     />
 
     <span class="absolute left-3 top-1/2 -mt-2">
-      <IconSearch class="w-4 h-4" />
+      <IconSearch class="h-4 w-4" />
     </span>
 
     <SearchFilterButton />
