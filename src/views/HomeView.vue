@@ -3,7 +3,7 @@ import SearchBar from "../components/SearchBar.vue";
 </script>
 
 <template>
-  <header class="mx-5">
+  <header class="mx-5 mt-5">
     <SearchBar />
   </header>
   <main class="mx-[18px]">
