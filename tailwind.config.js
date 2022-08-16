@@ -7,7 +7,11 @@ module.exports = {
     "./src/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "bleached-silk": "#f3f3f3",
+      },
+    },
   },
   plugins: [],
 };
