@@ -1,16 +1,44 @@
 <template>
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-6 w-6"
-    fill="none"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+      d="M20.424 9.63965V17.599C20.424 20.3605 18.1854 22.599 15.424 22.599H3.64868"
+      stroke="#808080"
+    />
+    <line
+      y1="-0.5"
+      x2="16.6753"
+      y2="-0.5"
+      transform="matrix(0.689879 -0.723925 0.738686 0.67405 1 13.0718)"
+      stroke="#808080"
+    />
+    <line
+      y1="-0.5"
+      x2="16.6753"
+      y2="-0.5"
+      transform="matrix(0.689879 0.723925 -0.738686 0.67405 11.595 1)"
+      stroke="#808080"
+    />
+    <path
+      d="M11.5949 15.6873V15.6873C10.6197 15.6873 9.8291 16.4778 9.8291 17.4531V22.1669"
+      stroke="#808080"
+    />
+    <path
+      d="M11.595 15.6873V15.6873C12.814 15.6873 13.8022 16.6755 13.8022 17.8945V22.1669"
+      stroke="#808080"
+    />
+    <rect
+      x="9.8291"
+      y="11.3674"
+      width="3.53164"
+      height="1.72792"
+      rx="0.1"
+      fill="#808080"
     />
   </svg>
 </template>
