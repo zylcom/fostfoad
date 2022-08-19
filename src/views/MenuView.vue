@@ -29,5 +29,7 @@ import MenuList from "../components/MenuList.vue";
     <MenuList />
   </main>
 
-  <footer class="fixed bottom-0 w-full bg-white py-2"><NavigationBar /></footer>
+  <footer class="fixed bottom-0 z-50 w-full bg-white py-2">
+    <NavigationBar />
+  </footer>
 </template>

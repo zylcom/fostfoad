@@ -25,5 +25,7 @@ import ProductList from "../components/ProductList.vue";
     <ProductList title="All Food & Drink" class="[&>h1]:mt-36" />
   </main>
 
-  <footer class="fixed bottom-0 w-full bg-white py-2"><NavigationBar /></footer>
+  <footer class="fixed bottom-0 z-50 w-full bg-white py-2">
+    <NavigationBar />
+  </footer>
 </template>
