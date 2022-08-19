@@ -19,7 +19,9 @@ import MenuList from "../components/MenuList.vue";
   </header>
 
   <main class="rounded-t-[20px] bg-zhen-zhu-bai-pearl">
-    <div class="flex justify-center gap-x-2.5 px-5 pt-8 pb-6">
+    <div
+      class="sticky top-36 z-20 flex justify-center gap-x-2.5 bg-zhen-zhu-bai-pearl px-5 pt-8 pb-6"
+    >
       <PillButton text="Foods" />
       <PillButton text="Drinks" class="bg-chocobo-feather text-bleached-silk" />
     </div>
