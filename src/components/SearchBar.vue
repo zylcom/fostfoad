@@ -7,7 +7,7 @@ import SearchFilterButton from "./SearchFilterButton.vue";
   <div class="relative flex w-full">
     <input
       type="text"
-      class="h-10 w-full rounded-[10px] bg-white pl-8 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-1"
+      class="h-10 w-full rounded-[10px] bg-white px-9 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-1"
       placeholder="Search foods"
     />
 
