@@ -10,7 +10,7 @@ import MenuList from "../components/MenuList.vue";
 <template>
   <header class="sticky top-0 z-20 bg-bleached-silk px-6 pt-9">
     <div class="relative flex justify-center">
-      <h1 class="text-center font-roboto text-2xl font-medium">Menu</h1>
+      <h1 class="text-center text-2xl font-medium">Menu</h1>
 
       <CartButton class="absolute right-0" />
     </div>

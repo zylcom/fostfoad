@@ -5,5 +5,5 @@ defineProps({
 </script>
 
 <template>
-  <button class="font-roboto text-xs text-gray-500">{{ category }}</button>
+  <button class="text-xs text-gray-500">{{ category }}</button>
 </template>
