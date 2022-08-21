@@ -58,7 +58,5 @@
         </tbody>
       </table>
     </section>
-
-    <section class="receipt-footer"></section>
   </div>
 </template>
