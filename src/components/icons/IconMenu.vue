@@ -1,3 +1,7 @@
+<script setup>
+defineProps({ isActive: Boolean });
+</script>
+
 <template>
   <svg
     width="21"
@@ -12,14 +16,14 @@
       width="19.2419"
       height="21.0909"
       rx="2.75"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
     />
     <line
       x1="0.54834"
       y1="5.38232"
       x2="8.67737"
       y2="5.38232"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
       stroke-width="0.5"
     />
     <line
@@ -27,7 +31,7 @@
       y1="7.25977"
       x2="20.2902"
       y2="7.25977"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
       stroke-width="0.5"
     />
     <line
@@ -35,7 +39,7 @@
       y1="10.0762"
       x2="8.67737"
       y2="10.0762"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
       stroke-width="0.5"
     />
     <line
@@ -43,7 +47,7 @@
       y1="13.8311"
       x2="20.2902"
       y2="13.8311"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
       stroke-width="0.5"
     />
     <line
@@ -51,7 +55,7 @@
       y1="11.9536"
       x2="8.67737"
       y2="11.9536"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
       stroke-width="0.5"
     />
     <line
@@ -59,7 +63,7 @@
       y1="15.7085"
       x2="20.2902"
       y2="15.7085"
-      stroke="#808080"
+      :stroke="isActive ? '#DE3905' : '#808080'"
       stroke-width="0.5"
     />
   </svg>
