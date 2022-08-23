@@ -2,7 +2,6 @@
 import SearchBar from "../components/SearchBar.vue";
 import CartButton from "../components/CartButton.vue";
 import BannerHeader from "../components/BannerHeader.vue";
-import NavigationBar from "../components/NavigationBar.vue";
 import PopularProductList from "../components/PopularProductList.vue";
 import ProductList from "../components/ProductList.vue";
 </script>
@@ -24,8 +23,4 @@ import ProductList from "../components/ProductList.vue";
 
     <ProductList title="All Food & Drink" class="[&>h1]:mt-36" />
   </main>
-
-  <footer class="fixed bottom-0 z-50 w-full bg-white py-2">
-    <NavigationBar />
-  </footer>
 </template>

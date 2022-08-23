@@ -1,5 +1,4 @@
 <script setup>
-import NavigationBar from "../components/NavigationBar.vue";
 import ReceiptCard from "../components/ReceiptCard.vue";
 </script>
 
@@ -13,8 +12,4 @@ import ReceiptCard from "../components/ReceiptCard.vue";
     <ReceiptCard />
     <ReceiptCard />
   </main>
-
-  <footer class="fixed bottom-0 z-50 w-full bg-white py-2">
-    <NavigationBar />
-  </footer>
 </template>

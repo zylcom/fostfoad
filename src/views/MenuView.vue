@@ -1,5 +1,4 @@
 <script setup>
-import NavigationBar from "../components/NavigationBar.vue";
 import SearchBar from "../components/SearchBar.vue";
 import CartButton from "../components/CartButton.vue";
 import PillButton from "../components/PillButton.vue";
@@ -30,8 +29,4 @@ import MenuList from "../components/MenuList.vue";
 
     <MenuList />
   </main>
-
-  <footer class="fixed bottom-0 z-50 w-full bg-white py-2">
-    <NavigationBar />
-  </footer>
 </template>
