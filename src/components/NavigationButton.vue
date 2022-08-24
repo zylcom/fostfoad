@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <router-link :to="path" custom v-slot="{ isActive, navigate }">
+  <RouterLink :to="path" custom v-slot="{ isActive, navigate }">
     <button class="flex flex-col items-center justify-end" @click="navigate">
       <component :is="icon" :is-active="isActive" />
 
@@ -18,5 +18,5 @@ defineProps({
         >{{ pathName }}</span
       >
     </button>
-  </router-link>
+  </RouterLink>
 </template>
