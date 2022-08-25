@@ -30,7 +30,7 @@ import NavigationButton from "./NavigationButton.vue";
     />
 
     <NavigationButton
-      path="/setting"
+      path="/settings"
       path-name="More"
       :icon="IconDotsHorizontal"
       text-active-color="text-venetian-nights"
