@@ -8,7 +8,7 @@ const router = createRouter({
       name: "home",
       components: {
         default: () => import("../views/HomeView.vue"),
-        NavigationBar: () => import("../components/NavigationBar.vue"),
+        FooterNavigation: () => import("../components/FooterNavigation.vue"),
       },
     },
     {
@@ -16,7 +16,7 @@ const router = createRouter({
       name: "menu",
       components: {
         default: () => import("../views/MenuView.vue"),
-        NavigationBar: () => import("../components/NavigationBar.vue"),
+        FooterNavigation: () => import("../components/FooterNavigation.vue"),
       },
     },
     {
@@ -24,7 +24,7 @@ const router = createRouter({
       name: "history",
       components: {
         default: () => import("../views/HistoryView.vue"),
-        NavigationBar: () => import("../components/NavigationBar.vue"),
+        FooterNavigation: () => import("../components/FooterNavigation.vue"),
       },
     },
     {
@@ -32,8 +32,13 @@ const router = createRouter({
       name: "settings",
       components: {
         default: () => import("../views/SettingView.vue"),
-        NavigationBar: () => import("../components/NavigationBar.vue"),
+        FooterNavigation: () => import("../components/FooterNavigation.vue"),
       },
+    },
+    {
+      path: "/menu/:slug",
+      name: "detail product",
+      component: () => import("../views/DetailProductView.vue"),
     },
   ],
 });
