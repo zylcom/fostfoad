@@ -11,7 +11,9 @@ import MenuList from "../components/MenuList.vue";
     <div class="relative flex justify-center">
       <h1 class="text-center text-2xl font-medium">Menu</h1>
 
-      <CartButton class="absolute right-0" />
+      <div class="absolute right-0">
+        <CartButton />
+      </div>
     </div>
 
     <SearchBar class="py-6" />

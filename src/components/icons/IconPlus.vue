@@ -1,3 +1,7 @@
+<script setup>
+defineProps({ color: String });
+</script>
+
 <template>
   <svg
     width="9"
@@ -6,7 +10,7 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <line y1="4.5" x2="9" y2="4.5" stroke="#DE3905" />
-    <line x1="4.5" y1="9" x2="4.5" stroke="#DE3905" />
+    <line y1="4.5" x2="9" y2="4.5" :stroke="color" />
+    <line x1="4.5" y1="9" x2="4.5" :stroke="color" />
   </svg>
 </template>

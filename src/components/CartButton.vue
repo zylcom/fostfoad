@@ -3,5 +3,10 @@ import IconCart from "./icons/IconCart.vue";
 </script>
 
 <template>
-  <button><IconCart class="h-7 w-7" /></button>
+  <RouterLink
+    to="/cart"
+    class="flex items-center transition duration-300 hover:scale-125"
+  >
+    <IconCart class="h-6 w-6" />
+  </RouterLink>
 </template>

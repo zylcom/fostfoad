@@ -3,16 +3,24 @@ defineProps({
   image: String,
   name: String,
   price: Number,
+  overlayBg: Boolean,
 });
 </script>
 
 <template>
   <figure>
-    <img
-      :src="image"
-      :alt="name"
-      class="w-full object-cover object-center shadow-md"
-    />
+    <div
+      :class="{
+        'relative after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-[\'\']':
+          overlayBg,
+      }"
+    >
+      <img
+        :src="image"
+        :alt="name"
+        class="block w-full object-cover object-center shadow-md"
+      />
+    </div>
 
     <figcaption>
       <h4 class="text-xs">{{ name }}</h4>

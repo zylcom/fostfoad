@@ -1,11 +1,12 @@
 <script setup>
 import { useRoute } from "vue-router";
-import IconCart from "../components/icons/IconCart.vue";
-import IconArrow from "../components/icons/IconArrow.vue";
 import IconLove from "../components/icons/IconLove.vue";
 import ReviewCard from "../components/ReviewCard.vue";
-import IconMinus from "../components/icons/IconMinus.vue";
-import IconPlus from "../components/icons/IconPlus.vue";
+import CartButton from "../components/CartButton.vue";
+import BackButton from "../components/BackButton.vue";
+import ProductCard from "../components/ProductCard.vue";
+import ButtonMinus from "../components/ButtonMinus.vue";
+import ButtonPlus from "../components/ButtonPlus.vue";
 
 const route = useRoute();
 const productName = route.params.slug;
@@ -16,24 +17,20 @@ console.log(productName);
 <template>
   <header class="inline">
     <nav class="fixed z-30 flex w-full justify-between px-6 pt-8">
-      <RouterLink to="/menu" class="transition duration-300 hover:scale-125">
-        <IconArrow />
-      </RouterLink>
+      <BackButton path="/menu" />
 
-      <RouterLink to="/cart" class="transition duration-300 hover:scale-125">
-        <IconCart />
-      </RouterLink>
+      <CartButton />
     </nav>
 
-    <img
-      src="../assets/images/foods/cappuccino.jpg"
-      alt="Cappuccino"
-      class="sticky top-0 left-0 w-full"
+    <ProductCard
+      image="/src/assets/images/foods/takiyoki.jpg"
+      overlay-bg
+      class="sticky top-0"
     />
   </header>
 
   <main
-    class="relative z-20 -translate-y-5 rounded-t-lg bg-zhen-zhu-bai-pearl px-6 pt-12 pb-5"
+    class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12 pb-5"
   >
     <div class="flex items-center justify-between pb-5">
       <h1 class="text-2xl font-medium text-dark-tone-ink">Cappuccino</h1>
@@ -53,19 +50,11 @@ console.log(productName);
       <div class="flex items-center gap-x-2">
         <span class="text-sm">Quantity:</span>
 
-        <button
-          class="flex h-7 w-7 items-center justify-center bg-bleached-silk text-torii-red hover:bg-slate-200"
-        >
-          <IconMinus />
-        </button>
+        <ButtonMinus />
 
         <span class="font-rubik text-sm">2</span>
 
-        <button
-          class="flex h-7 w-7 items-center justify-center bg-bleached-silk text-torii-red hover:bg-slate-200"
-        >
-          <IconPlus />
-        </button>
+        <ButtonPlus />
       </div>
 
       <p class="font-medium">
