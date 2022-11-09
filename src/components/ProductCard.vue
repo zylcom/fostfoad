@@ -1,9 +1,20 @@
 <script setup>
-defineProps({
+import { computed } from "vue";
+
+const props = defineProps({
   image: String,
   name: String,
   price: Number,
   overlayBg: Boolean,
+});
+
+const formatPriceToIDR = computed(() => {
+  return props.price
+    ? new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+      }).format(props.price)
+    : "";
 });
 </script>
 
@@ -19,12 +30,13 @@ defineProps({
         :src="image"
         :alt="name"
         class="block w-full object-cover object-center shadow-md"
+        loading="lazy"
       />
     </div>
 
     <figcaption>
       <h4 class="text-xs">{{ name }}</h4>
-      <span class="text-xs">{{ price }}</span>
+      <span class="text-xs">{{ formatPriceToIDR }}</span>
     </figcaption>
   </figure>
 </template>

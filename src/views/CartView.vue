@@ -1,16 +1,45 @@
 <script setup>
 import BackButton from "../components/BackButton.vue";
-import IconPlus from "../components/icons/IconPlus.vue";
 import CartItem from "../components/CartItem.vue";
+import IconPlus from "../components/icons/IconPlus.vue";
+import { onMounted, onUnmounted, ref } from "vue";
+
+const navWrapper = ref(null);
+let prevScrollpos = window.scrollY;
+
+function scrollHandler() {
+  const currentScrollpos = window.scrollY;
+
+  if (prevScrollpos > currentScrollpos) {
+    navWrapper.value.style.top = "0";
+  } else {
+    navWrapper.value.style.top = "-65px";
+  }
+
+  prevScrollpos = currentScrollpos;
+}
+
+onMounted(() => {
+  window.addEventListener("scroll", scrollHandler);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrollHandler);
+});
 </script>
 
 <template>
-  <header class="flex w-full items-center bg-cloud-break pt-8 pb-20">
-    <nav class="fixed z-50 flex px-6">
-      <BackButton />
-    </nav>
+  <header class="bg-cloud-break pt-8 pb-20">
+    <div
+      class="fixed top-0 z-50 flex w-full items-center bg-cloud-break px-6 pt-3 pb-2 shadow transition-all duration-500"
+      ref="navWrapper"
+    >
+      <nav class="flex">
+        <BackButton />
+      </nav>
 
-    <h1 class="fixed w-full text-center text-2xl font-medium">Your Cart</h1>
+      <h1 class="w-full text-center text-2xl font-medium">Your Cart</h1>
+    </div>
   </header>
 
   <main

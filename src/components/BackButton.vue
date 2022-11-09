@@ -1,7 +1,7 @@
 <script setup>
+import IconArrow from "./icons/IconArrow.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import IconArrow from "./icons/IconArrow.vue";
 
 const routePath = ref("/menu");
 const router = useRouter();

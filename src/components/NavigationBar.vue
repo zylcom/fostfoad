@@ -1,22 +1,25 @@
 <script setup>
-import IconHome from "../components/icons/IconHome.vue";
-import IconMenu from "../components/icons/IconMenu.vue";
-import IconHistory from "../components/icons/IconHistory.vue";
 import IconDotsHorizontal from "../components/icons/IconDotsHorizontal.vue";
+import IconHome from "../components/icons/IconHome.vue";
+import IconHistory from "../components/icons/IconHistory.vue";
+import IconMenu from "../components/icons/IconMenu.vue";
 import NavigationButton from "./NavigationButton.vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 </script>
 
 <template>
   <nav class="flex justify-around">
     <NavigationButton
-      path="/"
+      :path="route.path === '/' ? route.fullPath : '/'"
       path-name="Home"
       :icon="IconHome"
       text-active-color="text-chocobo-feather"
     />
 
     <NavigationButton
-      path="/menu"
+      :path="route.path === '/menu' ? route.fullPath : '/menu'"
       path-name="Menu"
       :icon="IconMenu"
       text-active-color="text-torii-red"

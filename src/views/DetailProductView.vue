@@ -1,12 +1,12 @@
 <script setup>
-import { useRoute } from "vue-router";
-import IconLove from "../components/icons/IconLove.vue";
-import ReviewCard from "../components/ReviewCard.vue";
-import CartButton from "../components/CartButton.vue";
 import BackButton from "../components/BackButton.vue";
-import ProductCard from "../components/ProductCard.vue";
 import ButtonMinus from "../components/ButtonMinus.vue";
 import ButtonPlus from "../components/ButtonPlus.vue";
+import CartButton from "../components/CartButton.vue";
+import IconLove from "../components/icons/IconLove.vue";
+import ProductCard from "../components/ProductCard.vue";
+import ReviewCard from "../components/ReviewCard.vue";
+import { useRoute } from "vue-router";
 
 const route = useRoute();
 const productName = route.params.slug;
