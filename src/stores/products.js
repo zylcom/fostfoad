@@ -8,12 +8,14 @@ provideApolloClient(apolloClient);
 
 export const useProductStore = defineStore("Products", () => {
   const products = ref([]);
+  const product = ref({});
   const tags = ref([]);
   const hasNextPage = ref(false);
   const endCursor = ref(0);
   const isLoading = ref(true);
   const hasError = ref(null);
   const getProducts = computed(() => products);
+  const getProduct = computed(() => product);
   const take = 10;
   const GET_PRODUCTS_QUERY = gql`
     query GetFilteredProducts(
@@ -44,6 +46,20 @@ export const useProductStore = defineStore("Products", () => {
             endCursor
             hasNextPage
           }
+        }
+      }
+    }
+  `;
+  const GET_PRODUCT_QUERY = gql`
+    query GetProduct($slug: String!) {
+      getProduct(slug: $slug) {
+        ... on Product {
+          id
+          name
+          slug
+          price
+          image
+          ingredients
         }
       }
     }
@@ -113,6 +129,28 @@ export const useProductStore = defineStore("Products", () => {
   }
 
   /**
+   * Get product by slug
+   * @param {string} slug slug of product
+   */
+  function fetchProductBySlug(slug) {
+    hasError.value = null;
+    isLoading.value = true;
+
+    const { error, loading, onResult } = useQuery(GET_PRODUCT_QUERY, { slug });
+
+    onResult((queryResult) => {
+      product.value = queryResult.data?.getProduct || {};
+      isLoading.value = loading.value;
+    });
+
+    setTimeout(() => {
+      if (error.value) {
+        hasError.value = error.value;
+      }
+    }, 10000);
+  }
+
+  /**
    * Fetch more data and merge to previous data
    * @param {array} previousData previous product data
    * @param {object} variables variables for fetching data
@@ -158,8 +196,10 @@ export const useProductStore = defineStore("Products", () => {
     tags,
     hasError,
     isLoading,
+    getProduct,
     fetchFilteredProducts,
     fetchProductTagsByCategory,
+    fetchProductBySlug,
     fetchMore,
   };
 });

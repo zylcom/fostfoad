@@ -5,6 +5,7 @@ import { computed } from "vue";
 const props = defineProps({
   productName: String,
   price: Number,
+  slug: String,
 });
 
 const formatPriceToIDR = computed(() => {
@@ -17,17 +18,19 @@ const formatPriceToIDR = computed(() => {
 
 <template>
   <div
-    class="menu-item grid grid-cols-2 grid-rows-2 gap-y-1 border-b-2 border-charolais-cattle px-6 py-1 hover:bg-bleached-silk"
+    class="flex w-full items-center justify-between border-b-2 border-charolais-cattle px-6 py-1 hover:bg-bleached-silk"
   >
-    <h4 class="order-1 text-sm text-dark-tone-ink">
-      {{ productName }}
-    </h4>
-    <span class="order-3 text-xs text-gray-500">{{ formatPriceToIDR }}</span>
+    <RouterLink :to="`/menu/${slug}`" class="w-full">
+      <h4 class="text-sm text-dark-tone-ink">
+        {{ productName }}
+      </h4>
+      <span class="text-xs text-gray-500">{{ formatPriceToIDR }}</span>
+    </RouterLink>
 
     <button
-      class="order-2 row-span-2 flex h-5 w-5 items-center justify-center place-self-end self-center rounded-full bg-mercury"
+      class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mercury"
     >
-      <IconPlus color="#de3905" />
+      <IconPlus color="#de3905" class="h-3 w-3" />
     </button>
   </div>
 </template>

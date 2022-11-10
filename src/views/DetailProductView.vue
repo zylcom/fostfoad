@@ -4,61 +4,120 @@ import ButtonMinus from "../components/ButtonMinus.vue";
 import ButtonPlus from "../components/ButtonPlus.vue";
 import CartButton from "../components/CartButton.vue";
 import IconLove from "../components/icons/IconLove.vue";
-import ProductCard from "../components/ProductCard.vue";
 import ReviewCard from "../components/ReviewCard.vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useProductStore } from "../stores/products";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const productName = route.params.slug;
+const productSlug = route.params.slug;
+const quantity = ref(1);
+const store = useProductStore();
+const product = store.getProduct;
+const navBar = ref(null);
+const total = computed(() =>
+  formatNumberToIDR(product.value.price * quantity.value)
+);
+const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
+let prevScrollpos = window.scrollY;
 
-console.log(productName);
+function formatNumberToIDR(number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+}
+
+function scrollHandler() {
+  const currentScrollpos = window.scrollY;
+
+  if (prevScrollpos > currentScrollpos) {
+    navBar.value.style.top = "0";
+  } else if (product.value.name) {
+    navBar.value.style.top = "-65px";
+  }
+
+  prevScrollpos = currentScrollpos;
+}
+
+onMounted(() => {
+  store.fetchProductBySlug(productSlug);
+  window.addEventListener("scroll", scrollHandler);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrollHandler);
+});
 </script>
 
 <template>
   <header class="inline">
-    <nav class="fixed z-30 flex w-full justify-between px-6 pt-8">
+    <nav
+      class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
+      :class="{ 'top-0': Boolean(!product.name) }"
+      ref="navBar"
+    >
       <BackButton path="/menu" />
 
       <CartButton />
     </nav>
 
-    <ProductCard
-      image="/src/assets/images/foods/takiyoki.jpg"
-      overlay-bg
-      class="sticky top-0"
-    />
+    <div
+      class="sticky top-0 after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
+    >
+      <img
+        src="https://picsum.photos/1920/1280.webp"
+        :alt="product.name"
+        class="block max-h-screen w-full object-cover object-center shadow-md"
+        loading="lazy"
+        v-if="product.name"
+      />
+    </div>
   </header>
+
+  <div
+    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
+    v-if="!product.name"
+  >
+    <strong class="text-2xl">Product Not Found!</strong>
+  </div>
 
   <main
     class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12 pb-5"
+    v-else
   >
     <div class="flex items-center justify-between pb-5">
-      <h1 class="text-2xl font-medium text-dark-tone-ink">Cappuccino</h1>
+      <h1 class="text-2xl font-medium text-dark-tone-ink">
+        {{ product.name }}
+      </h1>
       <button><IconLove /></button>
     </div>
 
     <h4 class="text-sm text-dark-tone-ink">Ingredients</h4>
     <p class="text-xs text-gray-500">
-      Coco powder, ground coffee, milk, lorem, ipsum, sit, dolor, amet.
+      {{ product.ingredients }}
     </p>
 
     <div class="flex flex-col gap-y-6 pt-6 text-sm">
       <p class="font-medium">
-        Price: <span class="font-normal">Rp 5.000</span>
+        Price: <span class="font-normal">{{ formattedPrice }}</span>
       </p>
 
       <div class="flex items-center gap-x-2">
         <span class="text-sm">Quantity:</span>
 
-        <ButtonMinus />
+        <ButtonMinus
+          @click="quantity--"
+          :disabled="quantity > 1 ? false : true"
+        />
 
-        <span class="font-rubik text-sm">2</span>
+        <span class="font-rubik text-sm">{{ quantity }}</span>
 
-        <ButtonPlus />
+        <ButtonPlus @click="quantity++" />
       </div>
 
       <p class="font-medium">
-        Total: <span class="font-normal">Rp 10.000</span>
+        Total: <span class="font-normal">{{ total }}</span>
       </p>
     </div>
 

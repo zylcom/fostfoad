@@ -69,6 +69,7 @@ onMounted(() => {
         :image="`https://picsum.photos/1920/1280.webp?random=${product.node.id}`"
         :name="product.node.name"
         :price="product.node.price"
+        :slug="product.node.slug"
       />
 
       <div class="pt-5 pb-16 text-center" ref="target">

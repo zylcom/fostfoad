@@ -5,7 +5,7 @@ import IconStar from "../components/icons/IconStar.vue";
 <template>
   <div class="review flex items-center gap-x-3">
     <img
-      src="../assets/images/foods/lemonade.jpg"
+      src="https://picsum.photos/1920/1280.webp"
       alt="zylcom"
       class="h-14 w-14 rounded-full object-cover"
     />
@@ -16,8 +16,8 @@ import IconStar from "../components/icons/IconStar.vue";
     </div>
 
     <p class="ml-auto flex items-center gap-x-1 text-xs text-gray-500">
-      4.5
-      <span><IconStar /> </span>
+      4
+      <span><IconStar /></span>
     </p>
   </div>
 </template>
