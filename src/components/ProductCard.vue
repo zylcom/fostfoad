@@ -20,7 +20,7 @@ const formatPriceToIDR = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to="`/menu/${slug}`">
+  <RouterLink :to="`/menu/${slug}`" class="p-2 shadow-sm hover:shadow-xl">
     <figure>
       <div
         :class="{
