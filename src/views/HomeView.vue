@@ -1,11 +1,11 @@
 <script setup>
+import { onMounted, onUnmounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import BannerHeader from "../components/BannerHeader.vue";
 import CartButton from "../components/CartButton.vue";
 import PopularProductList from "../components/PopularProductList.vue";
 import ProductList from "../components/ProductList.vue";
 import SearchBar from "../components/SearchBar.vue";
-import { onMounted, onUnmounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
 
 const searchBarWrapper = ref(null);
 const route = useRoute();
@@ -25,14 +25,6 @@ function scrollHandler() {
   prevScrollpos = currentScrollpos;
 }
 
-onMounted(() => {
-  window.addEventListener("scroll", scrollHandler);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", scrollHandler);
-});
-
 watch(keyword, () => {
   router.push({
     path: "/",
@@ -40,6 +32,14 @@ watch(keyword, () => {
       "product-name": keyword.value === "" ? undefined : keyword.value,
     },
   });
+});
+
+onMounted(() => {
+  window.addEventListener("scroll", scrollHandler);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrollHandler);
 });
 </script>
 

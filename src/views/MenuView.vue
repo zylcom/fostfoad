@@ -1,60 +1,67 @@
 <script setup>
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import CartButton from "../components/CartButton.vue";
 import CategoryButton from "../components/CategoryButton.vue";
 import MenuList from "../components/MenuList.vue";
 import ProductTagButtonList from "../components/ProductTagButtonList.vue";
 import SearchBar from "../components/SearchBar.vue";
-import { computed, onMounted, ref, watch } from "vue";
-import { useProductStore } from "../stores/products";
-import { useRoute, useRouter } from "vue-router";
+import { allStore } from "../stores";
+import { clearKeyword } from "../utils";
 
 const route = useRoute();
 const router = useRouter();
-const category = ref(route.query.category || "food");
-const tag = ref(route.query.tag || "");
+const { categoryStore, tagStore } = allStore();
+const currentCategory = computed(
+  () => route.query.category || categoryStore.category
+);
+const categories = computed(() => categoryStore.categoryList);
+const tag = computed(() => route.query.tag || tagStore.tag);
+const tags = computed(() => tagStore.tagList);
 const keyword = ref(route.query["product-name"] || "");
-const store = useProductStore();
-const tags = computed(() => store.tags);
 
 function changeCategoryHandler(categoryName) {
-  category.value = categoryName;
+  categoryStore.changeCategory(categoryName);
+  tagStore.changeTag("");
+
   router.push({
     path: "menu",
     query: {
       category: categoryName,
+      "product-name": clearKeyword(keyword.value),
     },
   });
-  tag.value = "";
-  keyword.value = "";
 }
 
 function changeTagHandler(tagName) {
   router.push({
     path: "menu",
     query: {
-      category: category.value,
+      category: currentCategory.value,
       tag: tagName === "" ? undefined : tagName,
-      "product-name": keyword.value === "" ? undefined : keyword.value,
+      "product-name": clearKeyword(keyword.value),
     },
   });
-  tag.value = tagName;
+
+  tagStore.changeTag(tagName);
 }
 
 onMounted(() => {
-  store.fetchProductTagsByCategory(category.value);
+  tagStore.fetchProductsTags(currentCategory.value);
+  categoryStore.fetchProductsCategory();
 });
 
-watch(category, () => {
-  store.fetchProductTagsByCategory(category.value);
+watch(currentCategory, () => {
+  tagStore.fetchProductsTags(currentCategory.value);
 });
 
 watch(keyword, () => {
   router.push({
     path: "menu",
     query: {
-      category: category.value,
+      category: currentCategory.value,
       tag: tag.value === "" ? undefined : tag.value,
-      "product-name": keyword.value === "" ? undefined : keyword.value,
+      "product-name": clearKeyword(keyword.value),
     },
   });
 });
@@ -67,7 +74,11 @@ watch(keyword, () => {
     <div
       class="sticky top-0 flex justify-center gap-x-2.5 bg-bleached-silk py-4 px-6"
     >
-      <SearchBar v-model:keyword="keyword" :category="category" :tag="tag" />
+      <SearchBar
+        v-model:keyword="keyword"
+        :category="currentCategory"
+        :tag="tag"
+      />
       <CartButton />
     </div>
   </header>
@@ -76,18 +87,17 @@ watch(keyword, () => {
     <div
       class="sticky top-16 z-20 rounded-t-[20px] bg-zhen-zhu-bai-pearl px-5 py-8"
     >
-      <div class="flex justify-center gap-x-2.5" ref="target">
+      <div class="flex justify-center gap-x-2.5">
         <CategoryButton
-          text="Foods"
-          :class="category === 'food' ? 'bg-torii-red text-bleached-silk' : ''"
-          @click="changeCategoryHandler('food')"
-        />
-        <CategoryButton
-          text="Drinks"
+          v-for="category in categories"
+          :key="category.id"
+          :text="category.name"
           :class="
-            category === 'drink' ? 'bg-chocobo-feather text-bleached-silk' : ''
+            currentCategory === category.slug
+              ? 'bg-torii-red text-bleached-silk'
+              : ''
           "
-          @click="changeCategoryHandler('drink')"
+          @click="changeCategoryHandler(category.slug)"
         />
       </div>
 
@@ -98,6 +108,6 @@ watch(keyword, () => {
       />
     </div>
 
-    <MenuList :category="category" :tag="tag" :keyword="keyword" />
+    <MenuList :category="currentCategory" :tag="tag" :keyword="keyword" />
   </main>
 </template>

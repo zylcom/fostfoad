@@ -1,23 +1,24 @@
 <script setup>
+import { computed } from "vue";
 import IconSearch from "./icons/IconSearch.vue";
 import SearchFilterButton from "./SearchFilterButton.vue";
-import { computed } from "vue";
-import { useProductStore } from "../stores/products";
+import { useProductsStore } from "../stores/products";
+import { clearKeyword } from "../utils";
 
 const props = defineProps({ keyword: String, category: String, tag: String });
 defineEmits(["update:keyword"]);
 
-const store = useProductStore();
+const store = useProductsStore();
 const productCategory = computed(() => props.category);
 const productTag = computed(() => props.tag);
 const searchKeyword = computed(() => props.keyword);
 
 function searchHandler() {
-  store.fetchFilteredProducts(
-    productCategory.value,
-    productTag.value,
-    searchKeyword.value
-  );
+  store.fetchFilteredProducts({
+    category: productCategory.value,
+    tag: productTag.value,
+    keyword: clearKeyword(searchKeyword.value),
+  });
 }
 </script>
 

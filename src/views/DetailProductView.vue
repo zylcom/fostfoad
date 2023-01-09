@@ -1,19 +1,24 @@
 <script setup>
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import BackButton from "../components/BackButton.vue";
 import ButtonMinus from "../components/ButtonMinus.vue";
 import ButtonPlus from "../components/ButtonPlus.vue";
 import CartButton from "../components/CartButton.vue";
 import IconLove from "../components/icons/IconLove.vue";
 import ReviewCard from "../components/ReviewCard.vue";
-import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useProductStore } from "../stores/products";
-import { useRoute } from "vue-router";
+import { allStore } from "../stores";
+import { formatNumberToIDR } from "../utils";
 
 const route = useRoute();
 const productSlug = route.params.slug;
+
+const { loadingStore, productDetailStore } = allStore();
+
+const loading = computed(() => loadingStore.isLoading);
+const product = computed(() => productDetailStore.product);
+
 const quantity = ref(1);
-const store = useProductStore();
-const product = store.getProduct;
 const navBar = ref(null);
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
@@ -21,19 +26,12 @@ const total = computed(() =>
 const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
 let prevScrollpos = window.scrollY;
 
-function formatNumberToIDR(number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  }).format(number);
-}
-
 function scrollHandler() {
   const currentScrollpos = window.scrollY;
 
   if (prevScrollpos > currentScrollpos) {
     navBar.value.style.top = "0";
-  } else if (product.value.name) {
+  } else if (product.value?.name) {
     navBar.value.style.top = "-65px";
   }
 
@@ -41,7 +39,7 @@ function scrollHandler() {
 }
 
 onMounted(() => {
-  store.fetchProductBySlug(productSlug);
+  productDetailStore.fetchProductDetail(productSlug);
   window.addEventListener("scroll", scrollHandler);
 });
 
@@ -54,7 +52,7 @@ onUnmounted(() => {
   <header class="inline">
     <nav
       class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
-      :class="{ 'top-0': Boolean(!product.name) }"
+      :class="{ 'top-0': product === null }"
       ref="navBar"
     >
       <BackButton path="/menu" />
@@ -70,14 +68,21 @@ onUnmounted(() => {
         :alt="product.name"
         class="block max-h-screen w-full object-cover object-center shadow-md"
         loading="lazy"
-        v-if="product.name"
+        v-if="product !== null"
       />
     </div>
   </header>
 
   <div
     class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
-    v-if="!product.name"
+    v-if="loading"
+  >
+    <strong class="text-2xl">Loading...</strong>
+  </div>
+
+  <div
+    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
+    v-else-if="product === null"
   >
     <strong class="text-2xl">Product Not Found!</strong>
   </div>
