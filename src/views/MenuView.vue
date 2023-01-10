@@ -68,8 +68,12 @@ watch(keyword, () => {
 </script>
 
 <template>
-  <header class="inline bg-bleached-silk">
-    <h1 class="pt-11 text-center text-2xl font-medium">Menu</h1>
+  <header class="inline bg-bleached-silk pt-9">
+    <div class="relative flex justify-center">
+      <h1 class="pt-10 text-center text-2xl font-medium">Menu</h1>
+
+      <CartButton class="absolute right-6 top-10" />
+    </div>
 
     <div
       class="sticky top-0 flex justify-center gap-x-2.5 bg-bleached-silk py-4 px-6"
@@ -79,7 +83,6 @@ watch(keyword, () => {
         :category="currentCategory"
         :tag="tag"
       />
-      <CartButton />
     </div>
   </header>
 
