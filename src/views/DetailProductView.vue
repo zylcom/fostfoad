@@ -2,8 +2,6 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import BackButton from "../components/BackButton.vue";
-import ButtonMinus from "../components/ButtonMinus.vue";
-import ButtonPlus from "../components/ButtonPlus.vue";
 import CartButton from "../components/CartButton.vue";
 import IconLove from "../components/icons/IconLove.vue";
 import ReviewCard from "../components/ReviewCard.vue";
@@ -36,6 +34,10 @@ function scrollHandler() {
   }
 
   prevScrollpos = currentScrollpos;
+}
+
+function onInputQuantity(e) {
+  quantity.value = e.target.value < 1 ? 0 : e.target.value;
 }
 
 onMounted(() => {
@@ -111,23 +113,28 @@ onUnmounted(() => {
       <div class="flex items-center gap-x-2">
         <span class="text-sm">Quantity:</span>
 
-        <ButtonMinus
-          @click="quantity--"
-          :disabled="quantity > 1 ? false : true"
+        <input
+          class="border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
+          min="1"
+          :value="quantity"
+          @input="onInputQuantity"
+          type="number"
         />
-
-        <span class="font-rubik text-sm">{{ quantity }}</span>
-
-        <ButtonPlus @click="quantity++" />
       </div>
 
       <p class="font-medium">
-        Total: <span class="font-normal">{{ total }}</span>
+        Total: <span class="break-words font-normal">{{ total }}</span>
       </p>
     </div>
 
     <button
-      class="my-6 w-full rounded-lg bg-torii-red py-2 font-rubik text-charolais-cattle"
+      class="my-6 w-full rounded-lg py-2 font-rubik"
+      :class="
+        quantity >= 1
+          ? 'bg-torii-red text-charolais-cattle'
+          : 'cursor-not-allowed bg-mercury text-gray-500'
+      "
+      :disabled="quantity >= 1 ? false : true"
     >
       Add to cart
     </button>
