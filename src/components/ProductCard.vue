@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from "vue";
+import { formatNumberToIDR } from "../utils";
 
 const props = defineProps({
   image: String,
@@ -9,37 +10,30 @@ const props = defineProps({
   overlayBg: Boolean,
 });
 
-const formatPriceToIDR = computed(() => {
-  return props.price
-    ? new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-      }).format(props.price)
-    : "";
-});
+const formattedPrice = computed(() => formatNumberToIDR(props.price));
 </script>
 
 <template>
-  <RouterLink :to="`/menu/${slug}`" class="p-2 shadow-sm hover:shadow-xl">
-    <figure>
-      <div
-        :class="{
-          'relative after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-[\'\']':
-            overlayBg,
-        }"
-      >
+  <RouterLink :to="`/menu/${slug}`" class="cursor-pointer p-2 shadow-md">
+    <div
+      :class="{
+        'relative after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-[\'\']':
+          overlayBg,
+      }"
+    >
+      <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
         <img
           :src="image"
           :alt="name"
-          class="block max-h-screen w-full object-cover object-center shadow-md"
+          class="absolute top-0 left-0 block max-h-[1280px] w-full object-cover object-center"
           loading="lazy"
         />
       </div>
+    </div>
 
-      <figcaption>
-        <h4 class="text-xs">{{ name }}</h4>
-        <span class="text-xs">{{ formatPriceToIDR }}</span>
-      </figcaption>
-    </figure>
+    <div>
+      <h4 class="text-xs">{{ name }}</h4>
+      <span class="text-xs">{{ formattedPrice }}</span>
+    </div>
   </RouterLink>
 </template>

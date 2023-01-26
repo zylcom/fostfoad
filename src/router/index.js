@@ -45,6 +45,11 @@ const router = createRouter({
       name: "cart",
       component: () => import("../views/CartView.vue"),
     },
+    {
+      path: "/result",
+      name: "search",
+      component: () => import("../views/SearchPage.vue"),
+    },
   ],
 });
 

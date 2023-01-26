@@ -1,16 +1,19 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import BannerHeader from "../components/BannerHeader.vue";
 import CartButton from "../components/CartButton.vue";
 import PopularProductList from "../components/PopularProductList.vue";
 import ProductList from "../components/ProductList.vue";
 import SearchBar from "../components/SearchBar.vue";
+import { allStore } from "../stores";
 
 const searchBarWrapper = ref(null);
 const route = useRoute();
-const router = useRouter();
+const { productsStore } = allStore();
 const keyword = ref(route.query["product-name"] || "");
+const products = computed(() => productsStore.products);
+const endCursor = computed(() => productsStore.endCursor);
 let prevScrollpos = window.scrollY;
 
 function scrollHandler() {
@@ -25,16 +28,17 @@ function scrollHandler() {
   prevScrollpos = currentScrollpos;
 }
 
-watch(keyword, () => {
-  router.push({
-    path: "/",
-    query: {
-      "product-name": keyword.value === "" ? undefined : keyword.value,
-    },
+function loadMore() {
+  productsStore.fetchMore(products.value, {
+    category: "",
+    tag: "",
+    cursor: { id: endCursor.value },
   });
-});
+}
 
 onMounted(() => {
+  productsStore.fetchFilteredProducts({});
+
   window.addEventListener("scroll", scrollHandler);
 });
 
@@ -42,16 +46,15 @@ onUnmounted(() => {
   window.removeEventListener("scroll", scrollHandler);
 });
 </script>
-
 <template>
   <header class="inline">
-    <div
+    <nav
       class="fixed top-0 z-20 flex gap-x-2 bg-bleached-silk px-6 pt-3 pb-2 shadow transition-all duration-500"
       ref="searchBarWrapper"
     >
-      <SearchBar v-model:keyword="keyword" />
+      <SearchBar v-model:keyword="keyword" redirect-to="result" />
       <CartButton />
-    </div>
+    </nav>
 
     <BannerHeader />
   </header>
@@ -65,6 +68,8 @@ onUnmounted(() => {
       title="All Food & Drink"
       class="[&>h1]:mt-36"
       :keyword="keyword"
+      :products="products"
+      :load-more="loadMore"
     />
   </main>
 </template>

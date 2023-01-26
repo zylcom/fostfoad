@@ -6,37 +6,26 @@ import { allStore } from "../stores";
 const props = defineProps({
   title: String,
   keyword: String,
+  products: Array,
+  loadMore: Function,
 });
 
 const { loadingStore, productsStore } = allStore();
 const target = ref(null);
 const observer = ref(null);
-const searchKeyword = computed(() => props.keyword);
-const products = computed(() => productsStore.products);
+const products = computed(() => props.products);
 const error = computed(() => productsStore.hasError);
 const loading = computed(() => loadingStore.isLoading);
 const hasNextPage = computed(() => productsStore.hasNextPage);
-const endCursor = computed(() => productsStore.endCursor);
-
-function loadMore() {
-  productsStore.fetchMore(products.value, {
-    category: "",
-    tag: "",
-    keyword: searchKeyword.value,
-    cursor: { id: endCursor.value },
-  });
-}
 
 onMounted(() => {
-  productsStore.fetchFilteredProducts({});
-
   const options = {
     threshold: 1.0,
   };
 
   observer.value = new IntersectionObserver(([entry]) => {
     if (entry && entry.isIntersecting && hasNextPage.value) {
-      loadMore();
+      props.loadMore();
     }
   }, options);
   observer.value.observe(target.value);
@@ -48,17 +37,7 @@ onMounted(() => {
     <h1 class="text-sm font-medium">{{ title }}</h1>
 
     <div class="food-list mt-5 flex flex-col gap-y-5">
-      <!-- <div class="mt-5 text-center" v-if="error">
-        <p>Oops, something went wrong!</p>
-        <button
-          class="mt-3 rounded bg-spandex-green px-5 py-1"
-          @click="reloadPage"
-        >
-          Reload
-        </button>
-      </div> -->
-
-      <div v-if="products.length > 0">
+      <div v-if="products.length > 0" class="flex flex-col gap-y-5">
         <ProductCard
           v-for="product in products"
           :key="product.node.id"
