@@ -37,7 +37,7 @@ function scrollHandler() {
 }
 
 function onInputQuantity(e) {
-  quantity.value = e.target.value < 1 ? 0 : e.target.value;
+  quantity.value = parseInt(Math.abs(e.target.value));
 }
 
 onMounted(() => {
