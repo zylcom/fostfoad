@@ -1,0 +1,62 @@
+<script setup>
+import { computed, onMounted, onUnmounted, ref } from "vue";
+import BackButton from "./BackButton.vue";
+import CartButton from "./CartButton.vue";
+
+const props = defineProps({ product: Object, loading: Boolean });
+
+const navBar = ref(null);
+const product = computed(() => props.product);
+let prevScrollpos = window.scrollY;
+
+function scrollHandler() {
+  const currentScrollpos = window.scrollY;
+
+  if (prevScrollpos > currentScrollpos) {
+    navBar.value.style.top = "0";
+  } else if (product.value?.name) {
+    navBar.value.style.top = "-65px";
+  }
+
+  prevScrollpos = currentScrollpos;
+}
+
+onMounted(() => {
+  window.addEventListener("scroll", scrollHandler);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrollHandler);
+});
+</script>
+
+<template>
+  <header class="inline">
+    <nav
+      class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
+      :class="{ 'top-0': product === null }"
+      ref="navBar"
+    >
+      <BackButton path="/menu" />
+
+      <CartButton />
+    </nav>
+
+    <div
+      class="sticky top-0 after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
+    >
+      <div
+        class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md"
+        v-if="!loading && product !== null"
+      >
+        <img
+          src="https://picsum.photos/1920/1280.webp"
+          :alt="product.name"
+          class="absolute top-0 left-0 block max-h-screen w-full object-cover object-center shadow-md"
+          loading="lazy"
+          v-if="product !== null"
+        />
+      </div>
+    </div>
+  </header>
+</template>

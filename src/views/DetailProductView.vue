@@ -1,8 +1,7 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import BackButton from "../components/BackButton.vue";
-import CartButton from "../components/CartButton.vue";
+import DetailProductViewHeader from "../components/DetailProductViewHeader.vue";
 import IconLove from "../components/icons/IconLove.vue";
 import ReviewCard from "../components/ReviewCard.vue";
 import { allStore } from "../stores";
@@ -17,63 +16,32 @@ const loading = computed(() => loadingStore.isLoading);
 const product = computed(() => productDetailStore.product);
 
 const quantity = ref(1);
-const navBar = ref(null);
+
+const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
 );
-const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
-let prevScrollpos = window.scrollY;
+const isInQuantityValueRange = computed(
+  () => quantity.value >= 1 && quantity.value <= 999
+);
 
-function scrollHandler() {
-  const currentScrollpos = window.scrollY;
-
-  if (prevScrollpos > currentScrollpos) {
-    navBar.value.style.top = "0";
-  } else if (product.value?.name) {
-    navBar.value.style.top = "-65px";
-  }
-
-  prevScrollpos = currentScrollpos;
+function onInputQuantity(event) {
+  quantity.value = event.target.value;
 }
 
-function onInputQuantity(e) {
-  quantity.value = parseInt(Math.abs(e.target.value));
+function isNumberKey(event) {
+  const charCode = event.which ? event.which : event.keyCode;
+
+  return charCode > 31 && (charCode < 48 || charCode > 57) ? false : true;
 }
 
 onMounted(() => {
   productDetailStore.fetchProductDetail(productSlug);
-  window.addEventListener("scroll", scrollHandler);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", scrollHandler);
 });
 </script>
 
 <template>
-  <header class="inline">
-    <nav
-      class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
-      :class="{ 'top-0': product === null }"
-      ref="navBar"
-    >
-      <BackButton path="/menu" />
-
-      <CartButton />
-    </nav>
-
-    <div
-      class="sticky top-0 after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
-    >
-      <img
-        src="https://picsum.photos/1920/1280.webp"
-        :alt="product.name"
-        class="block max-h-screen w-full object-cover object-center shadow-md"
-        loading="lazy"
-        v-if="product !== null"
-      />
-    </div>
-  </header>
+  <DetailProductViewHeader :product="product" :loading="loading" />
 
   <div
     class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
@@ -97,7 +65,10 @@ onUnmounted(() => {
       <h1 class="text-2xl font-medium text-dark-tone-ink">
         {{ product.name }}
       </h1>
-      <button><IconLove /></button>
+
+      <button>
+        <IconLove />
+      </button>
     </div>
 
     <h4 class="text-sm text-dark-tone-ink">Ingredients</h4>
@@ -114,33 +85,43 @@ onUnmounted(() => {
         <span class="text-sm">Quantity:</span>
 
         <input
-          class="border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
+          type="number"
+          class="w-full border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
           min="1"
+          max="999"
           :value="quantity"
           @input="onInputQuantity"
-          type="number"
+          :onkeypress="isNumberKey"
         />
       </div>
 
-      <p class="font-medium">
-        Total: <span class="break-words font-normal">{{ total }}</span>
+      <p
+        class="top-0 -translate-y-3 text-xs text-red-500"
+        v-if="!isInQuantityValueRange"
+      >
+        Value must be 1 - 999.
       </p>
+
+      <span class="font-medium">
+        Total: <span class="break-words font-normal">{{ total }}</span>
+      </span>
     </div>
 
     <button
       class="my-6 w-full rounded-lg py-2 font-rubik"
       :class="
-        quantity >= 1
+        isInQuantityValueRange
           ? 'bg-torii-red text-charolais-cattle'
           : 'cursor-not-allowed bg-mercury text-gray-500'
       "
-      :disabled="quantity >= 1 ? false : true"
+      :disabled="isInQuantityValueRange ? false : true"
     >
       Add to cart
     </button>
 
     <div>
       <h4 class="pb-6 text-sm text-dark-tone-ink">Reviews</h4>
+
       <div class="review-list flex flex-col gap-y-6">
         <ReviewCard />
         <ReviewCard />
