@@ -50,6 +50,16 @@ const router = createRouter({
       name: "search",
       component: () => import("../views/SearchPage.vue"),
     },
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("../views/AuthenticationView.vue"),
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: () => import("../views/AuthenticationView.vue"),
+    },
   ],
 });
 
