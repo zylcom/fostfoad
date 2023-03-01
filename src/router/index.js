@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthUserStore } from "../stores/authUser";
+import { checkUserIsLoggedIn } from "../utils";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,6 +8,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
+      meta: { requiresAuth: false },
       components: {
         default: () => import("../views/HomeView.vue"),
         FooterNavigation: () => import("../components/FooterNavigation.vue"),
@@ -14,6 +17,7 @@ const router = createRouter({
     {
       path: "/menu",
       name: "menu",
+      meta: { requiresAuth: false },
       components: {
         default: () => import("../views/MenuView.vue"),
         FooterNavigation: () => import("../components/FooterNavigation.vue"),
@@ -21,12 +25,14 @@ const router = createRouter({
     },
     {
       path: "/menu/:slug",
+      meta: { requiresAuth: false },
       name: "detail product",
       component: () => import("../views/DetailProductView.vue"),
     },
     {
       path: "/history",
       name: "history",
+      meta: { requiresAuth: true },
       components: {
         default: () => import("../views/HistoryView.vue"),
         FooterNavigation: () => import("../components/FooterNavigation.vue"),
@@ -35,6 +41,7 @@ const router = createRouter({
     {
       path: "/settings",
       name: "settings",
+      meta: { requiresAuth: false },
       components: {
         default: () => import("../views/SettingView.vue"),
         FooterNavigation: () => import("../components/FooterNavigation.vue"),
@@ -43,24 +50,43 @@ const router = createRouter({
     {
       path: "/cart",
       name: "cart",
+      meta: { requiresAuth: true },
       component: () => import("../views/CartView.vue"),
     },
     {
       path: "/result",
       name: "search",
+      meta: { requiresAuth: false },
       component: () => import("../views/SearchPage.vue"),
     },
     {
       path: "/login",
       name: "login",
+      meta: { requiresAuth: false },
       component: () => import("../views/AuthenticationView.vue"),
     },
     {
       path: "/register",
       name: "register",
+      meta: { requiresAuth: false },
       component: () => import("../views/AuthenticationView.vue"),
     },
   ],
+});
+
+router.beforeEach(async (to) => {
+  const authUserStore = useAuthUserStore();
+  const isLoggedIn = await checkUserIsLoggedIn();
+
+  authUserStore.preload();
+
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    return { path: "/login" };
+  }
+
+  if ((to.fullPath === "/login" || to.fullPath === "/register") && isLoggedIn) {
+    return { path: "/" };
+  }
 });
 
 export default router;

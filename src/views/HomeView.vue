@@ -10,7 +10,8 @@ import { allStore } from "../stores";
 
 const searchBarWrapper = ref(null);
 const route = useRoute();
-const { productsStore } = allStore();
+const { productsStore, authUserStore } = allStore();
+const authUser = authUserStore.getAuthUser;
 const keyword = ref(route.query["product-name"] || "");
 const products = computed(() => productsStore.products);
 const endCursor = computed(() => productsStore.endCursor);
@@ -49,11 +50,12 @@ onUnmounted(() => {
 <template>
   <header class="inline">
     <nav
-      class="fixed top-0 z-20 flex gap-x-2 bg-bleached-silk px-6 pt-3 pb-2 shadow transition-all duration-500"
+      class="fixed top-0 z-20 flex w-full gap-x-2 bg-bleached-silk px-6 pt-3 pb-2 shadow transition-all duration-500"
       ref="searchBarWrapper"
     >
       <SearchBar v-model:keyword="keyword" redirect-to="result" />
-      <CartButton />
+
+      <CartButton v-if="authUser" />
     </nav>
 
     <BannerHeader />

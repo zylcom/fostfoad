@@ -1,12 +1,16 @@
 <script setup>
 import IconPlus from "./icons/IconPlus.vue";
 import { computed } from "vue";
+import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({
   productName: String,
   price: Number,
   slug: String,
 });
+
+const authUserStore = useAuthUserStore();
+const authUser = authUserStore.getAuthUser;
 
 const formatPriceToIDR = computed(() => {
   return new Intl.NumberFormat("id-ID", {
@@ -29,6 +33,7 @@ const formatPriceToIDR = computed(() => {
 
     <button
       class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mercury"
+      v-if="authUser"
     >
       <IconPlus color="#de3905" class="h-3 w-3" />
     </button>

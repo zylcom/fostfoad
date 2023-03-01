@@ -10,23 +10,26 @@ import { formatNumberToIDR } from "../utils";
 const route = useRoute();
 const productSlug = route.params.slug;
 
-const { loadingStore, productDetailStore } = allStore();
+const { authUserStore, loadingStore, productDetailStore } = allStore();
 
+const authUser = authUserStore.getAuthUser;
 const loading = computed(() => loadingStore.isLoading);
 const product = computed(() => productDetailStore.product);
 
+const quantityInputElement = ref(null);
 const quantity = ref(1);
 
 const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
 );
-const isInQuantityValueRange = computed(
-  () => quantity.value >= 1 && quantity.value <= 999
-);
 
-function onInputQuantity(event) {
-  quantity.value = event.target.value;
+function onInputQuantity() {
+  if (this.value.length > this.maxLength) {
+    this.value = this.value.slice(0, this.maxLength);
+  }
+
+  quantity.value = this.value.slice(0, this.maxlength);
 }
 
 function isNumberKey(event) {
@@ -66,61 +69,68 @@ onMounted(() => {
         {{ product.name }}
       </h1>
 
-      <button>
+      <button
+        class="transition duration-300"
+        :class="
+          authUser
+            ? 'cursor-pointer hover:scale-125 active:scale-100'
+            : 'cursor-not-allowed'
+        "
+        :title="authUser ? 'Like' : 'Login to like'"
+        :disabled="authUser ? false : true"
+      >
         <IconLove />
       </button>
     </div>
 
-    <h4 class="text-sm text-dark-tone-ink">Ingredients</h4>
+    <h4 class="text-sm text-dark-tone-ink">Ingredients:</h4>
     <p class="text-xs text-gray-500">
       {{ product.ingredients }}
     </p>
 
-    <div class="flex flex-col gap-y-6 pt-6 text-sm">
+    <div class="flex flex-col gap-y-6 pt-6 text-sm" v-if="authUser">
       <p class="font-medium">
         Price: <span class="font-normal">{{ formattedPrice }}</span>
       </p>
 
-      <div class="flex items-center gap-x-2">
-        <span class="text-sm">Quantity:</span>
+      <div class="flex flex-col gap-y-6">
+        <div class="flex items-center gap-x-2">
+          <span class="text-sm">Quantity:</span>
 
-        <input
-          type="number"
-          class="w-full border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
-          min="1"
-          max="999"
-          :value="quantity"
-          @input="onInputQuantity"
-          :onkeypress="isNumberKey"
-        />
+          <input
+            type="number"
+            class="w-full border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
+            min="1"
+            max="999"
+            maxlength="3"
+            :value="quantity"
+            :oninput="onInputQuantity"
+            :onkeypress="isNumberKey"
+            ref="quantityInputElement"
+          />
+        </div>
+
+        <span class="font-medium">
+          Total: <span class="break-words font-normal">{{ total }}</span>
+        </span>
       </div>
-
-      <p
-        class="top-0 -translate-y-3 text-xs text-red-500"
-        v-if="!isInQuantityValueRange"
-      >
-        Value must be 1 - 999.
-      </p>
-
-      <span class="font-medium">
-        Total: <span class="break-words font-normal">{{ total }}</span>
-      </span>
     </div>
 
     <button
-      class="my-6 w-full rounded-lg py-2 font-rubik"
+      class="mt-6 w-full rounded-lg py-2 font-rubik"
       :class="
-        isInQuantityValueRange
-          ? 'bg-torii-red text-charolais-cattle'
+        quantity > 0
+          ? 'bg-torii-red/95 text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red'
           : 'cursor-not-allowed bg-mercury text-gray-500'
       "
-      :disabled="isInQuantityValueRange ? false : true"
+      :disabled="quantity > 0 ? false : true"
+      v-if="authUser"
     >
       Add to cart
     </button>
 
     <div>
-      <h4 class="pb-6 text-sm text-dark-tone-ink">Reviews</h4>
+      <h4 class="py-6 text-sm text-dark-tone-ink">Reviews</h4>
 
       <div class="review-list flex flex-col gap-y-6">
         <ReviewCard />

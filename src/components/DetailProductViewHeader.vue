@@ -2,9 +2,12 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import BackButton from "./BackButton.vue";
 import CartButton from "./CartButton.vue";
+import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({ product: Object, loading: Boolean });
 
+const authUserStore = useAuthUserStore();
+const authUser = authUserStore.getAuthUser;
 const navBar = ref(null);
 const product = computed(() => props.product);
 let prevScrollpos = window.scrollY;
@@ -37,9 +40,9 @@ onUnmounted(() => {
       :class="{ 'top-0': product === null }"
       ref="navBar"
     >
-      <BackButton path="/menu" />
+      <BackButton />
 
-      <CartButton />
+      <CartButton v-if="authUser" />
     </nav>
 
     <div

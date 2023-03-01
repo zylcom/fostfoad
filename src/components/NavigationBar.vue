@@ -1,12 +1,15 @@
 <script setup>
+import { useRoute } from "vue-router";
 import IconDotsHorizontal from "../components/icons/IconDotsHorizontal.vue";
 import IconHome from "../components/icons/IconHome.vue";
 import IconHistory from "../components/icons/IconHistory.vue";
 import IconMenu from "../components/icons/IconMenu.vue";
 import NavigationButton from "./NavigationButton.vue";
-import { useRoute } from "vue-router";
+import { useAuthUserStore } from "../stores/authUser";
 
 const route = useRoute();
+const authUserStore = useAuthUserStore();
+const authUser = authUserStore.getAuthUser;
 </script>
 
 <template>
@@ -30,6 +33,7 @@ const route = useRoute();
       path-name="History"
       :icon="IconHistory"
       text-active-color="text-heirloom-hydrangea"
+      v-if="authUser"
     />
 
     <NavigationButton

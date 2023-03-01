@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 import LoginInput from "../components/LoginInput.vue";
 import RegisterInput from "../components/RegisterInput.vue";
 
@@ -15,6 +16,8 @@ function switchTab(newPath) {
 </script>
 
 <template>
+  <LoadingSpinner />
+
   <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
     <img
       src="https://picsum.photos/480/320.webp"
