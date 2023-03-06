@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { allStore } from "../stores";
 
@@ -9,7 +9,7 @@ const password = ref("");
 
 const { authUserStore, errorStore } = allStore();
 const authUser = authUserStore.getAuthUser;
-const error = computed(() => errorStore.error);
+const error = errorStore.getError;
 
 function onSubmitHandle() {
   authUserStore.login(email.value, password.value);

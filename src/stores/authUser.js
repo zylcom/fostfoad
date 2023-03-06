@@ -1,9 +1,13 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { useQuery } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import { allStore } from ".";
 import { fetchApiWithToken, saveAccessToken } from "../utils";
-import { GET_MY_PROFILE_QUERY, LOGIN_QUERY } from "../config";
+import {
+  GET_MY_PROFILE_QUERY,
+  LOGIN_QUERY,
+  REGISTER_USER_QUERY,
+} from "../config";
 
 export const useAuthUserStore = defineStore("User", () => {
   const { errorStore, loadingStore } = allStore();
@@ -22,7 +26,7 @@ export const useAuthUserStore = defineStore("User", () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        alert(error.message);
       });
   }
 
@@ -53,24 +57,70 @@ export const useAuthUserStore = defineStore("User", () => {
 
       loadingStore.hideLoading();
     });
-
-    // fetchApi(LOGIN_QUERY, { authIdentifier: phoneNumber, password })
-    //   .then((response) => {
-    //     if (response.data.data.authenticate.__typename === "UserAuth") {
-    //       authUser.value = response.data.data.authenticate.data;
-
-    //       saveAccessToken(response.data.data.authenticate.token);
-    //     } else {
-    //       errorStore.setError({ message: "Invalid credentials!" });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   })
-    //   .finally(() => {
-    //     loadingStore.hideLoading();
-    //   });
   }
 
-  return { authUser, getAuthUser, login, preload };
+  function register({ name, email, phoneNumber, password, countryCode }) {
+    loadingStore.showLoading();
+
+    const { mutate, onDone, onError } = useMutation(REGISTER_USER_QUERY);
+
+    mutate({ name, email, phoneNumber, password, countryCode });
+
+    onDone((mutateResult) => {
+      if (mutateResult.data.registerUser.__typename === "UserAuth") {
+        authUser.value = mutateResult.data.registerUser.data;
+
+        saveAccessToken(mutateResult.data.registerUser.token);
+      } else {
+        switch (mutateResult.data.registerUser.message) {
+          case `Email ${email} already in use!`:
+            errorStore.setError({
+              errorType: "email",
+              message: mutateResult.data.registerUser.message,
+            });
+            break;
+
+          case "Email is invalid!":
+            errorStore.setError({
+              errorType: "email",
+              message: mutateResult.data.registerUser.message,
+            });
+            break;
+
+          case `Phone Number ${phoneNumber} already in use!`:
+            errorStore.setError({
+              errorType: "phone-number",
+              message: mutateResult.data.registerUser.message,
+            });
+            break;
+
+          case `Phone number is invalid!`:
+            errorStore.setError({
+              errorType: "phone-number",
+              message: mutateResult.data.registerUser.message,
+            });
+            break;
+
+          default:
+            errorStore.setError({
+              errorType: "general",
+              message: "Register account failed",
+            });
+            break;
+        }
+      }
+
+      loadingStore.hideLoading();
+    });
+
+    onError(({ networkError }) => {
+      if (networkError) {
+        alert(networkError.message);
+      }
+
+      loadingStore.hideLoading();
+    });
+  }
+
+  return { authUser, getAuthUser, login, preload, register };
 });

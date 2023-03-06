@@ -40,5 +40,37 @@ const LOGIN_QUERY = gql`
     }
   }
 `;
-
-export { BASE_URL, GET_MY_PROFILE_QUERY, LOGIN_QUERY };
+const REGISTER_USER_QUERY = gql`
+  mutation Register(
+    $name: String!
+    $email: String!
+    $phoneNumber: String!
+    $password: String!
+    $countryCode: String!
+  ) {
+    registerUser(
+      name: $name
+      email: $email
+      phoneNumber: $phoneNumber
+      password: $password
+      countryCode: $countryCode
+    ) {
+      __typename
+      ... on UserAuth {
+        data {
+          id
+          name
+          email
+          phoneNumber
+          avatar
+          createdAt
+        }
+        token
+      }
+      ... on CreateUserFailed {
+        message
+      }
+    }
+  }
+`;
+export { BASE_URL, GET_MY_PROFILE_QUERY, LOGIN_QUERY, REGISTER_USER_QUERY };
