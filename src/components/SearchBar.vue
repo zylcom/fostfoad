@@ -19,14 +19,29 @@ const router = useRouter();
 const store = useProductsStore();
 const productCategory = computed(() => props.category);
 const productTag = computed(() => props.tag);
-const searchKeyword = computed(() => props.keyword);
+const searchKeyword = computed(() => clearKeyword(props.keyword));
 
 function searchHandler(redirectPath) {
+  if (!searchKeyword.value) {
+    return;
+  }
+
   if (redirectPath === "result") {
     router.push({
       path: `/${redirectPath}`,
       query: {
-        "product-name": clearKeyword(searchKeyword.value),
+        "product-name": searchKeyword.value,
+      },
+    });
+  }
+
+  if (router.currentRoute.value.path === "/menu") {
+    router.push({
+      path: "menu",
+      query: {
+        category: productCategory.value,
+        tag: productTag.value === "" ? undefined : productTag.value,
+        "product-name": searchKeyword.value,
       },
     });
   }
@@ -36,7 +51,7 @@ function searchHandler(redirectPath) {
 
     router.push({
       query: {
-        "product-name": clearKeyword(searchKeyword.value),
+        "product-name": searchKeyword.value,
       },
     });
   }
@@ -44,7 +59,7 @@ function searchHandler(redirectPath) {
   store.fetchFilteredProducts({
     category: productCategory.value,
     tag: productTag.value,
-    keyword: clearKeyword(searchKeyword.value),
+    keyword: searchKeyword.value,
   });
 }
 </script>
@@ -73,7 +88,7 @@ function searchHandler(redirectPath) {
     </button>
 
     <button
-      v-show="searchKeyword !== ''"
+      v-show="searchKeyword !== undefined"
       class="group absolute top-1/2 -mt-1.5 cursor-pointer"
       :class="router.currentRoute.value.path === '/' ? 'right-3' : 'right-10'"
       @click="$emit('update:keyword', '')"

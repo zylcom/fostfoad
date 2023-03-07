@@ -52,6 +52,16 @@ watch([productCategory, productTag], () => {
     keyword: searchKeyword.value,
   });
 });
+
+watch(searchKeyword, (newValue) => {
+  if (!newValue) {
+    productsStore.fetchFilteredProducts({
+      category: productCategory.value,
+      tag: productTag.value,
+      keyword: newValue,
+    });
+  }
+});
 </script>
 
 <template>

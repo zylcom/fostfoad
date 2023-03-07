@@ -29,7 +29,7 @@ function changeCategoryHandler(categoryName) {
     path: "menu",
     query: {
       category: categoryName,
-      "product-name": clearKeyword(keyword.value),
+      "product-name": clearKeyword(keyword.value) || undefined,
     },
   });
 }
@@ -54,17 +54,6 @@ onMounted(() => {
 
 watch(currentCategory, () => {
   tagStore.fetchProductsTags(currentCategory.value);
-});
-
-watch(keyword, () => {
-  router.push({
-    path: "menu",
-    query: {
-      category: currentCategory.value,
-      tag: tag.value === "" ? undefined : tag.value,
-      "product-name": clearKeyword(keyword.value),
-    },
-  });
 });
 </script>
 
