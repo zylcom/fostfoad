@@ -7,6 +7,7 @@ import PopularProductList from "../components/PopularProductList.vue";
 import ProductList from "../components/ProductList.vue";
 import SearchBar from "../components/SearchBar.vue";
 import { allStore } from "../stores";
+import { hideElementWhenScrollDown } from "../utils";
 
 const searchBarWrapper = ref(null);
 const route = useRoute();
@@ -15,18 +16,9 @@ const authUser = authUserStore.getAuthUser;
 const keyword = ref(route.query["product-name"] || "");
 const products = computed(() => productsStore.products);
 const endCursor = computed(() => productsStore.endCursor);
-let prevScrollpos = window.scrollY;
 
-function scrollHandler() {
-  const currentScrollpos = window.scrollY;
-
-  if (prevScrollpos > currentScrollpos) {
-    searchBarWrapper.value.style.top = "0";
-  } else {
-    searchBarWrapper.value.style.top = "-65px";
-  }
-
-  prevScrollpos = currentScrollpos;
+function onScrollHandler() {
+  hideElementWhenScrollDown(searchBarWrapper);
 }
 
 function loadMore() {
@@ -40,11 +32,11 @@ function loadMore() {
 onMounted(() => {
   productsStore.fetchFilteredProducts({});
 
-  window.addEventListener("scroll", scrollHandler);
+  window.addEventListener("scroll", onScrollHandler);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", scrollHandler);
+  window.removeEventListener("scroll", onScrollHandler);
 });
 </script>
 <template>

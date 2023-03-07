@@ -25,7 +25,7 @@ function onSubmitHandler() {
   });
 }
 
-function test(number, phoneObject) {
+function onPhoneNumberInput(number, phoneObject) {
   errorStore.$reset();
 
   phoneNumber.value = number;
@@ -106,7 +106,7 @@ watch(authUser, () => {
         "
         v-model="phoneNumber"
         :inputOptions="{ showDialCode: true }"
-        @on-input="test"
+        @on-input="onPhoneNumberInput"
         required
       />
     </label>

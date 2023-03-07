@@ -3,6 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import BackButton from "./BackButton.vue";
 import CartButton from "./CartButton.vue";
 import { useAuthUserStore } from "../stores/authUser";
+import { hideElementWhenScrollDown } from "../utils";
 
 const props = defineProps({ product: Object, loading: Boolean });
 
@@ -10,26 +11,17 @@ const authUserStore = useAuthUserStore();
 const authUser = authUserStore.getAuthUser;
 const navBar = ref(null);
 const product = computed(() => props.product);
-let prevScrollpos = window.scrollY;
 
-function scrollHandler() {
-  const currentScrollpos = window.scrollY;
-
-  if (prevScrollpos > currentScrollpos) {
-    navBar.value.style.top = "0";
-  } else if (product.value?.name) {
-    navBar.value.style.top = "-65px";
-  }
-
-  prevScrollpos = currentScrollpos;
+function onScrollHandler() {
+  hideElementWhenScrollDown(navBar);
 }
 
 onMounted(() => {
-  window.addEventListener("scroll", scrollHandler);
+  window.addEventListener("scroll", onScrollHandler);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", scrollHandler);
+  window.removeEventListener("scroll", onScrollHandler);
 });
 </script>
 
@@ -37,7 +29,6 @@ onUnmounted(() => {
   <header class="inline">
     <nav
       class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
-      :class="{ 'top-0': product === null }"
       ref="navBar"
     >
       <BackButton />

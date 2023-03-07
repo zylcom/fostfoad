@@ -1,31 +1,59 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import BackButton from "../components/BackButton.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 import LoginInput from "../components/LoginInput.vue";
 import RegisterInput from "../components/RegisterInput.vue";
+import { hideElementWhenScrollDown } from "../utils";
 
 const route = useRouter();
 const path = ref(route.currentRoute.value.name);
+const navBar = ref(null);
 
 function switchTab(newPath) {
   path.value = newPath;
 
   route.push({ path: newPath });
 }
+
+function onScrollHandler() {
+  hideElementWhenScrollDown(navBar);
+}
+
+onMounted(() => {
+  window.addEventListener("scroll", onScrollHandler);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", onScrollHandler);
+});
 </script>
 
 <template>
   <LoadingSpinner />
 
-  <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
-    <img
-      src="https://picsum.photos/480/320.webp"
-      alt=""
-      class="absolute top-0 left-0 block w-full object-cover object-center"
-      loading="lazy"
-    />
-  </div>
+  <header class="inline">
+    <nav
+      class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
+      ref="navBar"
+    >
+      <BackButton class="" />
+    </nav>
+
+    <div
+      class="sticky top-0 after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
+    >
+      <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
+        <img
+          src="https://picsum.photos/480/320.webp"
+          alt=""
+          class="absolute top-0 left-0 block w-full object-cover object-center"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </header>
 
   <div class="-translate-y-5 rounded-t-[20px] bg-white pt-2 font-rubik">
     <div class="flex w-full justify-around text-sm">

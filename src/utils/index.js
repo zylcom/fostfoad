@@ -50,6 +50,23 @@ async function checkUserIsLoggedIn() {
   return result;
 }
 
+let prevScrollpos = window.scrollY;
+
+function hideElementWhenScrollDown(element) {
+  const currentScrollpos = window.scrollY;
+
+  if (
+    prevScrollpos > currentScrollpos ||
+    window.innerHeight >= document.body.scrollHeight
+  ) {
+    element.value.style.top = "0";
+  } else {
+    element.value.style.top = "-65px";
+  }
+
+  prevScrollpos = currentScrollpos;
+}
+
 export {
   checkUserIsLoggedIn,
   clearKeyword,
@@ -57,4 +74,5 @@ export {
   formatNumberToIDR,
   getAccessToken,
   saveAccessToken,
+  hideElementWhenScrollDown,
 };
