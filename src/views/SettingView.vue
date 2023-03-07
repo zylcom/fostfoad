@@ -4,10 +4,16 @@ import IconLogin from "../components/icons/IconLogin.vue";
 import IconLogout from "../components/icons/IconLogout.vue";
 import ToggleSwitch from "../components/ToggleSwitch.vue";
 import SettingButton from "../components/SettingButton.vue";
+import { removeAccessToken } from "../utils";
 import { useAuthUserStore } from "../stores/authUser";
 
 const authUserStore = useAuthUserStore();
 const authUser = authUserStore.getAuthUser;
+
+function logout() {
+  removeAccessToken();
+  authUserStore.preload();
+}
 </script>
 
 <template>
@@ -50,6 +56,7 @@ const authUser = authUserStore.getAuthUser;
 
     <button
       class="m-auto mt-14 mb-28 flex items-center gap-x-3 text-lg"
+      @click="logout"
       v-if="authUser"
     >
       Log out <span><IconLogout /></span>

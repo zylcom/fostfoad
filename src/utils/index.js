@@ -30,6 +30,10 @@ function getAccessToken() {
   return localStorage.getItem("accessToken");
 }
 
+function removeAccessToken() {
+  localStorage.removeItem("accessToken");
+}
+
 async function checkUserIsLoggedIn() {
   let result = false;
 
@@ -73,6 +77,7 @@ export {
   fetchApiWithToken,
   formatNumberToIDR,
   getAccessToken,
-  saveAccessToken,
   hideElementWhenScrollDown,
+  removeAccessToken,
+  saveAccessToken,
 };
