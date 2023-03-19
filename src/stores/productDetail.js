@@ -1,35 +1,26 @@
-import gql from "graphql-tag";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useLoadingStore } from "./loading";
+import { GET_PRODUCT_QUERY } from "../config";
+import { useReviewsStore } from "./reviews";
 
 export const useProductDetailStore = defineStore("Product Detail", () => {
   const loadingStore = useLoadingStore();
+  const reviewsStore = useReviewsStore();
   const product = ref(null);
-  const GET_PRODUCT_QUERY = gql`
-    query GetProduct($slug: String!) {
-      getProduct(slug: $slug) {
-        ... on Product {
-          id
-          name
-          slug
-          price
-          image
-          ingredients
-        }
-      }
-    }
-  `;
 
   function fetchProductDetail(slug) {
     loadingStore.showLoading();
     product.value = null;
 
-    const { onError, onResult } = useQuery(GET_PRODUCT_QUERY, { slug });
+    const { onError, onResult } = useQuery(GET_PRODUCT_QUERY, {
+      slug,
+    });
 
     onResult((queryResult) => {
       if (queryResult.data.getProduct.__typename === "Product") {
+        reviewsStore.setReviews(queryResult.data.getProduct.reviews);
         product.value = queryResult.data.getProduct;
       }
 

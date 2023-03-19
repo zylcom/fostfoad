@@ -4,6 +4,7 @@ import { useErrorStore } from "./error";
 import { useLoadingStore } from "./loading";
 import { useProductDetailStore } from "./productDetail";
 import { useProductsStore } from "./products";
+import { useReviewsStore } from "./reviews";
 import { useTagStore } from "./tag";
 
 export const allStore = () => {
@@ -14,6 +15,7 @@ export const allStore = () => {
     loadingStore: useLoadingStore(),
     productsStore: useProductsStore(),
     productDetailStore: useProductDetailStore(),
+    reviewsStore: useReviewsStore(),
     tagStore: useTagStore(),
   };
 };

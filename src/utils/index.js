@@ -22,6 +22,10 @@ function formatNumberToIDR(number) {
   }).format(number);
 }
 
+function formatFloatNumber(number) {
+  return number ? parseFloat(number.toFixed(1)) : "";
+}
+
 function saveAccessToken(token) {
   localStorage.setItem("accessToken", token);
 }
@@ -75,6 +79,7 @@ export {
   checkUserIsLoggedIn,
   clearKeyword,
   fetchApiWithToken,
+  formatFloatNumber,
   formatNumberToIDR,
   getAccessToken,
   hideElementWhenScrollDown,

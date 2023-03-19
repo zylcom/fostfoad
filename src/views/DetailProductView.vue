@@ -3,23 +3,32 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import DetailProductViewHeader from "../components/DetailProductViewHeader.vue";
 import IconLove from "../components/icons/IconLove.vue";
-import ReviewCard from "../components/ReviewCard.vue";
+import IconStar from "../components/icons/IconStar.vue";
+import RatingStars from "../components/RatingStars.vue";
+import ReviewComponent from "../components/ReviewComponent.vue";
+import ReviewInput from "../components/ReviewInput.vue";
 import { allStore } from "../stores";
-import { formatNumberToIDR } from "../utils";
+import { formatFloatNumber, formatNumberToIDR } from "../utils";
 
 const route = useRoute();
 const productSlug = route.params.slug;
 
-const { authUserStore, loadingStore, productDetailStore } = allStore();
+const { authUserStore, loadingStore, productDetailStore, reviewsStore } =
+  allStore();
 
 const authUser = authUserStore.getAuthUser;
 const loading = computed(() => loadingStore.isLoading);
 const product = computed(() => productDetailStore.product);
+const myReview = reviewsStore.getMyReview;
 
 const quantityInputElement = ref(null);
 const quantity = ref(1);
+const rate = ref(0);
 
 const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
+const formattedAverateRating = computed(() =>
+  formatFloatNumber(product.value.averageRating)
+);
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
 );
@@ -36,6 +45,22 @@ function isNumberKey(event) {
   const charCode = event.which ? event.which : event.keyCode;
 
   return charCode > 31 && (charCode < 48 || charCode > 57) ? false : true;
+}
+
+function changeRate(rateStars) {
+  rate.value = rateStars;
+}
+
+function sendReview(reviewDescription) {
+  reviewsStore.postReview({
+    productId: +product.value.id,
+    userId: +authUser.value.id,
+    description: reviewDescription,
+    rateStar: rate.value,
+    slug: productSlug,
+  });
+
+  productDetailStore.fetchProductDetail(productSlug, true);
 }
 
 onMounted(() => {
@@ -61,26 +86,29 @@ onMounted(() => {
   </div>
 
   <main
-    class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12 pb-5"
+    class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12"
+    :class="rate ? 'pb-24' : 'pb-14'"
     v-else
   >
-    <div class="flex items-center justify-between pb-5">
+    <div class="flex items-center justify-between gap-x-3 pb-5">
       <h1 class="text-2xl font-medium text-dark-tone-ink">
         {{ product.name }}
       </h1>
 
-      <button
-        class="transition duration-300"
-        :class="
-          authUser
-            ? 'cursor-pointer hover:scale-125 active:scale-100'
-            : 'cursor-not-allowed'
-        "
-        :title="authUser ? 'Like' : 'Login to like'"
-        :disabled="authUser ? false : true"
-      >
-        <IconLove />
-      </button>
+      <div class="grid grid-cols-2 justify-items-center gap-x-2">
+        <IconStar class="order-1 h-6 w-6 fill-spandex-green" />
+        <span class="order-3 font-rubik text-sm font-bold" title="Rating">
+          {{ formattedAverateRating }}
+        </span>
+
+        <button
+          class="order-2 cursor-pointer transition duration-300 hover:scale-125 active:scale-100"
+          title="Like"
+        >
+          <IconLove />
+        </button>
+        <span class="order-4 font-rubik text-sm">100</span>
+      </div>
     </div>
 
     <h4 class="text-sm text-dark-tone-ink">Ingredients:</h4>
@@ -88,11 +116,11 @@ onMounted(() => {
       {{ product.ingredients }}
     </p>
 
-    <div class="flex flex-col gap-y-6 pt-6 text-sm" v-if="authUser">
-      <p class="font-medium">
-        Price: <span class="font-normal">{{ formattedPrice }}</span>
-      </p>
+    <p class="pt-6 text-sm font-medium">
+      Price: <span class="font-normal">{{ formattedPrice }}</span>
+    </p>
 
+    <div class="flex flex-col gap-y-6 pt-6 text-sm" v-if="authUser">
       <div class="flex flex-col gap-y-6">
         <div class="flex items-center gap-x-2">
           <span class="text-sm">Quantity:</span>
@@ -129,14 +157,17 @@ onMounted(() => {
       Add to cart
     </button>
 
-    <div>
-      <h4 class="py-6 text-sm text-dark-tone-ink">Reviews</h4>
-
-      <div class="review-list flex flex-col gap-y-6">
-        <ReviewCard />
-        <ReviewCard />
-        <ReviewCard />
-      </div>
-    </div>
+    <ReviewComponent :reviewsLength="product.reviews.length" />
   </main>
+
+  <div
+    class="fixed bottom-0 left-0 z-30 w-full bg-bleached-silk px-5 py-3"
+    v-if="product && authUser && !myReview"
+  >
+    <RatingStars :changeRateHandler="changeRate" />
+
+    <div class="relative" v-if="rate">
+      <ReviewInput :onSubmitHandler="sendReview" />
+    </div>
+  </div>
 </template>

@@ -73,4 +73,68 @@ const REGISTER_USER_QUERY = gql`
     }
   }
 `;
-export { BASE_URL, GET_MY_PROFILE_QUERY, LOGIN_QUERY, REGISTER_USER_QUERY };
+const GET_PRODUCT_QUERY = gql`
+  query GetProduct($slug: String!) {
+    getProduct(slug: $slug) {
+      ... on Product {
+        id
+        name
+        slug
+        price
+        image
+        ingredients
+        averageRating
+        reviews {
+          id
+          description
+          rate
+          user {
+            id
+            name
+            avatar
+          }
+          createdAt
+        }
+      }
+    }
+  }
+`;
+const CREATE_REVIEW_QUERY = gql`
+  mutation CreateReview(
+    $productId: Int!
+    $userId: Int!
+    $description: String
+    $rate: Int!
+  ) {
+    createReview(
+      productId: $productId
+      userId: $userId
+      description: $description
+      rate: $rate
+    ) {
+      __typename
+      ... on Review {
+        id
+        description
+        rate
+        user {
+          id
+          name
+          avatar
+        }
+        createdAt
+      }
+      ... on FailCreateReview {
+        message
+      }
+    }
+  }
+`;
+export {
+  BASE_URL,
+  GET_MY_PROFILE_QUERY,
+  GET_PRODUCT_QUERY,
+  LOGIN_QUERY,
+  REGISTER_USER_QUERY,
+  CREATE_REVIEW_QUERY,
+};
