@@ -41,7 +41,7 @@ onUnmounted(() => {
     >
       <div
         class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md"
-        v-if="!loading && product !== null"
+        v-if="product !== null"
       >
         <img
           src="https://picsum.photos/1920/1280.webp"

@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import DetailProductViewHeader from "../components/DetailProductViewHeader.vue";
 import IconLove from "../components/icons/IconLove.vue";
 import IconStar from "../components/icons/IconStar.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 import RatingStars from "../components/RatingStars.vue";
 import ReviewComponent from "../components/ReviewComponent.vue";
 import ReviewInput from "../components/ReviewInput.vue";
@@ -32,6 +33,9 @@ const formattedAverateRating = computed(() =>
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
 );
+const isLiked = computed(() =>
+  product.value.likedBy.includes(authUser.value?.id)
+);
 
 function onInputQuantity() {
   if (this.value.length > this.maxLength) {
@@ -59,8 +63,24 @@ function sendReview(reviewDescription) {
     rateStar: rate.value,
     slug: productSlug,
   });
+}
 
-  productDetailStore.fetchProductDetail(productSlug, true);
+function likeProductHandler() {
+  if (!authUser.value) {
+    const confirmResult = confirm("Login first to like this product");
+
+    if (confirmResult) {
+      window.location.replace("/login");
+    }
+
+    return;
+  }
+
+  if (isLiked.value) {
+    productDetailStore.neutralizeLikeProduct(+product.value.id);
+  } else {
+    productDetailStore.likeProduct(+product.value.id);
+  }
 }
 
 onMounted(() => {
@@ -71,24 +91,14 @@ onMounted(() => {
 <template>
   <DetailProductViewHeader :product="product" :loading="loading" />
 
-  <div
-    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
-    v-if="loading"
-  >
-    <strong class="text-2xl">Loading...</strong>
-  </div>
-
-  <div
-    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
-    v-else-if="product === null"
-  >
-    <strong class="text-2xl">Product Not Found!</strong>
+  <div v-show="loading">
+    <LoadingSpinner />
   </div>
 
   <main
     class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12"
     :class="rate ? 'pb-24' : 'pb-14'"
-    v-else
+    v-if="product !== null"
   >
     <div class="flex items-center justify-between gap-x-3 pb-5">
       <h1 class="text-2xl font-medium text-dark-tone-ink">
@@ -104,10 +114,13 @@ onMounted(() => {
         <button
           class="order-2 cursor-pointer transition duration-300 hover:scale-125 active:scale-100"
           title="Like"
+          @click="likeProductHandler"
         >
-          <IconLove />
+          <IconLove :class="isLiked ? 'fill-blood-moon' : ''" />
         </button>
-        <span class="order-4 font-rubik text-sm">100</span>
+        <span class="order-4 font-rubik text-sm">
+          {{ product.likedBy.length }}
+        </span>
       </div>
     </div>
 
@@ -159,6 +172,13 @@ onMounted(() => {
 
     <ReviewComponent :reviewsLength="product.reviews.length" />
   </main>
+
+  <div
+    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
+    v-else-if="!loading"
+  >
+    <strong class="text-2xl">Product Not Found!</strong>
+  </div>
 
   <div
     class="fixed bottom-0 left-0 z-30 w-full bg-bleached-silk px-5 py-3"

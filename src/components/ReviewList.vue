@@ -13,7 +13,7 @@ defineProps({ reviews: Array });
       :rate="review.rate"
       :name="review.user.name"
       :avatar="review.user.avatar"
-      :createdAt="review.createdAt"
+      :updatedAt="review.updatedAt"
     />
   </div>
 </template>

@@ -7,11 +7,11 @@ const props = defineProps({
   name: String,
   description: String,
   rate: Number,
-  createdAt: String,
+  updatedAt: String,
 });
 
 const formattedDate = computed(() =>
-  new Intl.DateTimeFormat("id-ID").format(new Date(props.createdAt))
+  new Intl.DateTimeFormat("id-ID").format(new Date(props.updatedAt))
 );
 </script>
 

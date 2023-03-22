@@ -18,7 +18,7 @@ const myReview = reviewsStore.getMyReview;
       :avatar="myReview.user.avatar"
       :name="myReview.user.name"
       :description="myReview.description"
-      :createdAt="myReview.createdAt"
+      :updatedAt="myReview.updatedAt"
       :rate="myReview.rate"
     />
 
