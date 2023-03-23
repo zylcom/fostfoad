@@ -45,6 +45,7 @@ onMounted(() => {
           :name="product.node.name"
           :price="product.node.price"
           :slug="product.node.slug"
+          class="p-2"
         />
       </div>
 

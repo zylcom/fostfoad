@@ -4,13 +4,16 @@ import ProductCard from "./ProductCard.vue";
 </script>
 
 <template>
-  <div>
-    <button class="absolute right-1 top-1 z-20">
-      <IconCross />
+  <div class="p-2 shadow-md">
+    <button
+      class="absolute right-4 top-4 z-50 transition duration-300 hover:scale-125"
+      title="Remove item"
+    >
+      <IconCross class="h-5 w-5" />
     </button>
 
     <ProductCard
-      image="/src/assets/images/foods/takiyoki.jpg"
+      image="https://picsum.photos/1920/1280.webp"
       name="Takoyaki"
       :price="20000"
       overlay-bg

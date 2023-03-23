@@ -20,30 +20,35 @@ defineProps({
           image="https://picsum.photos/1920/1280.webp?random=1"
           name="Takoyaki"
           :price="20000"
+          class="p-2"
         />
 
         <ProductCard
           image="https://picsum.photos/1920/1280.webp?random=2"
           name="Sushi Uramaki"
           :price="30000"
+          class="p-2"
         />
 
         <ProductCard
           image="https://picsum.photos/1920/1280.webp?random=3"
           name="Sushi Uzumaki"
           :price="25000"
+          class="p-2"
         />
 
         <ProductCard
           image="https://picsum.photos/1920/1280.webp?random=4"
           name="Sushi Otsusuki"
           :price="25000"
+          class="p-2"
         />
 
         <ProductCard
           image="https://picsum.photos/1920/1280.webp?random=5"
           name="Sushi Akatsuki"
           :price="25000"
+          class="p-2"
         />
       </div>
     </div>

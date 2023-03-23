@@ -46,7 +46,7 @@ onUnmounted(() => {
     class="relative z-20 -translate-y-2 rounded-t-2xl bg-zhen-zhu-bai-pearl"
   >
     <div
-      class="grid auto-rows-fr grid-cols-2 items-center gap-x-6 border-b border-torii-red/50 px-6 pt-6 pb-6 [&>div]:relative"
+      class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 px-3 pt-6 pb-6 [&>div]:relative"
     >
       <CartItem />
 
