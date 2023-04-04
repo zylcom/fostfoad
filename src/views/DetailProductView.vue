@@ -14,13 +14,19 @@ import { formatFloatNumber, formatNumberToIDR } from "../utils";
 const route = useRoute();
 const productSlug = route.params.slug;
 
-const { authUserStore, loadingStore, productDetailStore, reviewsStore } =
-  allStore();
+const {
+  authUserStore,
+  cartStore,
+  loadingStore,
+  productDetailStore,
+  reviewsStore,
+} = allStore();
 
 const authUser = authUserStore.getAuthUser;
 const loading = computed(() => loadingStore.isLoading);
 const product = computed(() => productDetailStore.product);
 const myReview = reviewsStore.getMyReview;
+const myCart = cartStore.getMyCart;
 
 const quantityInputElement = ref(null);
 const quantity = ref(1);
@@ -83,6 +89,10 @@ function likeProductHandler() {
   }
 }
 
+function onAddCartClicked() {
+  cartStore.updateMyCart(+product.value.id, +quantity.value);
+}
+
 onMounted(() => {
   productDetailStore.fetchProductDetail(productSlug);
 });
@@ -91,9 +101,7 @@ onMounted(() => {
 <template>
   <DetailProductViewHeader :product="product" :loading="loading" />
 
-  <div v-show="loading">
-    <LoadingSpinner />
-  </div>
+  <LoadingSpinner />
 
   <main
     class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12"
@@ -165,9 +173,14 @@ onMounted(() => {
           : 'cursor-not-allowed bg-mercury text-gray-500'
       "
       :disabled="quantity > 0 ? false : true"
+      @click="onAddCartClicked"
       v-if="authUser"
     >
-      Add to cart
+      {{
+        myCart.cartItems.some((item) => item.product.id === product.id)
+          ? "Update"
+          : "Add to cart"
+      }}
     </button>
 
     <ReviewComponent :reviewsLength="product.reviews.length" />

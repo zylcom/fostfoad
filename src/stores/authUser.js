@@ -10,9 +10,13 @@ import {
 } from "../config";
 
 export const useAuthUserStore = defineStore("User", () => {
-  const { errorStore, loadingStore } = allStore();
+  const { cartStore, errorStore, loadingStore } = allStore();
   const authUser = ref(null);
   const getAuthUser = computed(() => authUser);
+
+  function setAuthUser(userData) {
+    authUser.value = userData;
+  }
 
   async function preload() {
     errorStore.$reset();
@@ -20,7 +24,8 @@ export const useAuthUserStore = defineStore("User", () => {
     await fetchApiWithToken(GET_MY_PROFILE_QUERY)
       .then((response) => {
         if (response.data.getMyProfile.__typename === "User") {
-          authUser.value = response.data.getMyProfile;
+          setAuthUser(response.data.getMyProfile);
+          cartStore.fetchMyCart();
         } else {
           authUser.value = null;
         }
@@ -40,9 +45,9 @@ export const useAuthUserStore = defineStore("User", () => {
 
     onResult((queryResult) => {
       if (queryResult.data.authenticate.__typename === "UserAuth") {
-        authUser.value = queryResult.data.authenticate.data;
-
+        setAuthUser(queryResult.data.authenticate.data);
         saveAccessToken(queryResult.data.authenticate.token);
+        cartStore.fetchMyCart();
       } else {
         errorStore.setError({ message: "Invalid credentials!" });
       }
@@ -68,8 +73,7 @@ export const useAuthUserStore = defineStore("User", () => {
 
     onDone((mutateResult) => {
       if (mutateResult.data.registerUser.__typename === "UserAuth") {
-        authUser.value = mutateResult.data.registerUser.data;
-
+        setAuthUser(mutateResult.data.registerUser.data);
         saveAccessToken(mutateResult.data.registerUser.token);
       } else {
         switch (mutateResult.data.registerUser.message) {

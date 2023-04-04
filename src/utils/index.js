@@ -1,5 +1,7 @@
 import { BASE_URL, GET_MY_PROFILE_QUERY } from "../config";
 
+let prevScrollpos = window.scrollY;
+
 async function fetchApiWithToken(query, variables) {
   return await fetch(BASE_URL, {
     method: "POST",
@@ -57,8 +59,6 @@ async function checkUserIsLoggedIn() {
 
   return result;
 }
-
-let prevScrollpos = window.scrollY;
 
 function hideElementWhenScrollDown(element) {
   const currentScrollpos = window.scrollY;

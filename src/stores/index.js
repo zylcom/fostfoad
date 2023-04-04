@@ -1,4 +1,5 @@
 import { useAuthUserStore } from "./authUser";
+import { useCartStore } from "./cart";
 import { useCategoryStore } from "./category";
 import { useErrorStore } from "./error";
 import { useLoadingStore } from "./loading";
@@ -17,5 +18,6 @@ export const allStore = () => {
     productDetailStore: useProductDetailStore(),
     reviewsStore: useReviewsStore(),
     tagStore: useTagStore(),
+    cartStore: useCartStore(),
   };
 };

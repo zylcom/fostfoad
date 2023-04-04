@@ -38,6 +38,7 @@ watch([email, password], () => {
         :class="error ? 'border border-red-400' : ''"
         v-model="email"
         placeholder="email@example.com"
+        autocomplete="username"
         autofocus
         required
       />
@@ -53,6 +54,7 @@ watch([email, password], () => {
         :class="error ? 'border border-red-400' : ''"
         v-model="password"
         placeholder="Password"
+        autocomplete="current-password"
         required
       />
     </label>

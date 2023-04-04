@@ -11,8 +11,7 @@ import { clearKeyword } from "../utils";
 
 const route = useRoute();
 const router = useRouter();
-const { authUserStore, categoryStore, tagStore } = allStore();
-const authUser = authUserStore.getAuthUser;
+const { categoryStore, tagStore } = allStore();
 const currentCategory = computed(
   () => route.query.category || categoryStore.category
 );
@@ -62,7 +61,7 @@ watch(currentCategory, () => {
     <div class="relative flex justify-center">
       <h1 class="pt-10 text-center text-2xl font-medium">Menu</h1>
 
-      <CartButton class="absolute right-6 top-10" v-if="authUser" />
+      <CartButton class="absolute -right-48 top-10" />
     </div>
 
     <div

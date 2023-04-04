@@ -2,13 +2,10 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import BackButton from "./BackButton.vue";
 import CartButton from "./CartButton.vue";
-import { useAuthUserStore } from "../stores/authUser";
 import { hideElementWhenScrollDown } from "../utils";
 
 const props = defineProps({ product: Object, loading: Boolean });
 
-const authUserStore = useAuthUserStore();
-const authUser = authUserStore.getAuthUser;
 const navBar = ref(null);
 const product = computed(() => props.product);
 
@@ -33,7 +30,7 @@ onUnmounted(() => {
     >
       <BackButton />
 
-      <CartButton v-if="authUser" />
+      <CartButton />
     </nav>
 
     <div

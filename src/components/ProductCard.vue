@@ -6,6 +6,7 @@ const props = defineProps({
   image: String,
   name: String,
   price: Number,
+  quantity: Number,
   slug: String,
   overlayBg: Boolean,
 });
@@ -32,7 +33,7 @@ const formattedPrice = computed(() => formatNumberToIDR(props.price));
     </div>
 
     <div>
-      <h4 class="text-xs">{{ name }}</h4>
+      <h4 class="text-xs">{{ name }} {{ quantity ? `*${quantity}` : "" }}</h4>
       <span class="text-xs">{{ formattedPrice }}</span>
     </div>
   </RouterLink>

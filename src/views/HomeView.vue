@@ -11,8 +11,7 @@ import { hideElementWhenScrollDown } from "../utils";
 
 const searchBarWrapper = ref(null);
 const route = useRoute();
-const { productsStore, authUserStore } = allStore();
-const authUser = authUserStore.getAuthUser;
+const { productsStore } = allStore();
 const keyword = ref(route.query["product-name"] || "");
 const products = computed(() => productsStore.products);
 const endCursor = computed(() => productsStore.endCursor);
@@ -42,12 +41,12 @@ onUnmounted(() => {
 <template>
   <header class="inline">
     <nav
-      class="fixed top-0 z-20 flex w-full gap-x-2 bg-bleached-silk px-6 pt-3 pb-2 shadow transition-all duration-500"
+      class="fixed top-0 z-20 flex w-full items-center gap-x-2 bg-bleached-silk px-6 pt-3 pb-2 shadow transition-all duration-500"
       ref="searchBarWrapper"
     >
       <SearchBar v-model:keyword="keyword" redirect-to="result" />
 
-      <CartButton v-if="authUser" />
+      <CartButton />
     </nav>
 
     <BannerHeader />

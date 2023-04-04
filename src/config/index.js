@@ -2,15 +2,9 @@ import gql from "graphql-tag";
 
 const BASE_URL = "http://localhost:4000";
 const CREATE_REVIEW_QUERY = gql`
-  mutation CreateReview(
-    $productId: Int!
-    $userId: Int!
-    $description: String
-    $rate: Int!
-  ) {
+  mutation CreateReview($productId: Int!, $description: String, $rate: Int!) {
     createReview(
       productId: $productId
-      userId: $userId
       description: $description
       rate: $rate
     ) {
@@ -162,13 +156,88 @@ const REGISTER_USER_QUERY = gql`
     }
   }
 `;
+const GET_MY_CART_QUERY = gql`
+  query GetMyCart {
+    getMyCart {
+      __typename
+      ... on Cart {
+        id
+        totalPrice
+        cartItems {
+          id
+          quantity
+          product {
+            id
+            name
+            slug
+            price
+          }
+        }
+      }
+      ... on CartError {
+        message
+      }
+    }
+  }
+`;
+const UPDATE_MY_CART_QUERY = gql`
+  mutation UpdateMyCart($productId: Int!, $quantity: Int!) {
+    updateMyCart(productId: $productId, quantity: $quantity) {
+      __typename
+      ... on Cart {
+        id
+        totalPrice
+        cartItems {
+          id
+          quantity
+          product {
+            id
+            name
+            slug
+            price
+          }
+        }
+      }
+      ... on CartError {
+        message
+      }
+    }
+  }
+`;
+const DELETE_CART_ITEM_BY_ID_QUERY = gql`
+  mutation DeleteCartItemById($cartItemId: Int!) {
+    deleteCartItemById(cartItemId: $cartItemId) {
+      __typename
+      ... on Cart {
+        id
+        totalPrice
+        cartItems {
+          id
+          quantity
+          product {
+            id
+            name
+            slug
+            price
+          }
+        }
+      }
+      ... on CartError {
+        message
+      }
+    }
+  }
+`;
 export {
   BASE_URL,
   CREATE_REVIEW_QUERY,
+  DELETE_CART_ITEM_BY_ID_QUERY,
+  GET_MY_CART_QUERY,
   GET_MY_PROFILE_QUERY,
   GET_PRODUCT_QUERY,
   LIKE_PRODUCT_QUERY,
   LOGIN_QUERY,
   NEUTRALIZE_LIKE_PRODUCT_QUERY,
   REGISTER_USER_QUERY,
+  UPDATE_MY_CART_QUERY,
 };
