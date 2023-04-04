@@ -58,10 +58,10 @@ watch(currentCategory, () => {
 
 <template>
   <header class="inline bg-bleached-silk pt-9">
-    <div class="relative flex justify-center">
-      <h1 class="pt-10 text-center text-2xl font-medium">Menu</h1>
+    <div class="relative flex justify-center pt-10">
+      <h1 class="ml-10 w-full text-center text-2xl font-medium">Menu</h1>
 
-      <CartButton class="absolute -right-48 top-10" />
+      <CartButton class="mr-6" />
     </div>
 
     <div
