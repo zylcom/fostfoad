@@ -87,7 +87,7 @@ watch(currentCategory, () => {
           :class="
             currentCategory === category.slug
               ? 'bg-torii-red text-bleached-silk'
-              : ''
+              : 'bg-charolais-cattle'
           "
           @click="changeCategoryHandler(category.slug)"
         />
