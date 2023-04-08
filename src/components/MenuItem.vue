@@ -1,16 +1,23 @@
 <script setup>
-import IconPlus from "./icons/IconPlus.vue";
 import { computed } from "vue";
-import { useAuthUserStore } from "../stores/authUser";
+import MenuItemAction from "./MenuItemAction.vue";
+import { allStore } from "../stores";
+import { getCartItem } from "../utils";
 
 const props = defineProps({
+  productId: Number,
   productName: String,
   price: Number,
   slug: String,
 });
 
-const authUserStore = useAuthUserStore();
+const { authUserStore, cartStore } = allStore();
 const authUser = authUserStore.getAuthUser;
+const myCart = cartStore.getMyCart;
+const productId = computed(() => props.productId);
+const cartItem = computed(() =>
+  getCartItem(myCart.value.cartItems, +productId.value)
+);
 
 const formatPriceToIDR = computed(() => {
   return new Intl.NumberFormat("id-ID", {
@@ -28,14 +35,14 @@ const formatPriceToIDR = computed(() => {
       <h4 class="text-sm text-dark-tone-ink">
         {{ productName }}
       </h4>
+
       <span class="text-xs text-gray-500">{{ formatPriceToIDR }}</span>
     </RouterLink>
 
-    <button
-      class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mercury"
+    <MenuItemAction
+      :cartItem="authUser ? cartItem : {}"
+      :productId="productId"
       v-if="authUser"
-    >
-      <IconPlus color="#de3905" class="h-3 w-3" />
-    </button>
+    />
   </div>
 </template>

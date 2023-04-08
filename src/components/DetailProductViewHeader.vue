@@ -4,7 +4,7 @@ import BackButton from "./BackButton.vue";
 import CartButton from "./CartButton.vue";
 import { hideElementWhenScrollDown } from "../utils";
 
-const props = defineProps({ product: Object, loading: Boolean });
+const props = defineProps({ product: Object });
 
 const navBar = ref(null);
 const product = computed(() => props.product);

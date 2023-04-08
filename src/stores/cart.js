@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@vue/apollo-composable";
-import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { defineStore } from "pinia";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import {
   DELETE_CART_ITEM_BY_ID_QUERY,
   GET_MY_CART_QUERY,

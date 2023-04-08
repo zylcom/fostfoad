@@ -75,6 +75,16 @@ function hideElementWhenScrollDown(element) {
   prevScrollpos = currentScrollpos;
 }
 
+function isNumberKey(event) {
+  const charCode = event.which ? event.which : event.keyCode;
+
+  return charCode > 31 && (charCode < 48 || charCode > 57) ? false : true;
+}
+
+function getCartItem(cartItems, productId) {
+  return cartItems.find((item) => +item.product.id === productId);
+}
+
 export {
   checkUserIsLoggedIn,
   clearKeyword,
@@ -82,7 +92,9 @@ export {
   formatFloatNumber,
   formatNumberToIDR,
   getAccessToken,
+  getCartItem,
   hideElementWhenScrollDown,
+  isNumberKey,
   removeAccessToken,
   saveAccessToken,
 };
