@@ -11,7 +11,7 @@ const cartStore = useCartStore();
 const cartItem = computed(() => props.cartItem);
 const productId = computed(() => props.productId);
 
-const quantity = ref(cartItem.value?.quantity || 1);
+const quantity = ref(cartItem.value.quantity || 1);
 
 function onAddCartClicked() {
   cartStore.updateMyCart(productId.value, quantity.value);
@@ -27,9 +27,9 @@ function onAddCartClicked() {
     <button
       type="submit"
       class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mercury"
-      :title="cartItem ? 'Update' : 'Add to cart'"
+      :title="cartItem.id ? 'Update' : 'Add to cart'"
     >
-      <IconPlus color="#de3905" class="h-3 w-3" v-if="!cartItem" />
+      <IconPlus color="#de3905" class="h-3 w-3" v-if="!cartItem.id" />
 
       <IconPencil class="h-3 w-3" v-else />
     </button>

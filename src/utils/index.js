@@ -82,7 +82,13 @@ function isNumberKey(event) {
 }
 
 function getCartItem(cartItems, productId) {
-  return cartItems.find((item) => +item.product.id === productId);
+  if (!cartItems) {
+    return {};
+  }
+
+  const cartItem = cartItems.find((item) => +item.product.id === productId);
+
+  return cartItem || {};
 }
 
 export {

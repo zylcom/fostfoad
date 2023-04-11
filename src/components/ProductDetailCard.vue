@@ -4,19 +4,17 @@ import AddToCartButton from "./AddToCartButton.vue";
 import IconLove from "./icons/IconLove.vue";
 import IconStar from "./icons/IconStar.vue";
 import QuantityInput from "./QuantityInput.vue";
-import ReviewComponent from "./ReviewComponent.vue";
 import { formatFloatNumber, formatNumberToIDR } from "../utils";
+import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({
-  authUser: Object,
   cartItem: Object,
   product: Object,
-  rate: Number,
   isLiked: Boolean,
   likeProductHandler: Function,
 });
 
-const authUser = computed(() => props.authUser);
+const authUserStore = useAuthUserStore();
 const formattedPrice = computed(() => formatNumberToIDR(props.product.price));
 const product = computed(() => props.product);
 const cartItem = computed(() => props.cartItem);
@@ -24,16 +22,15 @@ const formattedAverageRating = computed(() =>
   formatFloatNumber(product.value.averageRating)
 );
 
-const quantity = ref(cartItem.value?.quantity || 1);
+const quantity = ref(cartItem.value.quantity || 1);
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
 );
 </script>
 
 <template>
-  <main
-    class="relative z-20 -translate-y-5 rounded-t-2xl bg-zhen-zhu-bai-pearl px-6 pt-12"
-    :class="rate ? 'pb-24' : 'pb-14'"
+  <div
+    class="relative z-10 mt-48 rounded-t-2xl bg-zhen-zhu-bai-pearl py-4 px-5"
   >
     <div class="flex items-center justify-between gap-x-3 pb-5">
       <h1 class="text-2xl font-medium text-dark-tone-ink">
@@ -70,7 +67,10 @@ const total = computed(() =>
       Price: <span class="font-normal">{{ formattedPrice }}</span>
     </p>
 
-    <div class="flex flex-col gap-y-6 pt-6 text-sm" v-if="authUser">
+    <div
+      class="flex flex-col gap-y-6 pt-6 text-sm"
+      v-if="authUserStore.authUser"
+    >
       <div class="flex flex-col gap-y-6">
         <div class="flex items-center gap-x-2">
           <span class="text-sm">Quantity:</span>
@@ -85,12 +85,10 @@ const total = computed(() =>
     </div>
 
     <AddToCartButton
-      v-if="authUser"
+      v-if="authUserStore.authUser"
       :quantity="quantity"
       :productId="+product.id"
       :cartItem="cartItem"
     />
-
-    <ReviewComponent :reviewsLength="product.reviews.length" />
-  </main>
+  </div>
 </template>

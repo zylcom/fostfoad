@@ -2,47 +2,37 @@
 import { computed } from "vue";
 import MenuItemAction from "./MenuItemAction.vue";
 import { allStore } from "../stores";
-import { getCartItem } from "../utils";
+import { formatNumberToIDR, getCartItem } from "../utils";
 
 const props = defineProps({
-  productId: Number,
-  productName: String,
-  price: Number,
-  slug: String,
+  product: Object,
 });
 
 const { authUserStore, cartStore } = allStore();
-const authUser = authUserStore.getAuthUser;
 const myCart = cartStore.getMyCart;
-const productId = computed(() => props.productId);
+const product = computed(() => props.product.node);
 const cartItem = computed(() =>
-  getCartItem(myCart.value.cartItems, +productId.value)
+  getCartItem(myCart.value.cartItems, +product.value.id)
 );
-
-const formatPriceToIDR = computed(() => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  }).format(props.price);
-});
+const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
 </script>
 
 <template>
   <div
     class="flex w-full items-center justify-between border-b-2 border-charolais-cattle px-6 py-1 hover:bg-bleached-silk"
   >
-    <RouterLink :to="`/menu/${slug}`" class="w-full">
+    <RouterLink :to="`/menu/${product.slug}`" class="w-full">
       <h4 class="text-sm text-dark-tone-ink">
-        {{ productName }}
+        {{ product.name }}
       </h4>
 
-      <span class="text-xs text-gray-500">{{ formatPriceToIDR }}</span>
+      <span class="text-xs text-gray-500">{{ formattedPrice }}</span>
     </RouterLink>
 
     <MenuItemAction
-      :cartItem="authUser ? cartItem : {}"
-      :productId="productId"
-      v-if="authUser"
+      :cartItem="cartItem"
+      :productId="+product.id"
+      v-if="authUserStore.authUser"
     />
   </div>
 </template>

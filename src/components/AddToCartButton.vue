@@ -29,6 +29,6 @@ function addToCartHandler() {
     :disabled="quantity > 0 ? false : true"
     @click="addToCartHandler"
   >
-    {{ cartItem?.id ? "Update" : "Add to cart" }}
+    {{ cartItem.id ? "Update" : "Add to cart" }}
   </button>
 </template>

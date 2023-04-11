@@ -1,35 +1,38 @@
 <script setup>
-import ReviewCard from "./ReviewCard.vue";
+import MyReviewCard from "./MyReviewCard.vue";
 import ReviewList from "./ReviewList.vue";
-import { useReviewsStore } from "../stores/reviews";
+import ReviewInputForm from "./ReviewInputForm.vue";
+import { allStore } from "../stores";
 
-defineProps({ reviewsLength: Number });
+defineProps({
+  reviewsLength: Number,
+});
 
-const reviewsStore = useReviewsStore();
-const reviews = reviewsStore.getReviews;
-const myReview = reviewsStore.getMyReview;
+const { authUserStore, reviewsStore } = allStore();
+
+function createReviewHandler({ description, rateStar, productId, slug }) {
+  reviewsStore.postReview({
+    productId,
+    description,
+    rateStar,
+    slug,
+  });
+}
 </script>
 
 <template>
-  <div v-if="myReview">
-    <h4 class="pb-3 pt-8 font-bold text-dark-tone-ink">MyReview</h4>
+  <div class="relative z-10 bg-zhen-zhu-bai-pearl">
+    <MyReviewCard v-if="reviewsStore.myReview" />
 
-    <ReviewCard
-      :avatar="myReview.user.avatar"
-      :name="myReview.user.name"
-      :description="myReview.description"
-      :updatedAt="myReview.updatedAt"
-      :rate="myReview.rate"
+    <h4 class="pb-3 pl-5 pt-8 font-bold text-dark-tone-ink">
+      All Reviews ({{ reviewsLength }})
+    </h4>
+
+    <ReviewList :reviews="reviewsStore.reviews" />
+
+    <ReviewInputForm
+      :sendReview="createReviewHandler"
+      v-if="authUserStore.authUser && !reviewsStore.myReview"
     />
-
-    <button class="pt-2 text-xs font-medium text-heirloom-hydrangea">
-      Edit My review
-    </button>
   </div>
-
-  <h4 class="pb-3 pt-8 font-bold text-dark-tone-ink">
-    All Reviews ({{ reviewsLength }})
-  </h4>
-
-  <ReviewList :reviews="reviews" />
 </template>

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { useLoadingStore } from "./loading";
 import {
@@ -15,6 +15,7 @@ export const useProductDetailStore = defineStore("Product Detail", () => {
   const reviewsStore = useReviewsStore();
   const product = ref(null);
   const productSlug = ref(null);
+  const getProduct = computed(() => product);
 
   function fetchProductDetail(slug) {
     loadingStore.showLoading();
@@ -137,5 +138,11 @@ export const useProductDetailStore = defineStore("Product Detail", () => {
     });
   }
 
-  return { product, fetchProductDetail, likeProduct, neutralizeLikeProduct };
+  return {
+    product,
+    getProduct,
+    fetchProductDetail,
+    likeProduct,
+    neutralizeLikeProduct,
+  };
 });

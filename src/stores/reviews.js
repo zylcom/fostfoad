@@ -1,10 +1,14 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useMutation } from "@vue/apollo-composable";
-import { CREATE_REVIEW_QUERY, GET_PRODUCT_QUERY } from "../config";
+import apolloClient from "../plugins/apollo";
+import {
+  CREATE_REVIEW_QUERY,
+  GET_PRODUCT_QUERY,
+  UPDATE_REVIEW_QUERY,
+} from "../config";
 import { useAuthUserStore } from "./authUser";
 import { useLoadingStore } from "./loading";
-import apolloClient from "../plugins/apollo";
 
 export const useReviewsStore = defineStore("Reviews", () => {
   const authUserStore = useAuthUserStore();
@@ -34,12 +38,12 @@ export const useReviewsStore = defineStore("Reviews", () => {
     });
   }
 
-  function postReview({ productId, userId, description, rateStar, slug }) {
+  function postReview({ productId, description, rateStar, slug }) {
     loadingStore.showLoading();
 
     const { mutate, onDone, onError } = useMutation(CREATE_REVIEW_QUERY);
 
-    mutate({ productId, userId, description, rate: rateStar });
+    mutate({ productId, description, rate: rateStar });
 
     onDone((mutateResult) => {
       if (mutateResult.data.createReview.__typename === "Review") {
@@ -85,5 +89,64 @@ export const useReviewsStore = defineStore("Reviews", () => {
     });
   }
 
-  return { myReview, getMyReview, getReviews, setReviews, postReview };
+  function updateReview({ productId, description, rateStar, slug }) {
+    loadingStore.showLoading();
+
+    const { mutate, onDone, onError } = useMutation(UPDATE_REVIEW_QUERY);
+
+    mutate({ productId, description, rate: rateStar });
+
+    onDone((mutateResult) => {
+      if (mutateResult.data.updateReview.__typename === "Review") {
+        myReview.value = mutateResult.data.updateReview;
+
+        apolloClient.cache.updateQuery(
+          {
+            query: GET_PRODUCT_QUERY,
+            variables: { slug },
+          },
+          (data) => {
+            const newData = {
+              getProduct: {
+                ...data.getProduct,
+                reviews: [...data.getProduct.reviews, { ...myReview.value }],
+              },
+            };
+
+            const newAverageRating =
+              newData.getProduct.reviews.reduce(
+                (accumulator, review) => accumulator + review.rate,
+                0
+              ) / newData.getProduct.reviews.length;
+
+            newData.getProduct.averageRating = newAverageRating;
+
+            return newData;
+          }
+        );
+      } else {
+        alert(mutateResult.data.updateReview.message);
+      }
+
+      loadingStore.hideLoading();
+    });
+
+    onError(({ networkError }) => {
+      if (networkError) {
+        alert(networkError.message);
+      }
+
+      loadingStore.hideLoading();
+    });
+  }
+
+  return {
+    reviews,
+    myReview,
+    getMyReview,
+    getReviews,
+    setReviews,
+    postReview,
+    updateReview,
+  };
 });

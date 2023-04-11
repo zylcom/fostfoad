@@ -26,6 +26,31 @@ const CREATE_REVIEW_QUERY = gql`
     }
   }
 `;
+const UPDATE_REVIEW_QUERY = gql`
+  mutation UpdateReview($productId: Int!, $description: String, $rate: Int!) {
+    updateReview(
+      productId: $productId
+      description: $description
+      rate: $rate
+    ) {
+      __typename
+      ... on Review {
+        id
+        description
+        rate
+        user {
+          id
+          name
+          avatar
+        }
+        updatedAt
+      }
+      ... on FailUpdateReview {
+        message
+      }
+    }
+  }
+`;
 const GET_MY_PROFILE_QUERY = `
   query GetMyProfile {
     getMyProfile {
@@ -240,4 +265,5 @@ export {
   NEUTRALIZE_LIKE_PRODUCT_QUERY,
   REGISTER_USER_QUERY,
   UPDATE_MY_CART_QUERY,
+  UPDATE_REVIEW_QUERY,
 };

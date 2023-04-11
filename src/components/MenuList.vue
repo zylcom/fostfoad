@@ -72,10 +72,7 @@ watch(searchKeyword, (newValue) => {
       <MenuItem
         v-for="product in products"
         :key="product.node.id"
-        :productId="+product.node.id"
-        :productName="product.node.name"
-        :price="product.node.price"
-        :slug="product.node.slug"
+        :product="product"
       />
     </div>
 
