@@ -17,6 +17,7 @@ defineProps({
         class="grid translate-y-5 rotate-90 grid-cols-[repeat(5,minmax(200px,1fr))] grid-rows-1 gap-x-2"
       >
         <ProductCard
+          :product="{ likedBy: [1, 2, 3], averageRating: 5 }"
           image="https://picsum.photos/1920/1280.webp?random=1"
           name="Takoyaki"
           :price="20000"
@@ -24,6 +25,7 @@ defineProps({
         />
 
         <ProductCard
+          :product="{ likedBy: [1, 2, 3], averageRating: 5 }"
           image="https://picsum.photos/1920/1280.webp?random=2"
           name="Sushi Uramaki"
           :price="30000"
@@ -31,6 +33,7 @@ defineProps({
         />
 
         <ProductCard
+          :product="{ likedBy: [1, 2, 3], averageRating: 5 }"
           image="https://picsum.photos/1920/1280.webp?random=3"
           name="Sushi Uzumaki"
           :price="25000"
@@ -38,6 +41,7 @@ defineProps({
         />
 
         <ProductCard
+          :product="{ likedBy: [1, 2, 3], averageRating: 5 }"
           image="https://picsum.photos/1920/1280.webp?random=4"
           name="Sushi Otsusuki"
           :price="25000"
@@ -45,6 +49,7 @@ defineProps({
         />
 
         <ProductCard
+          :product="{ likedBy: [1, 2, 3], averageRating: 5 }"
           image="https://picsum.photos/1920/1280.webp?random=5"
           name="Sushi Akatsuki"
           :price="25000"

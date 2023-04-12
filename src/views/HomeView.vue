@@ -44,7 +44,7 @@ onUnmounted(() => {
       class="fixed top-0 z-20 flex w-full items-center gap-x-2 bg-bleached-silk px-6 pt-3 pb-2 shadow transition-all duration-500"
       ref="searchBarWrapper"
     >
-      <SearchBar v-model:keyword="keyword" redirect-to="result" />
+      <SearchBar v-model:keyword="keyword" redirectTo="result" />
 
       <CartButton />
     </nav>
@@ -62,7 +62,7 @@ onUnmounted(() => {
       class="[&>h1]:mt-36"
       :keyword="keyword"
       :products="products"
-      :load-more="loadMore"
+      :loadMore="loadMore"
     />
   </main>
 </template>

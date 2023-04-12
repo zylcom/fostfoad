@@ -35,6 +35,8 @@ export const useProductsStore = defineStore("Products", () => {
               name
               slug
               price
+              averageRating
+              likedBy
             }
             cursor
           }

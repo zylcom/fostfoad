@@ -25,7 +25,7 @@ function formatNumberToIDR(number) {
 }
 
 function formatFloatNumber(number) {
-  return number ? parseFloat(number.toFixed(1)) : "";
+  return number ? parseFloat(number.toFixed(1)) : 0;
 }
 
 function saveAccessToken(token) {
@@ -91,11 +91,24 @@ function getCartItem(cartItems, productId) {
   return cartItem || {};
 }
 
+function formatNumber(number) {
+  if (number >= 1000) {
+    return (number / 1000).toFixed(1) + "K";
+  } else if (number >= 1000000) {
+    return (number / 1000000).toFixed(1) + "M";
+  } else if (number >= 1000000000) {
+    return (number / 1000000000).toFixed(1) + "B";
+  }
+
+  return number;
+}
+
 export {
   checkUserIsLoggedIn,
   clearKeyword,
   fetchApiWithToken,
   formatFloatNumber,
+  formatNumber,
   formatNumberToIDR,
   getAccessToken,
   getCartItem,

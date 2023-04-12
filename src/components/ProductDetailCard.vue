@@ -4,7 +4,7 @@ import AddToCartButton from "./AddToCartButton.vue";
 import IconLove from "./icons/IconLove.vue";
 import IconStar from "./icons/IconStar.vue";
 import QuantityInput from "./QuantityInput.vue";
-import { formatFloatNumber, formatNumberToIDR } from "../utils";
+import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
 import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({
@@ -53,7 +53,7 @@ const total = computed(() =>
         </button>
 
         <span class="order-4 font-rubik text-sm">
-          {{ product.likedBy.length }}
+          {{ formatNumber(product.likedBy.length) }}
         </span>
       </div>
     </div>

@@ -15,7 +15,6 @@ const target = ref(null);
 const observer = ref(null);
 const products = computed(() => props.products);
 const error = computed(() => productsStore.hasError);
-const loading = computed(() => loadingStore.isLoading);
 const hasNextPage = computed(() => productsStore.hasNextPage);
 
 onMounted(() => {
@@ -41,18 +40,16 @@ onMounted(() => {
         <ProductCard
           v-for="product in products"
           :key="product.node.id"
-          :image="`https://picsum.photos/1920/1280.webp?random=${product.node.id}`"
-          :name="product.node.name"
-          :price="product.node.price"
-          :slug="product.node.slug"
+          :product="product.node"
           class="p-2"
         />
       </div>
 
       <div class="pt-5 pb-16 text-center" ref="target">
-        <span v-if="loading">Loading...</span>
-        <span v-else-if="products.length < 1"> Products not found! </span>
+        <span v-if="loadingStore.isLoading">Loading...</span>
+        <span v-else-if="products.length < 1">Products not found!</span>
         <span v-else-if="!hasNextPage">That's a wrap!</span>
+
         <button
           v-else-if="!error"
           class="mt-3 cursor-pointer rounded bg-seljuk-blue/50 px-5 py-1"

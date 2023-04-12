@@ -1,8 +1,11 @@
 <script setup>
 import { computed } from "vue";
-import { formatNumberToIDR } from "../utils";
+import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
+import IconStar from "./icons/IconStar.vue";
+import IconLove from "./icons/IconLove.vue";
 
 const props = defineProps({
+  product: Object,
   image: String,
   name: String,
   price: Number,
@@ -11,11 +14,14 @@ const props = defineProps({
   overlayBg: Boolean,
 });
 
-const formattedPrice = computed(() => formatNumberToIDR(props.price));
+const formattedPrice = computed(() => formatNumberToIDR(props.product.price));
+const formattedAverageRating = computed(() =>
+  formatFloatNumber(props.product.averageRating)
+);
 </script>
 
 <template>
-  <RouterLink :to="`/menu/${slug}`" class="cursor-pointer shadow-md">
+  <RouterLink :to="`/menu/${product.slug}`" class="cursor-pointer shadow-md">
     <div
       :class="{
         'relative after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-[\'\']':
@@ -24,17 +30,43 @@ const formattedPrice = computed(() => formatNumberToIDR(props.price));
     >
       <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
         <img
-          :src="image"
-          :alt="name"
+          :src="`https://picsum.photos/1920/1280.webp?random=${product.id}`"
+          :alt="product.name"
           class="absolute top-0 left-0 block max-h-[1280px] w-full object-cover object-center"
           loading="lazy"
         />
       </div>
     </div>
 
-    <div>
-      <h4 class="text-xs">{{ name }} {{ quantity ? `*${quantity}` : "" }}</h4>
-      <span class="text-xs">{{ formattedPrice }}</span>
+    <div class="grid grid-cols-3 items-center pt-2">
+      <div class="col-span-2">
+        <h4 class="text-xs">
+          {{ product.name }}
+          {{ product.quantity ? `*${product.quantity}` : "" }}
+        </h4>
+
+        <span class="text-xs">{{ formattedPrice }}</span>
+      </div>
+
+      <div
+        class="grid cursor-default grid-cols-2 justify-items-center gap-x-2 text-center"
+      >
+        <div title="Rating Stars">
+          <IconStar class="mx-auto h-5 fill-spandex-green" />
+
+          <span class="font-rubik text-sm font-medium">
+            {{ formattedAverageRating }}
+          </span>
+        </div>
+
+        <div title="Likes">
+          <IconLove class="mx-auto w-4 fill-blood-moon" />
+
+          <span class="font-rubik text-sm">
+            {{ formatNumber(product.likedBy.length) }}
+          </span>
+        </div>
+      </div>
     </div>
   </RouterLink>
 </template>
