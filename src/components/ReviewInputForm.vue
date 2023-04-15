@@ -9,11 +9,11 @@ const props = defineProps({ myReview: Object, sendReview: Function });
 const { productDetailStore } = allStore();
 const myReview = computed(() => props.myReview);
 const product = productDetailStore.getProduct;
-const rate = ref(myReview.value?.rate || 0);
+const rating = ref(myReview.value?.rating || 0);
 const reviewDescription = ref(myReview.value?.description || "");
 
 function changeRate(rateStars) {
-  rate.value = rateStars;
+  rating.value = rateStars;
 }
 </script>
 
@@ -23,15 +23,15 @@ function changeRate(rateStars) {
     @submit.prevent="
       sendReview({
         description: reviewDescription,
-        rateStar: rate,
+        ratingStar: rating,
         productId: +product.id,
         slug: product.slug,
       })
     "
   >
-    <RatingStars :currentRate="rate" :changeRateHandler="changeRate" />
+    <RatingStars :currentRate="rating" :changeRateHandler="changeRate" />
 
-    <div class="relative" v-if="rate">
+    <div class="relative" v-if="rating">
       <ReviewDescriptionInput v-model:reviewDescription="reviewDescription" />
     </div>
   </form>

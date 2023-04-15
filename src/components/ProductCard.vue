@@ -1,22 +1,24 @@
 <script setup>
 import { computed } from "vue";
 import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
-import IconStar from "./icons/IconStar.vue";
 import IconLove from "./icons/IconLove.vue";
+import IconStar from "./icons/IconStar.vue";
 
 const props = defineProps({
   product: Object,
-  image: String,
-  name: String,
-  price: Number,
   quantity: Number,
-  slug: String,
   overlayBg: Boolean,
+  showLikesCountAndAverageRating: Boolean,
 });
 
-const formattedPrice = computed(() => formatNumberToIDR(props.product.price));
+const formattedPrice = computed(() =>
+  formatNumberToIDR(props.product.price * (props.quantity || 1))
+);
 const formattedAverageRating = computed(() =>
   formatFloatNumber(props.product.averageRating)
+);
+const likesCount = computed(
+  () => props.product.likedBy?.length || props.product.likesCount || 0
 );
 </script>
 
@@ -42,7 +44,7 @@ const formattedAverageRating = computed(() =>
       <div class="col-span-2">
         <h4 class="text-xs">
           {{ product.name }}
-          {{ product.quantity ? `*${product.quantity}` : "" }}
+          {{ quantity ? `*${quantity}` : "" }}
         </h4>
 
         <span class="text-xs">{{ formattedPrice }}</span>
@@ -50,6 +52,7 @@ const formattedAverageRating = computed(() =>
 
       <div
         class="grid cursor-default grid-cols-2 justify-items-center gap-x-2 text-center"
+        v-if="showLikesCountAndAverageRating"
       >
         <div title="Rating Stars">
           <IconStar class="mx-auto h-5 fill-spandex-green" />
@@ -63,7 +66,7 @@ const formattedAverageRating = computed(() =>
           <IconLove class="mx-auto w-4 fill-blood-moon" />
 
           <span class="font-rubik text-sm">
-            {{ formatNumber(product.likedBy.length) }}
+            {{ formatNumber(likesCount) }}
           </span>
         </div>
       </div>

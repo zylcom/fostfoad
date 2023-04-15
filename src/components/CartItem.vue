@@ -28,13 +28,6 @@ function removeItemHandler() {
       <IconCross class="h-5 w-5" />
     </button>
 
-    <ProductCard
-      :image="`https://picsum.photos/1920/1280.webp?random=${product.id}`"
-      :name="product.name"
-      :price="product.price * quantity"
-      :slug="product.slug"
-      :quantity="quantity"
-      overlay-bg
-    />
+    <ProductCard :product="product" :quantity="quantity" overlay-bg />
   </div>
 </template>

@@ -45,6 +45,9 @@ export const useProductsStore = defineStore("Products", () => {
             hasNextPage
           }
         }
+        ... on ProductError {
+          message
+        }
       }
     }
   `;
@@ -65,7 +68,7 @@ export const useProductsStore = defineStore("Products", () => {
 
     onResult((queryResult) => {
       products.value =
-        queryResult.data.getFilteredProducts.__typename === "ProductNotFound"
+        queryResult.data.getFilteredProducts.__typename === "ProductError"
           ? []
           : queryResult.data.getFilteredProducts.edges;
       hasNextPage.value =
@@ -101,7 +104,7 @@ export const useProductsStore = defineStore("Products", () => {
     });
 
     onResult((queryResult) => {
-      queryResult.data.getFilteredProducts.__typename !== "ProductNotFound"
+      queryResult.data.getFilteredProducts.__typename !== "ProductError"
         ? (products.value = [
             ...previousData,
             ...queryResult.data.getFilteredProducts.edges,

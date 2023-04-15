@@ -2,17 +2,17 @@ import gql from "graphql-tag";
 
 const BASE_URL = "http://localhost:4000";
 const CREATE_REVIEW_QUERY = gql`
-  mutation CreateReview($productId: Int!, $description: String, $rate: Int!) {
+  mutation CreateReview($productId: Int!, $description: String, $rating: Int!) {
     createReview(
       productId: $productId
       description: $description
-      rate: $rate
+      rating: $rating
     ) {
       __typename
       ... on Review {
         id
         description
-        rate
+        rating
         user {
           id
           name
@@ -27,17 +27,17 @@ const CREATE_REVIEW_QUERY = gql`
   }
 `;
 const UPDATE_REVIEW_QUERY = gql`
-  mutation UpdateReview($productId: Int!, $description: String, $rate: Int!) {
+  mutation UpdateReview($productId: Int!, $description: String, $rating: Int!) {
     updateReview(
       productId: $productId
       description: $description
-      rate: $rate
+      rating: $rating
     ) {
       __typename
       ... on Review {
         id
         description
-        rate
+        rating
         user {
           id
           name
@@ -69,6 +69,26 @@ const GET_MY_PROFILE_QUERY = `
     }
   }
 `;
+const GET_BEST_RATED_PRODUCTS_QUERY = gql`
+  query GetBestRatedProducts($category: String) {
+    getBestRatedProducts(category: $category) {
+      __typename
+      ... on BestRatedProductList {
+        products {
+          id
+          name
+          slug
+          price
+          averageRating
+          likesCount
+        }
+      }
+      ... on ProductError {
+        message
+      }
+    }
+  }
+`;
 const GET_PRODUCT_QUERY = gql`
   query GetProduct($slug: String!) {
     getProduct(slug: $slug) {
@@ -84,7 +104,7 @@ const GET_PRODUCT_QUERY = gql`
         reviews {
           id
           description
-          rate
+          rating
           user {
             id
             name
@@ -259,6 +279,7 @@ export {
   DELETE_CART_ITEM_BY_ID_QUERY,
   GET_MY_CART_QUERY,
   GET_MY_PROFILE_QUERY,
+  GET_BEST_RATED_PRODUCTS_QUERY,
   GET_PRODUCT_QUERY,
   LIKE_PRODUCT_QUERY,
   LOGIN_QUERY,

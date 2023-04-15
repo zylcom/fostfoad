@@ -30,7 +30,7 @@ const formattedDate = computed(() =>
 
     <div class="ml-auto flex items-center gap-x-1">
       <span class="block text-sm text-gray-500">
-        {{ review.rate }}
+        {{ review.rating }}
       </span>
 
       <IconStar class="h-5 w-5 fill-spandex-green" />

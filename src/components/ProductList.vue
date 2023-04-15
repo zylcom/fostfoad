@@ -42,6 +42,7 @@ onMounted(() => {
           :key="product.node.id"
           :product="product.node"
           class="p-2"
+          showLikesCountAndAverageRating
         />
       </div>
 

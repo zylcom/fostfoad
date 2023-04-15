@@ -38,12 +38,12 @@ export const useReviewsStore = defineStore("Reviews", () => {
     });
   }
 
-  function postReview({ productId, description, rateStar, slug }) {
+  function postReview({ productId, description, ratingStar, slug }) {
     loadingStore.showLoading();
 
     const { mutate, onDone, onError } = useMutation(CREATE_REVIEW_QUERY);
 
-    mutate({ productId, description, rate: rateStar });
+    mutate({ productId, description, rating: ratingStar });
 
     onDone((mutateResult) => {
       if (mutateResult.data.createReview.__typename === "Review") {
@@ -64,7 +64,7 @@ export const useReviewsStore = defineStore("Reviews", () => {
 
             const newAverageRating =
               newData.getProduct.reviews.reduce(
-                (accumulator, review) => accumulator + review.rate,
+                (accumulator, review) => accumulator + review.rating,
                 0
               ) / newData.getProduct.reviews.length;
 
@@ -89,12 +89,12 @@ export const useReviewsStore = defineStore("Reviews", () => {
     });
   }
 
-  function updateReview({ productId, description, rateStar, slug }) {
+  function updateReview({ productId, description, ratingStar, slug }) {
     loadingStore.showLoading();
 
     const { mutate, onDone, onError } = useMutation(UPDATE_REVIEW_QUERY);
 
-    mutate({ productId, description, rate: rateStar });
+    mutate({ productId, description, rating: ratingStar });
 
     onDone((mutateResult) => {
       if (mutateResult.data.updateReview.__typename === "Review") {
@@ -115,7 +115,7 @@ export const useReviewsStore = defineStore("Reviews", () => {
 
             const newAverageRating =
               newData.getProduct.reviews.reduce(
-                (accumulator, review) => accumulator + review.rate,
+                (accumulator, review) => accumulator + review.rating,
                 0
               ) / newData.getProduct.reviews.length;
 

@@ -10,11 +10,11 @@ defineProps({
 
 const { authUserStore, reviewsStore } = allStore();
 
-function createReviewHandler({ description, rateStar, productId, slug }) {
+function createReviewHandler({ description, ratingStar, productId, slug }) {
   reviewsStore.postReview({
     productId,
     description,
-    rateStar,
+    ratingStar,
     slug,
   });
 }
