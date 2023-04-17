@@ -20,10 +20,10 @@ function toggleModalBox() {
   }
 }
 
-function updateReviewHandler({ description, rateStar, productId, slug }) {
+function updateReviewHandler({ description, ratingStar, productId, slug }) {
   reviewsStore.updateReview({
     description,
-    rateStar,
+    ratingStar,
     productId,
     slug,
   });
