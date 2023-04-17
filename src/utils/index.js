@@ -1,9 +1,10 @@
-import { BASE_URL, GET_MY_PROFILE_QUERY } from "../config";
+import { GET_MY_PROFILE_QUERY } from "../config";
 
+const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 let prevScrollpos = window.scrollY;
 
 async function fetchApiWithToken(query, variables) {
-  return await fetch(BASE_URL, {
+  return await fetch(baseApiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

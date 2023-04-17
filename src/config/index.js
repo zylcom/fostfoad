@@ -1,6 +1,5 @@
 import gql from "graphql-tag";
 
-const BASE_URL = "http://localhost:4000";
 const CREATE_REVIEW_QUERY = gql`
   mutation CreateReview($productId: Int!, $description: String, $rating: Int!) {
     createReview(
@@ -273,8 +272,8 @@ const DELETE_CART_ITEM_BY_ID_QUERY = gql`
     }
   }
 `;
+
 export {
-  BASE_URL,
   CREATE_REVIEW_QUERY,
   DELETE_CART_ITEM_BY_ID_QUERY,
   GET_MY_CART_QUERY,
