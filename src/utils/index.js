@@ -42,23 +42,19 @@ function removeAccessToken() {
 }
 
 async function checkUserIsLoggedIn() {
-  let result = false;
-
-  result = await fetchApiWithToken(GET_MY_PROFILE_QUERY)
+  return await fetchApiWithToken(GET_MY_PROFILE_QUERY)
     .then((response) => {
       if (response.data.getMyProfile.__typename === "User") {
-        return true;
+        return { isLoggedIn: true, userPayload: response.data.getMyProfile };
       } else {
-        return false;
+        return { isLoggedIn: false, userPayload: null };
       }
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error.message);
 
-      return false;
+      return { isLoggedIn: false, userPayload: null };
     });
-
-  return result;
 }
 
 function hideElementWhenScrollDown(element) {

@@ -2,37 +2,35 @@ import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { allStore } from ".";
-import { fetchApiWithToken, saveAccessToken } from "../utils";
-import {
-  GET_MY_PROFILE_QUERY,
-  LOGIN_QUERY,
-  REGISTER_USER_QUERY,
-} from "../config";
+import { checkUserIsLoggedIn, saveAccessToken } from "../utils";
+import { LOGIN_QUERY, REGISTER_USER_QUERY } from "../config";
 
 export const useAuthUserStore = defineStore("User", () => {
   const { cartStore, errorStore, loadingStore } = allStore();
   const authUser = ref(null);
   const getAuthUser = computed(() => authUser);
+  const isLoggedIn = ref(false);
 
-  function setAuthUser(userData) {
-    authUser.value = userData;
+  function setAuthUser(userPayload) {
+    if (userPayload) {
+      authUser.value = userPayload;
+
+      cartStore.fetchMyCart();
+    } else {
+      authUser.value = null;
+    }
   }
 
   async function preload() {
     errorStore.$reset();
 
-    await fetchApiWithToken(GET_MY_PROFILE_QUERY)
-      .then((response) => {
-        if (response.data.getMyProfile.__typename === "User") {
-          setAuthUser(response.data.getMyProfile);
-          cartStore.fetchMyCart();
-        } else {
-          authUser.value = null;
-        }
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+    return await checkUserIsLoggedIn().then((res) => {
+      isLoggedIn.value = res.isLoggedIn;
+
+      setAuthUser(res.userPayload);
+
+      return res.isLoggedIn;
+    });
   }
 
   function login(email, password) {
@@ -126,5 +124,13 @@ export const useAuthUserStore = defineStore("User", () => {
     });
   }
 
-  return { authUser, getAuthUser, login, preload, register };
+  return {
+    authUser,
+    getAuthUser,
+    isLoggedIn,
+    login,
+    preload,
+    register,
+    setAuthUser,
+  };
 });

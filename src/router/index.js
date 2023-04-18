@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthUserStore } from "../stores/authUser";
-import { checkUserIsLoggedIn } from "../utils";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,15 +75,17 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const authUserStore = useAuthUserStore();
-  const isLoggedIn = await checkUserIsLoggedIn();
 
   authUserStore.preload();
 
-  if (to.meta.requiresAuth && !isLoggedIn) {
+  if (to.meta.requiresAuth && !(await authUserStore.preload())) {
     return { path: "/login" };
   }
 
-  if ((to.fullPath === "/login" || to.fullPath === "/register") && isLoggedIn) {
+  if (
+    (to.fullPath === "/login" || to.fullPath === "/register") &&
+    (await authUserStore.preload())
+  ) {
     return { path: "/" };
   }
 });
