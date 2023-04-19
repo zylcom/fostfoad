@@ -1,36 +1,27 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, ref } from "vue";
 import BackButton from "../components/BackButton.vue";
 import CartItem from "../components/CartItem.vue";
 import IconPlus from "../components/icons/IconPlus.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
-import { formatNumberToIDR, hideElementWhenScrollDown } from "../utils";
 import { allStore } from "../stores";
+import { formatNumberToIDR } from "../utils";
+import { useHideOnScroll } from "../composables/useHideOnScroll";
 
 const { authUserStore, cartStore } = allStore();
 const authUser = authUserStore.getAuthUser;
 const myCart = cartStore.getMyCart;
-const navWrapper = ref(null);
+const navElement = ref(null);
 const totalPrice = computed(() => formatNumberToIDR(myCart.value.totalPrice));
 
-function scrollHandler() {
-  hideElementWhenScrollDown(navWrapper);
-}
-
-onMounted(() => {
-  window.addEventListener("scroll", scrollHandler);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", scrollHandler);
-});
+useHideOnScroll(navElement);
 </script>
 
 <template>
   <header class="bg-cloud-break">
     <div
       class="fixed top-0 z-50 flex w-full items-center bg-cloud-break px-6 pt-3 pb-2 shadow transition-all duration-500"
-      ref="navWrapper"
+      ref="navElement"
     >
       <nav class="flex">
         <BackButton />

@@ -1,33 +1,23 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import BackButton from "../components/BackButton.vue";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
 import LoginInput from "../components/LoginInput.vue";
 import RegisterInput from "../components/RegisterInput.vue";
-import { hideElementWhenScrollDown } from "../utils";
+import { useHideOnScroll } from "../composables/useHideOnScroll";
 
 const route = useRouter();
 const path = ref(route.currentRoute.value.name);
-const navBar = ref(null);
+const navElement = ref(null);
+
+useHideOnScroll(navElement);
 
 function switchTab(newPath) {
   path.value = newPath;
 
   route.push({ path: newPath });
 }
-
-function onScrollHandler() {
-  hideElementWhenScrollDown(navBar);
-}
-
-onMounted(() => {
-  window.addEventListener("scroll", onScrollHandler);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", onScrollHandler);
-});
 </script>
 
 <template>
@@ -36,7 +26,7 @@ onUnmounted(() => {
   <header class="inline">
     <nav
       class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
-      ref="navBar"
+      ref="navElement"
     >
       <BackButton class="" />
     </nav>
