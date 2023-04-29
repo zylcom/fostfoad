@@ -17,7 +17,6 @@ module.exports = {
       files: [
         "cypress/e2e/**.{cy,spec}.{js,ts,jsx,tsx}",
         "*.{test,spec}.{js,ts,jsx,tsx}",
-        "cypress.config.js",
       ],
       rules: { "no-undef": "off" },
       extends: ["plugin:cypress/recommended"],
