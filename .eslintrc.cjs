@@ -7,13 +7,18 @@ module.exports = {
     "plugin:vue/vue3-essential",
     "eslint:recommended",
     "@vue/eslint-config-prettier",
+    "plugin:vitest/recommended",
   ],
   parserOptions: {
     ecmaVersion: "latest",
   },
   overrides: [
     {
-      files: ["cypress/e2e/**.{cy,spec}.{js,ts,jsx,tsx}"],
+      files: [
+        "cypress/e2e/**.{cy,spec}.{js,ts,jsx,tsx}",
+        "*.{test,spec}.{js,ts,jsx,tsx}",
+      ],
+      rules: { "no-undef": "off" },
       extends: ["plugin:cypress/recommended"],
     },
   ],

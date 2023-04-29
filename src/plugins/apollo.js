@@ -1,3 +1,4 @@
+import fetch from "cross-fetch";
 import {
   ApolloClient,
   ApolloLink,
@@ -8,7 +9,7 @@ import {
 import { getAccessToken } from "../utils";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
-const httpLink = createHttpLink({ uri: baseApiUrl });
+const httpLink = createHttpLink({ uri: baseApiUrl, fetch });
 const authMiddleware = new ApolloLink((operation, forward) => {
   // add the authorization to the headers
   const token = getAccessToken();
