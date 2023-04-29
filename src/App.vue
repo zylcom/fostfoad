@@ -1,4 +1,4 @@
 <template>
   <RouterView />
-  <RouterView name="FooterNavigation" />
+  <RouterView name="NavigationTab" />
 </template>

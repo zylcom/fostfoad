@@ -13,34 +13,34 @@ const authUser = authUserStore.getAuthUser;
 </script>
 
 <template>
-  <nav class="flex justify-around">
+  <nav class="fixed bottom-0 z-50 flex w-full justify-around bg-white py-2">
     <NavigationButton
       :path="route.path === '/' ? route.fullPath : '/'"
-      path-name="Home"
+      pathName="Home"
       :icon="IconHome"
-      text-active-color="text-chocobo-feather"
+      textActiveColor="text-chocobo-feather"
     />
 
     <NavigationButton
       :path="route.path === '/menu' ? route.fullPath : '/menu'"
-      path-name="Menu"
+      pathName="Menu"
       :icon="IconMenu"
-      text-active-color="text-torii-red"
+      textActiveColor="text-torii-red"
     />
 
     <NavigationButton
       path="/history"
-      path-name="History"
+      pathName="History"
       :icon="IconHistory"
-      text-active-color="text-heirloom-hydrangea"
+      textActiveColor="text-heirloom-hydrangea"
       v-if="authUser"
     />
 
     <NavigationButton
       path="/settings"
-      path-name="More"
+      pathName="More"
       :icon="IconDotsHorizontal"
-      text-active-color="text-venetian-nights"
+      textActiveColor="text-venetian-nights"
     />
   </nav>
 </template>
