@@ -1,0 +1,25 @@
+import { useAuthUserStore } from "./authUser";
+import { useCartStore } from "./cart";
+import { useCategoryStore } from "./category";
+import { useErrorStore } from "./error";
+import { useLoadingStore } from "./loading";
+import { useBestRatedProductsStore } from "./bestRatedProducts";
+import { useProductDetailStore } from "./productDetail";
+import { useProductsStore } from "./products";
+import { useReviewsStore } from "./reviews";
+import { useTagStore } from "./tag";
+
+export const allStore = () => {
+  return {
+    authUserStore: useAuthUserStore(),
+    cartStore: useCartStore(),
+    categoryStore: useCategoryStore(),
+    errorStore: useErrorStore(),
+    loadingStore: useLoadingStore(),
+    popularProductsStore: useBestRatedProductsStore(),
+    productsStore: useProductsStore(),
+    productDetailStore: useProductDetailStore(),
+    reviewsStore: useReviewsStore(),
+    tagStore: useTagStore(),
+  };
+};
