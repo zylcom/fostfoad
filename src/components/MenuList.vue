@@ -83,7 +83,7 @@ watch(searchKeyword, (newValue) => {
       <button
         v-else
         class="mt-3 cursor-pointer rounded bg-seljuk-blue/50 px-5 py-1"
-        @click="loadMore"
+        @click="loadMore()"
       >
         Load more!
       </button>

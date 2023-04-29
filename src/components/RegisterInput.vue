@@ -54,7 +54,7 @@ watch(authUser, () => {
   <form
     action=""
     class="mx-5 mt-8 text-sm [&>label]:mt-2 [&>label]:block"
-    @submit.prevent="onSubmitHandler"
+    @submit.prevent="onSubmitHandler()"
   >
     <label for="name">
       Name

@@ -15,7 +15,7 @@ function toggleCheckbox() {
 <template>
   <button
     class="flex w-full items-center justify-between text-lg"
-    @click="toggleCheckbox"
+    @click="toggleCheckbox()"
   >
     {{ settingName }}
 

@@ -23,7 +23,7 @@ function removeItemHandler() {
     <button
       class="absolute right-4 top-4 z-50 transition duration-300 hover:scale-125"
       title="Remove item"
-      @click="removeItemHandler"
+      @click="removeItemHandler()"
     >
       <IconCross class="h-5 w-5" />
     </button>

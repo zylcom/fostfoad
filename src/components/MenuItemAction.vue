@@ -19,7 +19,7 @@ function onAddCartClicked() {
 </script>
 
 <template>
-  <form class="flex items-center gap-x-2" @submit.prevent="onAddCartClicked">
+  <form class="flex items-center gap-x-2" @submit.prevent="onAddCartClicked()">
     <span class="text-xs">Qty:</span>
 
     <QuantityInput class="w-12" v-model:quantity="quantity" />

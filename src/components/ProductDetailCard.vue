@@ -47,7 +47,7 @@ const total = computed(() =>
         <button
           class="order-2 cursor-pointer transition duration-300 hover:scale-125 active:scale-100"
           title="Like"
-          @click="likeProductHandler"
+          @click="likeProductHandler()"
         >
           <IconLove :class="isLiked ? 'fill-blood-moon' : ''" />
         </button>

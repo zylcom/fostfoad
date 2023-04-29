@@ -11,7 +11,7 @@ const { authUserStore, errorStore } = allStore();
 const authUser = authUserStore.getAuthUser;
 const error = errorStore.getError;
 
-function onSubmitHandle() {
+function onSubmitHandler() {
   authUserStore.login(email.value, password.value);
 }
 
@@ -27,7 +27,7 @@ watch([email, password], () => {
 </script>
 
 <template>
-  <form action="" class="mx-5 mt-8 text-sm" @submit.prevent="onSubmitHandle">
+  <form action="" class="mx-5 mt-8 text-sm" @submit.prevent="onSubmitHandler()">
     <label for="email">
       Email
 

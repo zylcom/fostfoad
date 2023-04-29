@@ -10,7 +10,7 @@ function goBack() {
 </script>
 
 <template>
-  <button class="transition duration-300 hover:scale-125" @click="goBack">
+  <button class="transition duration-300 hover:scale-125" @click="goBack()">
     <IconArrow class="h-6 w-6" />
   </button>
 </template>

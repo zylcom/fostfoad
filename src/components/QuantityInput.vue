@@ -26,7 +26,7 @@ function onInputQuantity() {
     max="999"
     maxlength="3"
     :value="quantityItem"
-    :oninput="onInputQuantity"
+    :oninput="onInputQuantity()"
     :onkeypress="isNumberKey"
   />
 </template>

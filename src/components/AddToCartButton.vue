@@ -27,7 +27,7 @@ function addToCartHandler() {
         : 'cursor-not-allowed bg-mercury text-gray-500'
     "
     :disabled="quantity > 0 ? false : true"
-    @click="addToCartHandler"
+    @click="addToCartHandler()"
   >
     {{ cartItem.id ? "Update" : "Add to cart" }}
   </button>

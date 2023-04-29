@@ -44,7 +44,7 @@ onUnmounted(() => {
 
   <button
     class="pt-2 pl-5 text-xs font-medium text-heirloom-hydrangea hover:underline"
-    @click="toggleModalBox"
+    @click="toggleModalBox()"
   >
     Edit My review
   </button>
@@ -61,7 +61,7 @@ onUnmounted(() => {
         <button
           class="cursor-pointer transition duration-300 hover:scale-125"
           title="Cancel edit"
-          @click="toggleModalBox"
+          @click="toggleModalBox()"
         >
           <IconCross />
         </button>
