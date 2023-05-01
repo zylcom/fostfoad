@@ -20,7 +20,8 @@ function onSubmitHandler() {
     name: name.value,
     email: email.value,
     phoneNumber: phoneNumber.value,
-    password: confirmPassword.value,
+    password: password.value,
+    confirmationPassword: confirmPassword.value,
     countryCode: phoneCountryCode.value,
   });
 }
@@ -31,17 +32,6 @@ function onPhoneNumberInput(number, phoneObject) {
   phoneNumber.value = number;
   phoneCountryCode.value = phoneObject.country?.iso2 || "ID";
 }
-
-watch([password, confirmPassword], () => {
-  if (
-    password.value !== confirmPassword.value &&
-    confirmPassword.value !== ""
-  ) {
-    confirmPasswordInput.value.classList.add("border", "border-red-400");
-  } else {
-    confirmPasswordInput.value.classList.remove("border", "border-red-400");
-  }
-});
 
 watch(authUser, () => {
   if (authUser.value) {
@@ -54,6 +44,7 @@ watch(authUser, () => {
   <form
     action=""
     class="mx-5 mt-8 text-sm [&>label]:mt-2 [&>label]:block"
+    data-cy="form-register"
     @submit.prevent="onSubmitHandler()"
   >
     <label for="name">
@@ -65,6 +56,7 @@ watch(authUser, () => {
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
         placeholder="Your Name"
         v-model="name"
+        data-cy="name-input"
         autofocus
         required
       />
@@ -77,11 +69,12 @@ watch(authUser, () => {
         type="text"
         id="email"
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
-        :class="
-          error && error.errorType === 'email' ? 'border border-red-400' : ''
-        "
+        :class="{
+          'border border-red-400': error && error.errorType === 'email',
+        }"
         placeholder="email@example.com"
         v-model="email"
+        data-cy="email-input"
         required
       />
     </label>
@@ -93,20 +86,18 @@ watch(authUser, () => {
       {{ error.message }}
     </span>
 
-    <label for="phone">
+    <label for="phone-number-input">
       Phone Number
 
       <vue-tel-input
-        id="phone"
         class="rounded-[10px] text-sm placeholder:font-roboto [&_ul]:w-[80vw] [&_ul]:max-w-[390px] [&_input]:rounded-r-[10px] [&_input]:bg-bleached-silk [&_input]:py-4 [&>div]:rounded-l-[10px]"
-        :class="
-          error && error.errorType === 'phone-number'
-            ? 'border border-red-400'
-            : ''
-        "
+        :class="{
+          'border border-red-400': error && error.errorType === 'phone-number',
+        }"
         v-model="phoneNumber"
-        :inputOptions="{ showDialCode: true }"
+        :inputOptions="{ id: 'phone-number-input', showDialCode: true }"
         @on-input="onPhoneNumberInput"
+        validCharactersOnly
         required
       />
     </label>
@@ -125,12 +116,23 @@ watch(authUser, () => {
         type="password"
         id="password"
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
+        :class="{
+          'border border-red-400': error && error.errorType === 'password',
+        }"
         placeholder="Password"
         minlength="8"
         v-model="password"
+        data-cy="password-input"
         required
       />
     </label>
+
+    <span
+      v-if="error && error.errorType === 'password'"
+      class="block text-xs text-red-500"
+    >
+      {{ error.message }}
+    </span>
 
     <label for="confirm-password">
       Confirm Password
@@ -139,9 +141,13 @@ watch(authUser, () => {
         type="password"
         id="confirm-password"
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none"
+        :class="{
+          'border border-red-400': error && error.errorType === 'password',
+        }"
         placeholder="Confirm Your Password"
         v-model="confirmPassword"
         ref="confirmPasswordInput"
+        data-cy="confirm-password-input"
         required
       />
     </label>

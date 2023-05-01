@@ -27,7 +27,12 @@ watch([email, password], () => {
 </script>
 
 <template>
-  <form action="" class="mx-5 mt-8 text-sm" @submit.prevent="onSubmitHandler()">
+  <form
+    action=""
+    class="mx-5 mt-8 text-sm"
+    @submit.prevent="onSubmitHandler()"
+    data-cy="form-login"
+  >
     <label for="email">
       Email
 
@@ -39,6 +44,7 @@ watch([email, password], () => {
         v-model="email"
         placeholder="email@example.com"
         autocomplete="username"
+        data-cy="email-input"
         autofocus
         required
       />
@@ -55,6 +61,7 @@ watch([email, password], () => {
         v-model="password"
         placeholder="Password"
         autocomplete="current-password"
+        data-cy="password-input"
         required
       />
     </label>

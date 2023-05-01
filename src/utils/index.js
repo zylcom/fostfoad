@@ -2,14 +2,14 @@ import { GET_MY_PROFILE_QUERY } from "../config";
 
 const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 
-async function fetchApiWithToken(query, variables) {
+async function fetchApiWithToken({ query, variables, operationName }) {
   return await fetch(baseApiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getAccessToken()}`,
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ operationName, query, variables }),
   }).then((response) => response.json());
 }
 
@@ -41,7 +41,10 @@ function removeAccessToken() {
 }
 
 async function checkUserIsLoggedIn() {
-  return await fetchApiWithToken(GET_MY_PROFILE_QUERY)
+  return await fetchApiWithToken({
+    query: GET_MY_PROFILE_QUERY,
+    operationName: "GetMyProfile",
+  })
     .then((response) => {
       if (response.data.getMyProfile.__typename === "User") {
         return { isLoggedIn: true, userPayload: response.data.getMyProfile };
