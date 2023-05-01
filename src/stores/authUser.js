@@ -62,12 +62,26 @@ export const useAuthUserStore = defineStore("User", () => {
     });
   }
 
-  function register({ name, email, phoneNumber, password, countryCode }) {
+  function register({
+    name,
+    email,
+    phoneNumber,
+    password,
+    confirmationPassword,
+    countryCode,
+  }) {
     loadingStore.showLoading();
 
     const { mutate, onDone, onError } = useMutation(REGISTER_USER_QUERY);
 
-    mutate({ name, email, phoneNumber, password, countryCode });
+    mutate({
+      name,
+      email,
+      phoneNumber,
+      password,
+      confirmationPassword,
+      countryCode,
+    });
 
     onDone((mutateResult) => {
       if (mutateResult.data.registerUser.__typename === "UserAuth") {
@@ -96,9 +110,23 @@ export const useAuthUserStore = defineStore("User", () => {
             });
             break;
 
-          case `Phone number is invalid!`:
+          case "Phone number is invalid!":
             errorStore.setError({
               errorType: "phone-number",
+              message: mutateResult.data.registerUser.message,
+            });
+            break;
+
+          case "Password and confirmation password are not match!":
+            errorStore.setError({
+              errorType: "password",
+              message: mutateResult.data.registerUser.message,
+            });
+            break;
+
+          case "Password length must 8 or above!":
+            errorStore.setError({
+              errorType: "password",
               message: mutateResult.data.registerUser.message,
             });
             break;

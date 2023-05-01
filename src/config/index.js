@@ -173,6 +173,7 @@ const REGISTER_USER_QUERY = gql`
     $email: String!
     $phoneNumber: String!
     $password: String!
+    $confirmationPassword: String!
     $countryCode: String!
   ) {
     registerUser(
@@ -180,6 +181,7 @@ const REGISTER_USER_QUERY = gql`
       email: $email
       phoneNumber: $phoneNumber
       password: $password
+      confirmationPassword: $confirmationPassword
       countryCode: $countryCode
     ) {
       __typename
