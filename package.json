@@ -2,6 +2,7 @@
   "name": "foody-order",
   "version": "0.0.0",
   "scripts": {
+    "start": "vite --port 4173",
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --port 4173",
@@ -9,7 +10,7 @@
     "test:coverage": "vitest run --coverage --environment jsdom",
     "test:unit": "vitest --environment jsdom",
     "test:e2e": "start-server-and-test preview http://localhost:4173/ 'cypress open --e2e'",
-    "test:e2e:ci": "vitest run && start-server-and-test preview http://localhost:4173/ 'cypress run --e2e'",
+    "test:e2e:ci": "vitest run && start-server-and-test start http://localhost:4173/ 'cypress run --e2e'",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
