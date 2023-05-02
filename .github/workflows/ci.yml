@@ -65,3 +65,10 @@ jobs:
           wait-on: "http://[::1]:4173"
           browser: chrome
           config-file: cypress.config.js
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
