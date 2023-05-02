@@ -13,6 +13,8 @@ describe(
     const registerPassword = "123123123";
 
     beforeEach(() => {
+      cy.log(Cypress.env("baseApiUrl"));
+
       cy.intercept("POST", Cypress.env("baseApiUrl"), (req) => {
         aliasQuery(req, "Login");
         aliasQuery(req, "GetMyProfile");
