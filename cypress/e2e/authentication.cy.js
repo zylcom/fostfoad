@@ -1,203 +1,197 @@
 import { aliasMutation, aliasQuery } from "../utils/graphql-test-utils";
 import { faker } from "@faker-js/faker/locale/id_ID";
 
-describe(
-  "Authentication Test",
-  { env: { baseApiUrl: "https://apollo-server.vercel.app/" } },
-  () => {
-    const email = "zylcom@dev.com";
-    const password = "rahasia123";
-    const randomName = faker.name.fullName();
-    const randomEmail = faker.internet.email();
-    const randomPhoneNumber = faker.phone.number("0882 #### ####");
-    const registerPassword = "123123123";
+describe("Authentication Test", () => {
+  const email = "zylcom@dev.com";
+  const password = "rahasia123";
+  const randomName = faker.name.fullName();
+  const randomEmail = faker.internet.email();
+  const randomPhoneNumber = faker.phone.number("0882 #### ####");
+  const registerPassword = "123123123";
 
-    beforeEach(() => {
-      cy.log(Cypress.env("baseApiUrl"));
-
-      cy.intercept("POST", Cypress.env("baseApiUrl"), (req) => {
-        aliasQuery(req, "Login");
-        aliasQuery(req, "GetMyProfile");
-        aliasMutation(req, "Register");
-      });
-
-      cy.intercept("GET", "https://ip2c.org/s").as("getLocationByIP");
+  beforeEach(() => {
+    cy.intercept("POST", "https://apollo-server.vercel.app/", (req) => {
+      aliasQuery(req, "Login");
+      aliasQuery(req, "GetMyProfile");
+      aliasMutation(req, "Register");
     });
 
-    it("should not allowed to request GetMyProfile if user not logged in", () => {
-      cy.visit("/login");
+    cy.intercept("GET", "https://ip2c.org/s").as("getLocationByIP");
+  });
 
-      cy.wait("@gqlGetMyProfileQuery")
-        .its("response.body.data.getMyProfile.__typename")
-        .should("eq", "UserError");
-    });
+  it("should not allowed to request GetMyProfile if user not logged in", () => {
+    cy.visit("/login");
 
-    it("should fail to login if email is invalid", () => {
-      cy.visit("/login");
+    cy.wait("@gqlGetMyProfileQuery")
+      .its("response.body.data.getMyProfile.__typename")
+      .should("eq", "UserError");
+  });
 
-      cy.getBySel("email-input").type("email");
-      cy.getBySel("password-input").type(password);
-      cy.getBySel("form-login").submit();
+  it("should fail to login if email is invalid", () => {
+    cy.visit("/login");
 
-      cy.wait("@gqlLoginQuery")
-        .its("response.body.data.authenticate.__typename")
-        .should("eq", "AuthFailed");
-    });
+    cy.getBySel("email-input").type("email");
+    cy.getBySel("password-input").type(password);
+    cy.getBySel("form-login").submit();
 
-    it("should fail to login if email is wrong", () => {
-      cy.visit("/login");
+    cy.wait("@gqlLoginQuery")
+      .its("response.body.data.authenticate.__typename")
+      .should("eq", "AuthFailed");
+  });
 
-      cy.getBySel("email-input").type("email@gmail.com");
-      cy.getBySel("password-input").type(password);
-      cy.getBySel("form-login").submit();
+  it("should fail to login if email is wrong", () => {
+    cy.visit("/login");
 
-      cy.wait("@gqlLoginQuery")
-        .its("response.body.data.authenticate.__typename")
-        .should("eq", "AuthFailed");
+    cy.getBySel("email-input").type("email@gmail.com");
+    cy.getBySel("password-input").type(password);
+    cy.getBySel("form-login").submit();
 
-      cy.contains("Invalid credentials!").should("be.visible");
-    });
+    cy.wait("@gqlLoginQuery")
+      .its("response.body.data.authenticate.__typename")
+      .should("eq", "AuthFailed");
 
-    it("should fail to login if password is wrong", () => {
-      cy.visit("/login");
+    cy.contains("Invalid credentials!").should("be.visible");
+  });
 
-      cy.getBySel("email-input").type(email);
-      cy.getBySel("password-input").type("password");
-      cy.getBySel("form-login").submit();
+  it("should fail to login if password is wrong", () => {
+    cy.visit("/login");
 
-      cy.wait("@gqlLoginQuery")
-        .its("response.body.data.authenticate.__typename")
-        .should("eq", "AuthFailed");
+    cy.getBySel("email-input").type(email);
+    cy.getBySel("password-input").type("password");
+    cy.getBySel("form-login").submit();
 
-      cy.contains("Invalid credentials!").should("be.visible");
-    });
+    cy.wait("@gqlLoginQuery")
+      .its("response.body.data.authenticate.__typename")
+      .should("eq", "AuthFailed");
 
-    it("should allow a user to login", () => {
-      cy.visit("/login");
+    cy.contains("Invalid credentials!").should("be.visible");
+  });
 
-      cy.getBySel("email-input").type(email);
-      cy.getBySel("password-input").type(password);
-      cy.getBySel("form-login").submit();
+  it("should allow a user to login", () => {
+    cy.visit("/login");
 
-      cy.wait("@gqlLoginQuery")
-        .its("response.body.data.authenticate")
-        .should("have.property", "token");
+    cy.getBySel("email-input").type(email);
+    cy.getBySel("password-input").type(password);
+    cy.getBySel("form-login").submit();
 
-      cy.url().should("eq", "http://localhost:4173/");
-    });
+    cy.wait("@gqlLoginQuery")
+      .its("response.body.data.authenticate")
+      .should("have.property", "token");
 
-    it("should fail register if email already in use", () => {
-      cy.visit("/register");
+    cy.url().should("eq", "http://localhost:4173/");
+  });
 
-      cy.getBySel("name-input").type(randomName);
-      cy.getBySel("email-input").type(email);
+  it("should fail register if email already in use", () => {
+    cy.visit("/register");
 
-      cy.wait("@getLocationByIP");
+    cy.getBySel("name-input").type(randomName);
+    cy.getBySel("email-input").type(email);
 
-      cy.get("#phone-number-input").type(randomPhoneNumber);
-      cy.getBySel("password-input").type(registerPassword);
-      cy.getBySel("confirm-password-input").type(registerPassword);
-      cy.getBySel("form-register").submit();
+    cy.wait("@getLocationByIP");
 
-      cy.wait("@gqlRegisterMutation")
-        .its("response.body.data.registerUser.message")
-        .should("eq", `Email ${email} already in use!`);
+    cy.get("#phone-number-input").type(randomPhoneNumber);
+    cy.getBySel("password-input").type(registerPassword);
+    cy.getBySel("confirm-password-input").type(registerPassword);
+    cy.getBySel("form-register").submit();
 
-      cy.contains(`Email ${email} already in use!`).should("be.visible");
-    });
+    cy.wait("@gqlRegisterMutation")
+      .its("response.body.data.registerUser.message")
+      .should("eq", `Email ${email} already in use!`);
 
-    it("should fail register if phone number is invalid", () => {
-      cy.visit("/register");
+    cy.contains(`Email ${email} already in use!`).should("be.visible");
+  });
 
-      cy.getBySel("name-input").type(randomName);
-      cy.getBySel("email-input").type(randomEmail);
+  it("should fail register if phone number is invalid", () => {
+    cy.visit("/register");
 
-      cy.wait("@getLocationByIP");
+    cy.getBySel("name-input").type(randomName);
+    cy.getBySel("email-input").type(randomEmail);
 
-      cy.get("#phone-number-input").type("123123123123123");
-      cy.getBySel("password-input").type(registerPassword);
-      cy.getBySel("confirm-password-input").type(registerPassword);
-      cy.getBySel("form-register").submit();
+    cy.wait("@getLocationByIP");
 
-      cy.wait("@gqlRegisterMutation")
-        .its("response.body.data.registerUser.message")
-        .should("eq", "Phone number is invalid!");
-    });
+    cy.get("#phone-number-input").type("123123123123123");
+    cy.getBySel("password-input").type(registerPassword);
+    cy.getBySel("confirm-password-input").type(registerPassword);
+    cy.getBySel("form-register").submit();
 
-    it("should fail register if password length less than 8", () => {
-      cy.visit("/register");
+    cy.wait("@gqlRegisterMutation")
+      .its("response.body.data.registerUser.message")
+      .should("eq", "Phone number is invalid!");
+  });
 
-      cy.getBySel("name-input").type(randomName);
-      cy.getBySel("email-input").type(randomEmail);
+  it("should fail register if password length less than 8", () => {
+    cy.visit("/register");
 
-      cy.wait("@getLocationByIP");
+    cy.getBySel("name-input").type(randomName);
+    cy.getBySel("email-input").type(randomEmail);
 
-      cy.get("#phone-number-input").type(randomPhoneNumber);
-      cy.getBySel("password-input").type("123");
-      cy.getBySel("confirm-password-input").type("123");
-      cy.getBySel("form-register").submit();
+    cy.wait("@getLocationByIP");
 
-      cy.wait("@gqlRegisterMutation")
-        .its("response.body.data.registerUser.message")
-        .should("eq", "Password length must 8 or above!");
+    cy.get("#phone-number-input").type(randomPhoneNumber);
+    cy.getBySel("password-input").type("123");
+    cy.getBySel("confirm-password-input").type("123");
+    cy.getBySel("form-register").submit();
 
-      cy.contains("Password length must 8 or above!").should("be.visible");
-    });
+    cy.wait("@gqlRegisterMutation")
+      .its("response.body.data.registerUser.message")
+      .should("eq", "Password length must 8 or above!");
 
-    it("should fail register if password and confirmation password not equal", () => {
-      cy.visit("/register");
+    cy.contains("Password length must 8 or above!").should("be.visible");
+  });
 
-      cy.getBySel("name-input").type(randomName);
-      cy.getBySel("email-input").type(randomEmail);
+  it("should fail register if password and confirmation password not equal", () => {
+    cy.visit("/register");
 
-      cy.wait("@getLocationByIP");
+    cy.getBySel("name-input").type(randomName);
+    cy.getBySel("email-input").type(randomEmail);
 
-      cy.get("#phone-number-input").type(randomPhoneNumber);
-      cy.getBySel("password-input").type("123");
-      cy.getBySel("confirm-password-input").type("1");
-      cy.getBySel("form-register").submit();
+    cy.wait("@getLocationByIP");
 
-      cy.wait("@gqlRegisterMutation")
-        .its("response.body.data.registerUser.message")
-        .should("eq", "Password and confirmation password are not match!");
+    cy.get("#phone-number-input").type(randomPhoneNumber);
+    cy.getBySel("password-input").type("123");
+    cy.getBySel("confirm-password-input").type("1");
+    cy.getBySel("form-register").submit();
 
-      cy.contains("Password and confirmation password are not match!").should(
-        "be.visible"
-      );
-    });
+    cy.wait("@gqlRegisterMutation")
+      .its("response.body.data.registerUser.message")
+      .should("eq", "Password and confirmation password are not match!");
 
-    it("should allow user to register new account", () => {
-      cy.visit("/register");
+    cy.contains("Password and confirmation password are not match!").should(
+      "be.visible"
+    );
+  });
 
-      cy.getBySel("name-input").type(randomName);
-      cy.getBySel("email-input").type(randomEmail);
+  it("should allow user to register new account", () => {
+    cy.visit("/register");
 
-      cy.wait("@getLocationByIP");
+    cy.getBySel("name-input").type(randomName);
+    cy.getBySel("email-input").type(randomEmail);
 
-      cy.get("#phone-number-input").type(randomPhoneNumber);
-      cy.getBySel("password-input").type(registerPassword);
-      cy.getBySel("confirm-password-input").type(registerPassword);
-      cy.getBySel("form-register").submit();
+    cy.wait("@getLocationByIP");
 
-      cy.wait("@gqlRegisterMutation")
-        .its("response.body.data.registerUser")
-        .should("have.property", "token");
+    cy.get("#phone-number-input").type(randomPhoneNumber);
+    cy.getBySel("password-input").type(registerPassword);
+    cy.getBySel("confirm-password-input").type(registerPassword);
+    cy.getBySel("form-register").submit();
 
-      cy.url().should("eq", "http://localhost:4173/");
-    });
+    cy.wait("@gqlRegisterMutation")
+      .its("response.body.data.registerUser")
+      .should("have.property", "token");
 
-    it("should allow a user to login with new account", () => {
-      cy.visit("/login");
+    cy.url().should("eq", "http://localhost:4173/");
+  });
 
-      cy.getBySel("email-input").type(randomEmail);
-      cy.getBySel("password-input").type(registerPassword);
-      cy.getBySel("form-login").submit();
+  it("should allow a user to login with new account", () => {
+    cy.visit("/login");
 
-      cy.wait("@gqlLoginQuery")
-        .its("response.body.data.authenticate")
-        .should("have.property", "token");
+    cy.getBySel("email-input").type(randomEmail);
+    cy.getBySel("password-input").type(registerPassword);
+    cy.getBySel("form-login").submit();
 
-      cy.url().should("eq", "http://localhost:4173/");
-    });
-  }
-);
+    cy.wait("@gqlLoginQuery")
+      .its("response.body.data.authenticate")
+      .should("have.property", "token");
+
+    cy.url().should("eq", "http://localhost:4173/");
+  });
+});
