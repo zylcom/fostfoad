@@ -20,6 +20,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           runTests: false
+          install-command: npm ci --legacy-peer-deps
 
       - run: |
           npx cypress info
@@ -59,7 +60,6 @@ jobs:
       - name: Cypress run e2e test
         uses: cypress-io/github-action@v5
         with:
-          install-command: npm ci --legacy-peer-deps
           start: npm run preview
           wait-on: "http://localhost:4173"
           wait-on-timeout: 120
