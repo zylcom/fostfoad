@@ -8,6 +8,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  VITE_BASE_API_URL: https://apollo-server.vercel.app/
+
 jobs:
   install:
     runs-on: ubuntu-latest
@@ -61,7 +64,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install-command: npm ci --legacy-peer-deps
-          start: npm start
+          start: npm run preview
           wait-on: "http://[::1]:4173"
           browser: chrome
           config-file: cypress.config.js
