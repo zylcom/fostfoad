@@ -33,9 +33,9 @@ jobs:
       - name: Save build folder
         uses: actions/upload-artifact@v3
         with:
-          name: build
+          name: dist
           if-no-files-found: error
-          path: build
+          path: dist
 
   cypress-run:
     runs-on: ubuntu-latest
@@ -48,8 +48,8 @@ jobs:
       - name: Download the build folder
         uses: actions/download-artifact@v3
         with:
-          name: build
-          path: build
+          name: dist
+          path: dist
 
       - name: Cypress info
         run: npx cypress info
