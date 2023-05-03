@@ -18,8 +18,6 @@ describe(
         aliasQuery(req, "GetMyProfile");
         aliasMutation(req, "Register");
       });
-
-      cy.intercept("GET", "https://ip2c.org/s").as("getLocationByIP");
     });
 
     it("should not allowed to request GetMyProfile if user not logged in", () => {
@@ -90,8 +88,6 @@ describe(
       cy.getBySel("name-input").type(randomName);
       cy.getBySel("email-input").type(email);
 
-      cy.wait("@getLocationByIP");
-
       cy.get("#phone-number-input").type(randomPhoneNumber);
       cy.getBySel("password-input").type(registerPassword);
       cy.getBySel("confirm-password-input").type(registerPassword);
@@ -110,8 +106,6 @@ describe(
       cy.getBySel("name-input").type(randomName);
       cy.getBySel("email-input").type(randomEmail);
 
-      cy.wait("@getLocationByIP");
-
       cy.get("#phone-number-input").type("123123123123123");
       cy.getBySel("password-input").type(registerPassword);
       cy.getBySel("confirm-password-input").type(registerPassword);
@@ -127,8 +121,6 @@ describe(
 
       cy.getBySel("name-input").type(randomName);
       cy.getBySel("email-input").type(randomEmail);
-
-      cy.wait("@getLocationByIP");
 
       cy.get("#phone-number-input").type(randomPhoneNumber);
       cy.getBySel("password-input").type("123");
@@ -147,8 +139,6 @@ describe(
 
       cy.getBySel("name-input").type(randomName);
       cy.getBySel("email-input").type(randomEmail);
-
-      cy.wait("@getLocationByIP");
 
       cy.get("#phone-number-input").type(randomPhoneNumber);
       cy.getBySel("password-input").type("123");
@@ -169,8 +159,6 @@ describe(
 
       cy.getBySel("name-input").type(randomName);
       cy.getBySel("email-input").type(randomEmail);
-
-      cy.wait("@getLocationByIP");
 
       cy.get("#phone-number-input").type(randomPhoneNumber);
       cy.getBySel("password-input").type(registerPassword);
