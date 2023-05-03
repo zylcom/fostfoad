@@ -27,11 +27,26 @@ function onSubmitHandler() {
 }
 
 function onPhoneNumberInput(number, phoneObject) {
-  errorStore.$reset();
-
   phoneNumber.value = number;
   phoneCountryCode.value = phoneObject.country?.iso2 || "ID";
 }
+
+watch([name, email, phoneNumber], () => {
+  errorStore.$reset();
+});
+
+watch([password, confirmPassword], ([newPassword, newConfirmPassword]) => {
+  if (newPassword !== "" || newConfirmPassword !== "") {
+    errorStore.$reset();
+  }
+});
+
+watch(error, (newValue) => {
+  if (newValue) {
+    password.value = "";
+    confirmPassword.value = "";
+  }
+});
 
 watch(authUser, () => {
   if (authUser.value) {
@@ -43,7 +58,7 @@ watch(authUser, () => {
 <template>
   <form
     action=""
-    class="mx-5 mt-8 text-sm [&>label]:mt-2 [&>label]:block"
+    class="mx-5 mt-8 text-sm [&>label]:block [&>*]:mt-5"
     data-cy="form-register"
     @submit.prevent="onSubmitHandler()"
   >
@@ -77,37 +92,41 @@ watch(authUser, () => {
         data-cy="email-input"
         required
       />
+
+      <span
+        v-if="error && error.errorType === 'email'"
+        class="block text-xs text-red-500"
+      >
+        {{ error.message }}
+      </span>
     </label>
 
-    <span
-      v-if="error && error.errorType === 'email'"
-      class="block text-xs text-red-500"
-    >
-      {{ error.message }}
-    </span>
-
-    <label for="phone-number-input">
+    <div>
       Phone Number
 
       <vue-tel-input
         class="rounded-[10px] text-sm placeholder:font-roboto [&_ul]:w-[80vw] [&_ul]:max-w-[390px] [&_input]:rounded-r-[10px] [&_input]:bg-bleached-silk [&_input]:py-4 [&>div]:rounded-l-[10px]"
+        v-model="phoneNumber"
+        @on-input="onPhoneNumberInput"
+        defaultCountry="ID"
         :class="{
           'border border-red-400': error && error.errorType === 'phone-number',
         }"
-        v-model="phoneNumber"
-        :inputOptions="{ id: 'phone-number-input', showDialCode: true }"
-        @on-input="onPhoneNumberInput"
+        :inputOptions="{
+          id: 'phone-number-input',
+          showDialCode: true,
+          required: true,
+        }"
         validCharactersOnly
-        required
       />
-    </label>
 
-    <span
-      v-if="error && error.errorType === 'phone-number'"
-      class="block text-xs text-red-500"
-    >
-      {{ error.message }}
-    </span>
+      <span
+        v-if="error && error.errorType === 'phone-number'"
+        class="block text-xs text-red-500"
+      >
+        {{ error.message }}
+      </span>
+    </div>
 
     <label for="password">
       Password
@@ -125,14 +144,14 @@ watch(authUser, () => {
         data-cy="password-input"
         required
       />
-    </label>
 
-    <span
-      v-if="error && error.errorType === 'password'"
-      class="block text-xs text-red-500"
-    >
-      {{ error.message }}
-    </span>
+      <span
+        v-if="error && error.errorType === 'password'"
+        class="block text-xs text-red-500"
+      >
+        {{ error.message }}
+      </span>
+    </label>
 
     <label for="confirm-password">
       Confirm Password
@@ -152,18 +171,20 @@ watch(authUser, () => {
       />
     </label>
 
-    <span
-      v-if="error && error.errorType === 'general'"
-      class="mt-2 block text-center text-sm text-red-500"
-    >
-      {{ error.message }}
-    </span>
+    <div>
+      <span
+        v-if="error && error.errorType === 'general'"
+        class="mt-2 block text-center text-sm text-red-500"
+      >
+        {{ error.message }}
+      </span>
 
-    <button
-      type="submit"
-      class="my-6 w-full rounded-lg bg-torii-red/95 py-2 font-rubik text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red"
-    >
-      Register
-    </button>
+      <button
+        type="submit"
+        class="mt-6 w-full rounded-lg bg-torii-red/95 py-2 font-rubik text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red"
+      >
+        Register
+      </button>
+    </div>
   </form>
 </template>
