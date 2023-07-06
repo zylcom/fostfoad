@@ -36,10 +36,14 @@ export const useAuthUserStore = defineStore("User", () => {
   function login(email, password) {
     loadingStore.showLoading();
 
-    const { onResult, onError } = useQuery(LOGIN_QUERY, {
-      email,
-      password,
-    });
+    const { onResult, onError } = useQuery(
+      LOGIN_QUERY,
+      {
+        email,
+        password,
+      },
+      { fetchPolicy: "no-cache" }
+    );
 
     onResult((queryResult) => {
       if (queryResult.data.authenticate.__typename === "UserAuth") {
@@ -72,7 +76,9 @@ export const useAuthUserStore = defineStore("User", () => {
   }) {
     loadingStore.showLoading();
 
-    const { mutate, onDone, onError } = useMutation(REGISTER_USER_QUERY);
+    const { mutate, onDone, onError } = useMutation(REGISTER_USER_QUERY, {
+      fetchPolicy: "no-cache",
+    });
 
     mutate({
       name,

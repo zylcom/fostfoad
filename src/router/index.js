@@ -70,6 +70,18 @@ const router = createRouter({
       meta: { requiresAuth: false },
       component: () => import("@/views/AuthenticationView.vue"),
     },
+    {
+      path: "/checkout-success",
+      name: "checkout-success",
+      meta: { requiresAuth: true },
+      component: () => import("@/views/CheckoutSuccessView.vue"),
+    },
+    {
+      path: "/order/:id",
+      name: "order",
+      meta: { requiresAuth: true },
+      component: () => import("@/views/OrderDetailView.vue"),
+    },
   ],
 });
 

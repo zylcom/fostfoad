@@ -1,26 +1,32 @@
 <script setup>
 import { computed, ref } from "vue";
-import BackButton from "../components/BackButton.vue";
-import CartItem from "../components/CartItem.vue";
-import IconPlus from "../components/icons/IconPlus.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
-import { allStore } from "../stores";
-import { formatNumberToIDR } from "../utils";
-import { useHideOnScroll } from "../composables/useHideOnScroll";
+import BackButton from "@/components/BackButton.vue";
+import CartItem from "@/components/CartItem.vue";
+import IconPlus from "@/components/icons/IconPlus.vue";
+import { allStore } from "@/stores";
+import { formatNumberToIDR } from "@/utils";
+import { useHideOnScroll } from "@/composables/useHideOnScroll";
 
-const { authUserStore, cartStore } = allStore();
+const { authUserStore, cartStore, orderStore } = allStore();
 const authUser = authUserStore.getAuthUser;
 const myCart = cartStore.getMyCart;
+
+const loading = ref(false);
 const navElement = ref(null);
+
 const totalPrice = computed(() => formatNumberToIDR(myCart.value.totalPrice));
 
 useHideOnScroll(navElement);
+
+function checkoutHandler() {
+  orderStore.checkoutOrder();
+}
 </script>
 
 <template>
   <header class="bg-cloud-break">
     <div
-      class="fixed top-0 z-50 flex w-full items-center bg-cloud-break px-6 pt-3 pb-2 shadow transition-all duration-500"
+      class="fixed top-0 z-50 flex w-full items-center bg-cloud-break px-6 pb-2 pt-3 shadow transition-all duration-500"
       ref="navElement"
     >
       <nav class="flex">
@@ -30,8 +36,6 @@ useHideOnScroll(navElement);
       <h1 class="w-full text-center text-2xl font-medium">Your Cart</h1>
     </div>
   </header>
-
-  <LoadingSpinner />
 
   <main
     class="flex min-h-screen flex-col items-center justify-center pt-24"
@@ -56,7 +60,7 @@ useHideOnScroll(navElement);
       v-else
     >
       <div
-        class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 px-3 pt-6 pb-6 [&>div]:relative"
+        class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 px-3 pb-6 pt-6 [&>div]:relative"
       >
         <CartItem
           v-for="cartItem in myCart.cartItems"
@@ -78,57 +82,22 @@ useHideOnScroll(navElement);
       </div>
 
       <p
-        class="flex justify-between px-6 pt-2 pb-4 text-xs font-medium text-thamar-black"
+        class="flex justify-between px-6 pb-4 pt-2 text-xs font-medium text-thamar-black"
       >
         Total: <span class="font-normal">{{ totalPrice }}</span>
       </p>
 
-      <div class="border-t border-prunus-avium/50 px-6 pt-24">
-        <h1 class="font-rubik text-lg text-thamar-black">Payment mode:</h1>
-        <p class="font-rubik text-xs text-gray-500">
-          Choose a method of payment
-        </p>
-
-        <div class="my-6 grid grid-cols-2 gap-6">
-          <label
-            for="payment-1"
-            class="flex cursor-pointer items-center gap-x-2"
-          >
-            <input type="radio" name="payment_method" id="payment-1" disabled />
-            Coming Soon
-          </label>
-
-          <label
-            for="payment-2"
-            class="flex cursor-pointer items-center gap-x-2"
-          >
-            <input type="radio" name="payment_method" id="payment-2" disabled />
-            Coming Soon
-          </label>
-
-          <label
-            for="payment-3"
-            class="flex cursor-pointer items-center gap-x-2"
-          >
-            <input type="radio" name="payment_method" id="payment-3" disabled />
-            Coming Soon
-          </label>
-
-          <label
-            for="payment-4"
-            class="flex cursor-pointer items-center gap-x-2"
-          >
-            <input type="radio" name="payment_method" id="payment-4" disabled />
-            Coming Soon
-          </label>
-        </div>
-
-        <button
-          class="my-6 w-full rounded-lg bg-torii-red/95 py-2 font-rubik text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red"
+      <v-container fluid>
+        <v-btn
+          :loading="loading.value"
+          class="text-white"
+          color="#34a853"
+          @click="checkoutHandler()"
+          block
         >
-          Buy
-        </button>
-      </div>
+          Checkout Order
+        </v-btn>
+      </v-container>
     </div>
   </main>
 </template>

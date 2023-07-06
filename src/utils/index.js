@@ -21,6 +21,7 @@ function formatNumberToIDR(number) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
+    maximumFractionDigits: 0,
   }).format(number);
 }
 
@@ -87,10 +88,27 @@ function formatNumber(number) {
   return number;
 }
 
+function formatDateToLocaleId({ date, showTime, hour12 }) {
+  let options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+
+  if (showTime) {
+    options.hour = "numeric";
+    options.minute = "numeric";
+    options.hour12 = hour12;
+  }
+
+  return new Intl.DateTimeFormat("id-ID", options).format(new Date(date));
+}
+
 export {
   checkUserIsLoggedIn,
   clearKeyword,
   fetchApiWithToken,
+  formatDateToLocaleId,
   formatFloatNumber,
   formatNumber,
   formatNumberToIDR,

@@ -274,14 +274,73 @@ const DELETE_CART_ITEM_BY_ID_QUERY = gql`
     }
   }
 `;
+const CHECKOUT_ORDER_QUERY = gql`
+  mutation CheckoutOrder($orderId: Int) {
+    checkoutOrder(orderId: $orderId) {
+      __typename
+      ... on CheckoutSession {
+        sessionId
+        url
+        expiresAt
+      }
+      ... on CheckoutError {
+        message
+      }
+    }
+  }
+`;
+const GET_ORDER_BY_ID_QUERY = gql`
+  query GetOrderById($orderId: Int!) {
+    getOrderById(orderId: $orderId) {
+      __typename
+      ... on Order {
+        id
+        amountSubtotal
+        amountTotal
+        status
+        createdAt
+        checkoutSession {
+          sessionId
+          url
+          expiresAt
+        }
+        payment {
+          id
+          method
+          amount
+          status
+        }
+        shipment {
+          id
+          address
+          name
+          phone
+        }
+        orderItems {
+          id
+          quantity
+          product {
+            name
+            price
+          }
+        }
+      }
+      ... on OrderError {
+        message
+      }
+    }
+  }
+`;
 
 export {
+  CHECKOUT_ORDER_QUERY,
   CREATE_REVIEW_QUERY,
   DELETE_CART_ITEM_BY_ID_QUERY,
   GET_MY_CART_QUERY,
   GET_MY_PROFILE_QUERY,
   GET_BEST_RATED_PRODUCTS_QUERY,
   GET_PRODUCT_QUERY,
+  GET_ORDER_BY_ID_QUERY,
   LIKE_PRODUCT_QUERY,
   LOGIN_QUERY,
   NEUTRALIZE_LIKE_PRODUCT_QUERY,

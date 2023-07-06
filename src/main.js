@@ -4,7 +4,9 @@ import { DefaultApolloClient } from "@vue/apollo-composable";
 import VueTelInput from "vue-tel-input";
 import "vue-tel-input/vue-tel-input.css";
 
-import apolloClient from "./plugins/apollo";
+import vuetify from "@/plugins/vuetify";
+import apolloClient from "@/plugins/apollo";
+
 import App from "./App.vue";
 import router from "./router";
 import "./assets/index.css";
@@ -19,5 +21,6 @@ const app = createApp({
 app.use(createPinia());
 app.use(router);
 app.use(VueTelInput);
+app.use(vuetify);
 
 app.mount("#app");

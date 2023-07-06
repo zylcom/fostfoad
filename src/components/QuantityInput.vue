@@ -21,12 +21,12 @@ function onInputQuantity() {
 <template>
   <input
     type="number"
-    class="w-full border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
+    class="border-b border-b-torii-red bg-transparent font-rubik text-sm focus:outline-none focus:ring-0"
     min="1"
     max="999"
     maxlength="3"
     :value="quantityItem"
-    :oninput="onInputQuantity()"
+    :oninput="onInputQuantity"
     :onkeypress="isNumberKey"
   />
 </template>

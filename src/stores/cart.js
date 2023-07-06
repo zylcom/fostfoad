@@ -5,7 +5,7 @@ import {
   DELETE_CART_ITEM_BY_ID_QUERY,
   GET_MY_CART_QUERY,
   UPDATE_MY_CART_QUERY,
-} from "../config";
+} from "@/config";
 import { useLoadingStore } from "./loading";
 
 export const useCartStore = defineStore("Cart", () => {
