@@ -1,170 +1,80 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
-import { useMutation, useQuery } from "@vue/apollo-composable";
 import { allStore } from ".";
-import { checkUserIsLoggedIn, saveAccessToken } from "../utils";
-import { LOGIN_QUERY, REGISTER_USER_QUERY } from "../config";
+import userService from "../services/user-service";
+import {
+  getCartFromLocalstorage,
+  getGuestUserId,
+  removeAccessToken,
+  saveGuestUserId,
+} from "../utils";
+import cartService from "../services/cart-service";
+import { z } from "zod";
 
 export const useAuthUserStore = defineStore("User", () => {
-  const { cartStore, errorStore, loadingStore } = allStore();
+  const { cartStore, errorStore } = allStore();
   const authUser = ref(null);
-  const getAuthUser = computed(() => authUser);
   const isLoggedIn = ref(false);
 
-  function setAuthUser(userPayload) {
-    if (userPayload) {
-      authUser.value = userPayload;
+  async function setAuthUser(data) {
+    const cart = getCartFromLocalstorage();
+    const validGuestUserId = z
+      .string({
+        invalid_type_error: "Guest user id must be a string!",
+        required_error: "Guest user id is required!",
+      })
+      .nonempty({ message: "Guest user id is not allowed to be empty!" })
+      .uuid({ message: "Guest user id is invalid!" })
+      .safeParse(getGuestUserId());
 
-      cartStore.fetchMyCart();
+    if (data.isLoggedIn) {
+      authUser.value = data.userPayload;
+
+      cartStore.setMyCart(data.userPayload.cart);
     } else {
-      authUser.value = null;
+      removeAccessToken();
+
+      if (data.userPayload === null) {
+        await preload();
+        return;
+      }
+
+      if (!validGuestUserId.success) {
+        saveGuestUserId(data.userPayload.guestUserId);
+      }
+
+      if (!cart) {
+        cartStore.setMyCart({ cartItems: [], totalPrice: 0 });
+      } else {
+        const result = await cartService.revalidateCart(cart);
+
+        cartStore.setMyCart(result.data.data);
+      }
     }
   }
 
   async function preload() {
     errorStore.$reset();
 
-    return await checkUserIsLoggedIn().then((res) => {
-      isLoggedIn.value = res.isLoggedIn;
+    return await userService.getMyProfile().then(async (result) => {
+      isLoggedIn.value = result.isLoggedIn;
 
-      setAuthUser(res.userPayload);
+      await setAuthUser(result);
 
-      return res.isLoggedIn;
+      return result.isLoggedIn;
     });
   }
 
-  function login(email, password) {
-    loadingStore.showLoading();
-
-    const { onResult, onError } = useQuery(
-      LOGIN_QUERY,
-      {
-        email,
-        password,
-      },
-      { fetchPolicy: "no-cache" }
-    );
-
-    onResult((queryResult) => {
-      if (queryResult.data.authenticate.__typename === "UserAuth") {
-        setAuthUser(queryResult.data.authenticate.data);
-        saveAccessToken(queryResult.data.authenticate.token);
-        cartStore.fetchMyCart();
-      } else {
-        errorStore.setError({ message: "Invalid credentials!" });
-      }
-
-      loadingStore.hideLoading();
-    });
-
-    onError(({ networkError }) => {
-      if (networkError) {
-        alert(networkError.message);
-      }
-
-      loadingStore.hideLoading();
-    });
-  }
-
-  function register({
-    name,
-    email,
-    phoneNumber,
-    password,
-    confirmationPassword,
-    countryCode,
-  }) {
-    loadingStore.showLoading();
-
-    const { mutate, onDone, onError } = useMutation(REGISTER_USER_QUERY, {
-      fetchPolicy: "no-cache",
-    });
-
-    mutate({
-      name,
-      email,
-      phoneNumber,
-      password,
-      confirmationPassword,
-      countryCode,
-    });
-
-    onDone((mutateResult) => {
-      if (mutateResult.data.registerUser.__typename === "UserAuth") {
-        setAuthUser(mutateResult.data.registerUser.data);
-        saveAccessToken(mutateResult.data.registerUser.token);
-      } else {
-        switch (mutateResult.data.registerUser.message) {
-          case `Email ${email} already in use!`:
-            errorStore.setError({
-              errorType: "email",
-              message: mutateResult.data.registerUser.message,
-            });
-            break;
-
-          case "Email is invalid!":
-            errorStore.setError({
-              errorType: "email",
-              message: mutateResult.data.registerUser.message,
-            });
-            break;
-
-          case `Phone Number ${phoneNumber} already in use!`:
-            errorStore.setError({
-              errorType: "phone-number",
-              message: mutateResult.data.registerUser.message,
-            });
-            break;
-
-          case "Phone number is invalid!":
-            errorStore.setError({
-              errorType: "phone-number",
-              message: mutateResult.data.registerUser.message,
-            });
-            break;
-
-          case "Password and confirmation password are not match!":
-            errorStore.setError({
-              errorType: "password",
-              message: mutateResult.data.registerUser.message,
-            });
-            break;
-
-          case "Password length must 8 or above!":
-            errorStore.setError({
-              errorType: "password",
-              message: mutateResult.data.registerUser.message,
-            });
-            break;
-
-          default:
-            errorStore.setError({
-              errorType: "general",
-              message: "Register account failed",
-            });
-            break;
-        }
-      }
-
-      loadingStore.hideLoading();
-    });
-
-    onError(({ networkError }) => {
-      if (networkError) {
-        alert(networkError.message);
-      }
-
-      loadingStore.hideLoading();
-    });
+  function $reset() {
+    authUser.value = null;
+    isLoggedIn.value = false;
   }
 
   return {
     authUser,
-    getAuthUser,
     isLoggedIn,
-    login,
     preload,
-    register,
     setAuthUser,
+    $reset,
   };
 });

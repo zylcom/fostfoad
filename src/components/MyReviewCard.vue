@@ -1,10 +1,13 @@
 <script setup>
 import { onUnmounted, ref } from "vue";
+import { useToast } from "vue-toast-notification";
 import IconCross from "./icons/IconCross.vue";
 import ReviewInputForm from "./ReviewInputForm.vue";
 import ReviewItem from "./ReviewItem.vue";
+import reviewService from "../services/review-service";
 import { useReviewsStore } from "../stores/reviews";
 
+const $toast = useToast();
 const reviewsStore = useReviewsStore();
 const myReview = reviewsStore.getMyReview;
 const modalBoxElement = ref();
@@ -20,15 +23,20 @@ function toggleModalBox() {
   }
 }
 
-function updateReviewHandler({ description, ratingStar, productId, slug }) {
-  reviewsStore.updateReview({
-    description,
-    ratingStar,
-    productId,
-    slug,
-  });
+async function updateReviewHandler({ description, rating, productSlug }) {
+  try {
+    await reviewService.update({
+      description,
+      rating,
+      productSlug,
+    });
 
-  toggleModalBox();
+    $toast.success("Review updated", { position: "bottom" });
+  } catch (error) {
+    $toast.error("Something went wrong!", { position: "bottom" });
+  } finally {
+    toggleModalBox();
+  }
 }
 
 onUnmounted(() => {
@@ -38,19 +46,19 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <h4 class="pl-5 pb-3 pt-8 font-bold text-dark-tone-ink">My Review</h4>
+  <h4 class="pb-3 pl-5 pt-8 font-bold text-dark-tone-ink">My Review</h4>
 
   <ReviewItem :review="myReview" />
 
   <button
-    class="pt-2 pl-5 text-xs font-medium text-heirloom-hydrangea hover:underline"
+    class="pl-5 pt-2 text-xs font-medium text-heirloom-hydrangea hover:underline"
     @click="toggleModalBox()"
   >
     Edit My review
   </button>
 
   <div
-    class="fixed top-0 left-0 z-50 flex h-screen w-full items-center backdrop-blur"
+    class="fixed left-0 top-0 z-50 flex h-screen w-full items-center backdrop-blur"
     v-show="isModalOpen"
     ref="modalBoxElement"
   >

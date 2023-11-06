@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
 import AddToCartButton from "@/components/AddToCartButton.vue";
+import { nextTick } from "vue";
 
 describe("AddToCartButton.vue Test", () => {
   const wrapper = mount(AddToCartButton, {
@@ -33,7 +34,7 @@ describe("AddToCartButton.vue Test", () => {
   });
 
   it("should display 'Update' text when cartItem not empty", async () => {
-    await wrapper.setProps({ cartItem: { id: 1 } });
+    await wrapper.setProps({ cartItem: { product: { id: 1 } } });
     const button = wrapper.find("button");
 
     expect(button.text()).toBe("Update");
@@ -48,19 +49,38 @@ describe("AddToCartButton.vue Test", () => {
     expect(addToCartHandler).toHaveBeenCalled();
   });
 
-  it("should call 'updateMyCart' action with productId and quantity when clicked", async () => {
-    const productId = 1;
+  it("should call 'cartStore.upsertItem' action as guest user", async () => {
     const quantity = 5;
+    const product = { name: "Pizza", slug: "pizza" };
+    const productSlug = product.slug;
+    const upsertItem = vi.spyOn(wrapper.vm.cartStore, "upsertItem");
 
-    await wrapper.setProps({ productId, quantity });
+    await wrapper.setProps({ quantity, product });
 
-    wrapper.vm.$nextTick(async () => {
-      await wrapper.get("button").trigger("click");
+    await nextTick();
 
-      expect(wrapper.vm.cartStore.updateMyCart).toHaveBeenCalledWith(
-        productId,
-        quantity
-      );
+    await wrapper.get("button").trigger("click");
+
+    expect(upsertItem).toHaveBeenCalledWith({
+      productSlug,
+      quantity,
+      product,
     });
+  });
+
+  it("should call 'cartService.upsert' action as authenticated user", async () => {
+    const quantity = 5;
+    const product = { name: "Pizza", slug: "pizza" };
+    const upsert = vi.spyOn(wrapper.vm.cartService, "upsert");
+
+    await wrapper.setProps({ quantity, product });
+
+    wrapper.vm.authUserStore.authUser = { id: 1 };
+
+    await nextTick();
+
+    await wrapper.get("button").trigger("click");
+
+    expect(upsert).toHaveBeenCalled();
   });
 });

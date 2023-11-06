@@ -1,34 +1,64 @@
 <script setup>
 import { computed } from "vue";
-import { useCartStore } from "../stores/cart";
+import { useToast } from "vue-toast-notification";
+import cartService from "@/services/cart-service";
+import { allStore } from "@/stores";
+import { useLoading } from "@/composables/useLoading";
 
 const props = defineProps({
-  productId: Number,
+  product: Object,
   quantity: Number,
   cartItem: Object,
 });
 
-const cartStore = useCartStore();
+const $toast = useToast();
+
+const { authUserStore, cartStore } = allStore();
+const authUser = computed(() => authUserStore.authUser);
 const cartItem = computed(() => props.cartItem);
 const quantity = computed(() => props.quantity);
-const productId = computed(() => props.productId);
+const product = computed(() => props.product);
+const { isLoading, showLoading, hideLoading } = useLoading();
 
-function addToCartHandler() {
-  cartStore.updateMyCart(productId.value, quantity.value);
+async function addToCartHandler() {
+  showLoading();
+
+  try {
+    let result;
+
+    if (authUser.value) {
+      result = await cartService.upsert({
+        productSlug: product.value.slug,
+        quantity: quantity.value,
+      });
+    } else {
+      result = cartStore.upsertItem({
+        productSlug: product.value.slug,
+        quantity: quantity.value,
+        product: product.value,
+      });
+    }
+
+    $toast.success(`${result} success!`, { position: "top" });
+  } catch (error) {
+    $toast.error("Something went wrong!", { position: "top" });
+  } finally {
+    hideLoading();
+  }
 }
 </script>
 
 <template>
   <button
-    class="mt-6 w-full rounded-lg py-2 font-rubik"
-    :class="
-      quantity > 0
-        ? 'bg-torii-red/95 text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red'
-        : 'cursor-not-allowed bg-mercury text-gray-500'
-    "
-    :disabled="quantity > 0 ? false : true"
+    class="mt-6 w-full rounded-lg py-2 font-rubik text-charolais-cattle"
+    :class="{
+      'cursor-wait bg-mercury text-gray-500': quantity < 1 || isLoading,
+      'bg-torii-red/80 hover:bg-torii-red/90 active:bg-torii-red':
+        !isLoading && quantity > 0,
+    }"
+    :disabled="!(quantity > 0) ? true : isLoading ? true : false"
     @click="addToCartHandler()"
   >
-    {{ cartItem.id ? "Update" : "Add to cart" }}
+    {{ cartItem?.product?.id ? "Update" : "Add to cart" }}
   </button>
 </template>

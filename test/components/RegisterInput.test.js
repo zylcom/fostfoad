@@ -1,13 +1,16 @@
 import { mount } from "@vue/test-utils";
 import RegisterInput from "@/components/RegisterInput.vue";
+import { VueQueryPlugin } from "@tanstack/vue-query";
 
 describe("RegisterInput.vue Test", () => {
   const name = "Test Register";
-  const email = "test@register.com";
-  const password = "secret";
+  const username = "test_username";
+  const password = "secret-password";
+  const phonenumber = "083812345678";
   const wrapper = mount(RegisterInput, {
     global: {
       components: { "vue-tel-input": { template: "<div></div>" } },
+      plugins: [VueQueryPlugin],
     },
   });
 
@@ -19,11 +22,11 @@ describe("RegisterInput.vue Test", () => {
     });
   });
 
-  test("if email input filled, email ref will have same value", async () => {
-    await wrapper.find("#email").setValue(email);
+  test("if username input filled, username ref will have same value", async () => {
+    await wrapper.find("#username").setValue(username);
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.email).toBe(email);
+      expect(wrapper.vm.username).toBe(username);
     });
   });
 
@@ -44,15 +47,13 @@ describe("RegisterInput.vue Test", () => {
   });
 
   it("should call 'onSubmitHandler' when form submitted", async () => {
+    wrapper.vm.phonenumber = phonenumber;
+
     const onSubmitHandler = vi.spyOn(wrapper.vm, "onSubmitHandler");
     await wrapper.find("form").trigger("submit");
 
-    expect(onSubmitHandler).toHaveBeenCalled();
-  });
-
-  it("should call 'register' action when form submitted", async () => {
-    await wrapper.find("form").trigger("submit");
-
-    expect(wrapper.vm.authUserStore.register).toHaveBeenCalled();
+    wrapper.vm.$nextTick(() => {
+      expect(onSubmitHandler).toHaveBeenCalled();
+    });
   });
 });

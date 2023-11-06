@@ -1,22 +1,34 @@
 <script setup>
-import IconGreaterThan from "../components/icons/IconGreaterThan.vue";
-import IconLogin from "../components/icons/IconLogin.vue";
-import IconLogout from "../components/icons/IconLogout.vue";
-import ToggleSwitch from "../components/ToggleSwitch.vue";
-import SettingButton from "../components/SettingButton.vue";
-import { removeAccessToken } from "../utils";
-import { useAuthUserStore } from "../stores/authUser";
+import { computed } from "vue";
+import IconGreaterThan from "@/components/icons/IconGreaterThan.vue";
+import IconLogin from "@/components/icons/IconLogin.vue";
+import IconLogout from "@/components/icons/IconLogout.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import ToggleSwitch from "@/components/ToggleSwitch.vue";
+import SettingButton from "@/components/SettingButton.vue";
+import { allStore } from "@/stores";
+import { removeAccessToken } from "@/utils";
+import { useLoading } from "@/composables/useLoading";
 
-const authUserStore = useAuthUserStore();
-const authUser = authUserStore.getAuthUser;
+const { authUserStore } = allStore();
+const authUser = computed(() => authUserStore.authUser);
+const { isLoading, showLoading, hideLoading } = useLoading();
 
 function logout() {
   removeAccessToken();
-  authUserStore.preload();
+  showLoading();
+
+  setTimeout(() => {
+    authUserStore.$reset();
+
+    hideLoading();
+  }, 3000);
 }
 </script>
 
 <template>
+  <LoadingSpinner v-if="isLoading" />
+
   <header class="sticky top-0 pb-8 pr-7 pt-7">
     <img src="../assets/images/gear.png" alt="" class="ml-auto" />
   </header>
@@ -25,37 +37,39 @@ function logout() {
     <h1 class="pb-6 text-center text-2xl font-medium">Settings</h1>
     <div class="flex flex-col gap-y-4 px-5">
       <SettingButton
-        setting-name="Profile"
+        settingName="Profile"
+        to="/profile"
         :child="IconGreaterThan"
         v-if="authUser"
       />
 
       <SettingButton
-        toggle-id="dark-mode-switch"
-        setting-name="Dark Mode"
+        toggleId="dark-mode-switch"
+        settingName="Dark Mode"
         :child="ToggleSwitch"
       />
 
       <SettingButton
-        toggle-id="push-notification-toggle"
-        setting-name="Push Notification"
+        toggleId="push-notification-toggle"
+        settingName="Push Notification"
         :child="ToggleSwitch"
         v-if="authUser"
       />
 
-      <SettingButton setting-name="Help" :child="IconGreaterThan" />
+      <SettingButton settingName="Help" to="/help" :child="IconGreaterThan" />
 
       <SettingButton
-        setting-name="Send Us Feedback"
+        settingName="Send Us Feedback"
+        to="feedback"
         :child="IconGreaterThan"
         class="text-heirloom-hydrangea"
       />
 
-      <SettingButton setting-name="Show More" :child="IconGreaterThan" />
+      <!-- <SettingButton  settingName="Show More" :child="IconGreaterThan" /> -->
     </div>
 
     <button
-      class="m-auto mt-14 mb-28 flex items-center gap-x-3 text-lg"
+      class="m-auto mb-28 mt-14 flex items-center gap-x-3 text-lg"
       @click="logout"
       v-if="authUser"
     >
@@ -64,7 +78,7 @@ function logout() {
 
     <RouterLink
       to="/login"
-      class="m-auto mt-14 mb-28 flex items-center justify-center gap-x-3 text-lg"
+      class="m-auto mb-28 mt-14 flex items-center justify-center gap-x-3 text-lg"
       v-else
     >
       Log in <span><IconLogin /></span>

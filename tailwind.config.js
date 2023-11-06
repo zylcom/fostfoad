@@ -19,6 +19,7 @@ module.exports = {
         "explosive-grey": "#c4c4c4",
         "heirloom-hydrangea": "#2a7dd2",
         mercury: "#ebebeb",
+        "mint-jelly": "#41d195",
         "prunus-avium": "#e04699",
         "seljuk-blue": "#4285f4",
         "spandex-green": "#34a853",

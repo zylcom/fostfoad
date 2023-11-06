@@ -8,7 +8,7 @@ defineProps({ currentRate: Number, changeRateHandler: Function });
   <div class="mb-3 flex w-full items-center gap-x-3">
     Rate
     <div
-      class="flex flex-row-reverse gap-x-1 [&_input[type='radio']]:hidden [&_label]:cursor-pointer [&_*]:transition [&_*]:duration-300"
+      class="flex flex-row-reverse gap-x-1 [&_*]:transition [&_*]:duration-300 [&_input[type='radio']]:hidden [&_label]:cursor-pointer"
     >
       <RatingStarInput
         v-for="i in [5, 4, 3, 2, 1]"

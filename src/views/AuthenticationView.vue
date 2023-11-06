@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import BackButton from "../components/BackButton.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
 import LoginInput from "../components/LoginInput.vue";
 import RegisterInput from "../components/RegisterInput.vue";
 import { useHideOnScroll } from "../composables/useHideOnScroll";
@@ -21,11 +20,9 @@ function switchTab(newPath) {
 </script>
 
 <template>
-  <LoadingSpinner />
-
   <header class="inline">
     <nav
-      class="fixed z-30 flex w-full justify-between px-6 pt-5 pb-3 backdrop-blur-md transition-all duration-500"
+      class="fixed z-30 flex w-full justify-between px-6 pb-3 pt-5 backdrop-blur-md transition-all duration-500"
       ref="navElement"
     >
       <BackButton class="" />
@@ -38,7 +35,7 @@ function switchTab(newPath) {
         <img
           src="https://picsum.photos/480/320.webp"
           alt=""
-          class="absolute top-0 left-0 block w-full object-cover object-center"
+          class="absolute left-0 top-0 block w-full object-cover object-center"
           loading="lazy"
         />
       </div>

@@ -10,7 +10,7 @@ const { productDetailStore } = allStore();
 const myReview = computed(() => props.myReview);
 const product = productDetailStore.getProduct;
 const rating = ref(myReview.value?.rating || 0);
-const reviewDescription = ref(myReview.value?.description || "");
+const description = ref(myReview.value?.description || "");
 
 function changeRate(rateStars) {
   rating.value = rateStars;
@@ -22,17 +22,16 @@ function changeRate(rateStars) {
     class="sticky bottom-0 left-0 z-30 w-full bg-bleached-silk px-5 py-3"
     @submit.prevent="
       sendReview({
-        description: reviewDescription,
-        ratingStar: rating,
-        productId: +product.id,
-        slug: product.slug,
+        description,
+        rating,
+        productSlug: product.slug,
       })
     "
   >
     <RatingStars :currentRate="rating" :changeRateHandler="changeRate" />
 
     <div class="relative" v-if="rating">
-      <ReviewDescriptionInput v-model:reviewDescription="reviewDescription" />
+      <ReviewDescriptionInput v-model:description="description" />
     </div>
   </form>
 </template>

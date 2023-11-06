@@ -4,8 +4,9 @@ import { useRouter } from "vue-router";
 import IconCross from "./icons/IconCross.vue";
 import IconSearch from "./icons/IconSearch.vue";
 import SearchFilterButton from "./SearchFilterButton.vue";
-import { useProductsStore } from "../stores/products";
-import { clearKeyword } from "../utils";
+import { clearKeyword } from "@/utils";
+import { useProductsStore } from "@/stores/products";
+import { useInfinite } from "@/composables/useInfinite";
 
 const props = defineProps({
   keyword: String,
@@ -16,12 +17,13 @@ const props = defineProps({
 defineEmits(["update:keyword"]);
 
 const router = useRouter();
-const store = useProductsStore();
+const { fetchData } = useInfinite();
+const productsStore = useProductsStore();
 const productCategory = computed(() => props.category);
 const productTag = computed(() => props.tag);
 const searchKeyword = computed(() => clearKeyword(props.keyword));
 
-function searchHandler(redirectPath) {
+async function searchHandler(redirectPath) {
   if (!searchKeyword.value) {
     return;
   }
@@ -56,11 +58,17 @@ function searchHandler(redirectPath) {
     });
   }
 
-  store.fetchFilteredProducts({
-    category: productCategory.value,
-    tag: productTag.value,
-    keyword: searchKeyword.value,
-  });
+  try {
+    productsStore.$reset();
+
+    await fetchData({
+      category: productCategory.value,
+      tag: productTag.value,
+      name: searchKeyword.value,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 </script>
 
@@ -97,6 +105,8 @@ function searchHandler(redirectPath) {
       <IconCross
         class="h-4 w-4 transition-all duration-300 group-hover:scale-110"
       />
+
+      <span class="sr-only">Clear search keyword</span>
     </button>
 
     <SearchFilterButton v-if="router.currentRoute.value.path !== '/'" />

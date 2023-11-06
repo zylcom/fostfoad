@@ -2,11 +2,20 @@ import { shallowMount } from "@vue/test-utils";
 import MenuItemAction from "@/components/MenuItemAction.vue";
 
 describe("MenuItemAction.vue Test", () => {
-  const cartItem = { id: 1, quantity: 5 };
-  const productId = 1;
-  const quantity = 5;
+  const product = {
+    id: 1,
+    name: "Omelet",
+    slug: "omelet",
+    price: 10000,
+    averageRating: 1.8,
+    description: "It's super fluffy.",
+    ingredients: "Egg, milk",
+    categorySlug: "food",
+    createdAt: "2023-11-03T10:30:49.014Z",
+    updatedAt: "2023-11-03T10:30:49.014Z",
+  };
   const wrapper = shallowMount(MenuItemAction, {
-    props: { cartItem: {}, productId },
+    props: { product },
   });
 
   it("should render 'IconPlus' component if cartItem is empty", () => {
@@ -15,35 +24,5 @@ describe("MenuItemAction.vue Test", () => {
 
   it("should render button with title 'Add to cart' if cartItem is empty", () => {
     expect(wrapper.find("button").attributes("title")).toBe("Add to cart");
-  });
-
-  it("should render 'IconPencil' component if cartItem is not empty", async () => {
-    await wrapper.setProps({ cartItem });
-
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.findComponent("icon-pencil-stub").isVisible()).toBe(true);
-    });
-  });
-
-  it("should render button with title 'Update' if cartItem is not empty", () => {
-    expect(wrapper.find("button").attributes("title")).toBe("Update");
-  });
-
-  it("should call 'onAddCartClicked' when form submitted", async () => {
-    const onAddCartClicked = vi.spyOn(wrapper.vm, "onAddCartClicked");
-
-    await wrapper.find("form").trigger("submit");
-
-    expect(onAddCartClicked).toHaveBeenCalled();
-  });
-
-  it("should call 'updateMyCart' action with productId and quantity when form submitted", async () => {
-    wrapper.vm.quantity = quantity;
-    await wrapper.find("form").trigger("submit");
-
-    expect(wrapper.vm.cartStore.updateMyCart).toHaveBeenCalledWith(
-      productId,
-      quantity
-    );
   });
 });

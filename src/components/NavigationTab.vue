@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import IconDotsHorizontal from "../components/icons/IconDotsHorizontal.vue";
 import IconHome from "../components/icons/IconHome.vue";
@@ -9,7 +10,7 @@ import { useAuthUserStore } from "../stores/authUser";
 
 const route = useRoute();
 const authUserStore = useAuthUserStore();
-const authUser = authUserStore.getAuthUser;
+const authUser = computed(() => authUserStore.authUser);
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import ReceiptCard from "../components/ReceiptCard.vue";
 
 <template>
   <div class="min-h-screen">
-    <header class="sticky top-0 pt-11 pb-24">
+    <header class="sticky top-0 pb-24 pt-11">
       <h1 class="text-center text-2xl font-medium">History</h1>
     </header>
 

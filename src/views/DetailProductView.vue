@@ -1,60 +1,58 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import DetailProductViewHeader from "../components/DetailProductViewHeader.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
-import ProductDetailCard from "../components/ProductDetailCard.vue";
-import ReviewComponent from "../components/ReviewComponent.vue";
-import { allStore } from "../stores";
-import { getCartItem } from "../utils";
+import { useToast } from "vue-toast-notification";
+import DetailProductViewHeader from "@/components/DetailProductViewHeader.vue";
+import ProductDetailCard from "@/components/ProductDetailCard.vue";
+import productService from "@/services/product-service";
+import ReviewComponent from "@/components/ReviewComponent.vue";
+import { allStore } from "@/stores";
+import { useLoading } from "@/composables/useLoading";
 
+const $toast = useToast();
 const route = useRoute();
 const productSlug = route.params.slug;
 
-const { authUserStore, cartStore, loadingStore, productDetailStore } =
-  allStore();
+const { authUserStore, productDetailStore } = allStore();
 
-const authUser = authUserStore.getAuthUser;
-const myCart = cartStore.getMyCart;
+const authUser = computed(() => authUserStore.authUser);
 const product = computed(() => productDetailStore.product);
-const cartItem = computed(() =>
-  getCartItem(myCart.value?.cartItems, +product.value.id)
-);
 const isLiked = computed(() =>
-  product.value.likedBy.includes(authUser.value?.id)
+  product.value.likes.some((val) => val.username === authUser.value?.username)
 );
 
-function likeProduct() {
-  if (!authUser.value) {
-    const confirmResult = confirm("Login first to like this product");
+const { isLoading, showLoading, hideLoading } = useLoading();
 
-    if (confirmResult) {
-      window.location.replace("/login");
+onMounted(async () => {
+  showLoading();
+
+  try {
+    await productService.get(productSlug);
+  } catch (error) {
+    if (error.code === "ERR_NETWORK") {
+      $toast.error(error.message, { position: "bottom" });
     }
 
-    return;
+    console.log(error);
+  } finally {
+    hideLoading();
   }
-
-  if (isLiked.value) {
-    productDetailStore.neutralizeLikeProduct(+product.value.id);
-  } else {
-    productDetailStore.likeProduct(+product.value.id);
-  }
-}
-
-onMounted(() => {
-  productDetailStore.fetchProductDetail(productSlug);
 });
 </script>
 
 <template>
-  <DetailProductViewHeader :product="product" />
+  <DetailProductViewHeader />
 
-  <LoadingSpinner />
+  <div
+    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
+    v-if="isLoading"
+  >
+    <strong class="text-2xl">Loading...</strong>
+  </div>
 
   <main
     class="relative rounded-t-2xl bg-zhen-zhu-bai-pearl"
-    v-if="product !== null"
+    v-else-if="!isLoading && product !== null"
   >
     <div
       class="fixed left-0 top-0 w-full after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
@@ -63,25 +61,20 @@ onMounted(() => {
         <img
           src="https://picsum.photos/1920/1280.webp"
           :alt="product.name"
-          class="absolute top-0 left-0 block max-h-screen w-full object-cover object-center shadow-md"
+          class="absolute left-0 top-0 block max-h-screen w-full object-cover object-center shadow-md"
           loading="lazy"
         />
       </div>
     </div>
 
-    <ProductDetailCard
-      :cartItem="cartItem"
-      :product="product"
-      :isLiked="isLiked"
-      :likeProductHandler="likeProduct"
-    />
+    <ProductDetailCard :product="product" :isLiked="isLiked" />
 
     <ReviewComponent :reviewsLength="product.reviews.length" />
   </main>
 
   <div
     class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
-    v-else-if="!loadingStore.isLoading"
+    v-else-if="!isLoading && product === null"
   >
     <strong class="text-2xl">Product Not Found!</strong>
   </div>

@@ -1,22 +1,30 @@
 <script setup>
+import { useToast } from "vue-toast-notification";
 import MyReviewCard from "./MyReviewCard.vue";
 import ReviewList from "./ReviewList.vue";
 import ReviewInputForm from "./ReviewInputForm.vue";
+import reviewService from "../services/review-service";
 import { allStore } from "../stores";
 
 defineProps({
   reviewsLength: Number,
 });
 
+const $toast = useToast();
 const { authUserStore, reviewsStore } = allStore();
 
-function createReviewHandler({ description, ratingStar, productId, slug }) {
-  reviewsStore.postReview({
-    productId,
-    description,
-    ratingStar,
-    slug,
-  });
+async function createReviewHandler({ description, rating, productSlug }) {
+  try {
+    await reviewService.create({
+      description,
+      rating,
+      productSlug,
+    });
+
+    $toast.success("Create new review successfully", { position: "bottom" });
+  } catch (error) {
+    $toast.error("Something went wrong!", { position: "bottom" });
+  }
 }
 </script>
 

@@ -1,33 +1,34 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import ProductCard from "./ProductCard.vue";
-import { allStore } from "../stores";
+import { allStore } from "@/stores";
+import { useInfinite } from "@/composables/useInfinite";
+import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 
 const props = defineProps({
   title: String,
   keyword: String,
-  products: Array,
-  loadMore: Function,
 });
 
-const { loadingStore, productsStore } = allStore();
+const { productsStore } = allStore();
 const target = ref(null);
-const observer = ref(null);
-const products = computed(() => props.products);
-const error = computed(() => productsStore.hasError);
+const products = computed(() => productsStore.products);
 const hasNextPage = computed(() => productsStore.hasNextPage);
+const cursor = computed(() => productsStore.cursor);
+const searchKeyword = computed(() => props.keyword);
+
+const { fetchData, fetchNextPage, infiniteScroll, isLoading } = useInfinite();
 
 onMounted(() => {
-  const options = {
-    threshold: 1.0,
-  };
+  productsStore.$reset();
 
-  observer.value = new IntersectionObserver(([entry]) => {
-    if (entry && entry.isIntersecting && hasNextPage.value) {
-      props.loadMore();
-    }
-  }, options);
-  observer.value.observe(target.value);
+  infiniteScroll(target, async () => {
+    await fetchNextPage({ name: searchKeyword.value, cursor: cursor.value });
+  });
+});
+
+onMounted(async () => {
+  await fetchData({ name: searchKeyword.value });
 });
 </script>
 
@@ -39,22 +40,24 @@ onMounted(() => {
       <div v-if="products.length > 0" class="flex flex-col gap-y-5">
         <ProductCard
           v-for="product in products"
-          :key="product.node.id"
-          :product="product.node"
+          :key="product.id"
+          :product="product"
           class="p-2"
           showLikesCountAndAverageRating
         />
       </div>
 
-      <div class="pt-5 pb-16 text-center" ref="target">
-        <span v-if="loadingStore.isLoading">Loading...</span>
+      <div class="pb-16 text-center" ref="target">
+        <span class="flex flex-col gap-y-5" v-if="isLoading">
+          <ProductCardSkeleton class="p-2" v-for="i in 3" :key="i" />
+        </span>
         <span v-else-if="products.length < 1">Products not found!</span>
         <span v-else-if="!hasNextPage">That's a wrap!</span>
 
         <button
-          v-else-if="!error"
+          v-else-if="!isLoading && hasNextPage"
           class="mt-3 cursor-pointer rounded bg-seljuk-blue/50 px-5 py-1"
-          @click="loadMore()"
+          @click="fetchNextPage({ name: searchKeyword, cursor })"
         >
           Load more!
         </button>

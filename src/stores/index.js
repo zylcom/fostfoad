@@ -18,7 +18,7 @@ export const allStore = () => {
     errorStore: useErrorStore(),
     loadingStore: useLoadingStore(),
     orderStore: useOrderStore(),
-    popularProductsStore: useBestRatedProductsStore(),
+    bestRatedProductsStore: useBestRatedProductsStore(),
     productsStore: useProductsStore(),
     productDetailStore: useProductDetailStore(),
     reviewsStore: useReviewsStore(),

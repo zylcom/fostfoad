@@ -5,7 +5,16 @@ import IconArrow from "./icons/IconArrow.vue";
 const router = useRouter();
 
 function goBack() {
-  router.go(-1);
+  switch (router.currentRoute.value.path) {
+    case "/login":
+    case "/register":
+      router.push({ path: "/" });
+      break;
+
+    default:
+      router.go(-1);
+      break;
+  }
 }
 </script>
 

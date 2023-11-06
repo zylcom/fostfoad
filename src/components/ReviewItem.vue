@@ -17,14 +17,14 @@ const formattedDate = computed(() =>
   >
     <div class="h-10 w-10">
       <img
-        :src="review.user.avatar"
-        :alt="review.user.name"
+        :src="review.user.profile.avatar"
+        :alt="review.user.profile.name"
         class="rounded-full bg-explosive-grey object-cover"
       />
     </div>
 
     <div class="text-xs">
-      <h4 class="font-medium">{{ review.user.name }}</h4>
+      <h4 class="font-medium">{{ review.user.profile.name }}</h4>
       <p class="text-gray-500">{{ formattedDate }}</p>
     </div>
 

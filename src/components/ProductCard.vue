@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
 import IconLove from "./icons/IconLove.vue";
 import IconStar from "./icons/IconStar.vue";
+import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({
   product: Object,
@@ -11,15 +12,18 @@ const props = defineProps({
   showLikesCountAndAverageRating: Boolean,
 });
 
+const authUserStore = useAuthUserStore();
+const authUser = computed(() => authUserStore.authUser);
 const formattedPrice = computed(() =>
   formatNumberToIDR(props.product.price * (props.quantity || 1))
 );
 const formattedAverageRating = computed(() =>
   formatFloatNumber(props.product.averageRating)
 );
-const likesCount = computed(
-  () => props.product.likedBy?.length || props.product.likesCount || 0
+const isLiked = computed(() =>
+  props.product.likes.some((val) => val.username === authUser.value?.username)
 );
+const likesCount = computed(() => props.product.likes?.length || 0);
 </script>
 
 <template>
@@ -34,7 +38,7 @@ const likesCount = computed(
         <img
           :src="`https://picsum.photos/1920/1280.webp?random=${product.id}`"
           :alt="product.name"
-          class="absolute top-0 left-0 block max-h-[1280px] w-full object-cover object-center"
+          class="absolute left-0 top-0 block max-h-[1280px] w-full object-cover object-center"
           loading="lazy"
         />
       </div>
@@ -63,7 +67,10 @@ const likesCount = computed(
         </div>
 
         <div title="Likes">
-          <IconLove class="mx-auto w-4 fill-blood-moon" />
+          <IconLove
+            class="mx-auto w-4"
+            :class="isLiked ? 'fill-blood-moon' : ''"
+          />
 
           <span class="font-rubik text-sm">
             {{ formatNumber(likesCount) }}

@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  VITE_BASE_API_URL: https://apollo-server.vercel.app/
+  VITE_BASE_API_URL: https://foody-order-rest-api-git-feedback-service-zylcom.vercel.app/api
 
 jobs:
   install:

@@ -1,22 +1,21 @@
 <script setup>
+import { computed } from "vue";
 import IconCart from "./icons/IconCart.vue";
-import { allStore } from "../stores";
+import { useCartStore } from "../stores/cart";
 
-const { authUserStore, cartStore } = allStore();
-const authUser = authUserStore.getAuthUser;
-const myCart = cartStore.getMyCart;
+const cartStore = useCartStore();
+const totalItems = computed(() => cartStore.cart.totalItems);
 </script>
 
 <template>
   <RouterLink
     to="/cart"
     class="relative transition duration-300 hover:scale-125"
-    v-if="authUser"
   >
     <span
-      class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-torii-red text-xs text-white"
+      class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-torii-red text-[0.6rem] font-thin text-white"
     >
-      {{ myCart.cartItems?.length || 0 }}
+      {{ totalItems > 99 ? "99+" : totalItems }}
     </span>
     <IconCart class="h-6 w-6" />
   </RouterLink>

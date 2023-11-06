@@ -1,13 +1,15 @@
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import CartButton from "../components/CartButton.vue";
-import CategoryButton from "../components/CategoryButton.vue";
-import MenuList from "../components/MenuList.vue";
-import ProductTagButtonList from "../components/ProductTagButtonList.vue";
-import SearchBar from "../components/SearchBar.vue";
-import { allStore } from "../stores";
-import { clearKeyword } from "../utils";
+import CartButton from "@/components/CartButton.vue";
+import CategoryButton from "@/components/CategoryButton.vue";
+import categoryService from "@/services/category-service";
+import MenuList from "@/components/MenuList.vue";
+import ProductTagButtonList from "@/components/ProductTagButtonList.vue";
+import SearchBar from "@/components/SearchBar.vue";
+import tagService from "@/services/tag-service";
+import { allStore } from "@/stores";
+import { clearKeyword } from "@/utils";
 
 const route = useRoute();
 const router = useRouter();
@@ -46,13 +48,17 @@ function changeTagHandler(tagName) {
   tagStore.changeTag(tagName);
 }
 
-onMounted(() => {
-  tagStore.fetchProductsTags(currentCategory.value);
-  categoryStore.fetchProductsCategory();
+onMounted(async () => {
+  try {
+    await categoryService.get();
+    await tagService.get(currentCategory.value);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
-watch(currentCategory, () => {
-  tagStore.fetchProductsTags(currentCategory.value);
+watch(currentCategory, async (newValue) => {
+  await tagService.get(newValue);
 });
 </script>
 
@@ -65,7 +71,7 @@ watch(currentCategory, () => {
     </div>
 
     <div
-      class="sticky top-0 flex justify-center gap-x-2.5 bg-bleached-silk py-4 px-6"
+      class="sticky top-0 flex justify-center gap-x-2.5 bg-bleached-silk px-6 py-4"
     >
       <SearchBar
         v-model:keyword="keyword"
@@ -87,7 +93,7 @@ watch(currentCategory, () => {
           :class="
             currentCategory === category.slug
               ? 'bg-torii-red text-bleached-silk'
-              : 'bg-charolais-cattle'
+              : 'bg-charolais-cattle text-gray-500'
           "
           @click="changeCategoryHandler(category.slug)"
         />

@@ -1,20 +1,42 @@
 <script setup>
 import { computed } from "vue";
-import { useCartStore } from "../stores/cart";
+import { useToast } from "vue-toast-notification";
 import IconCross from "./icons/IconCross.vue";
 import ProductCard from "./ProductCard.vue";
+import cartService from "@/services/cart-service";
+import { allStore } from "@/stores";
+import { useLoading } from "@/composables/useLoading";
 
 const props = defineProps({
-  cartItemId: Number,
   quantity: Number,
   product: Object,
 });
 
-const cartStore = useCartStore();
-const itemId = computed(() => props.cartItemId);
+const $toast = useToast();
+const { authUserStore, cartStore } = allStore();
+const authUser = computed(() => authUserStore.authUser);
+const product = computed(() => props.product);
 
-function removeItemHandler() {
-  cartStore.deleteCartItemById(itemId.value);
+const { isLoading, hideLoading, showLoading } = useLoading();
+
+async function removeItemHandler() {
+  if (confirm("Are sure want to delete this item?")) {
+    showLoading();
+
+    try {
+      if (authUser.value) {
+        await cartService.deleteItem(product.value.id);
+      } else {
+        cartStore.deleteItem(product.value.id);
+      }
+
+      $toast.success("Item deleted!", { position: "top" });
+    } catch (error) {
+      $toast.error("Something went wrong!", { position: "top" });
+    } finally {
+      hideLoading();
+    }
+  }
 }
 </script>
 
@@ -24,8 +46,9 @@ function removeItemHandler() {
       class="absolute right-4 top-4 z-50 transition duration-300 hover:scale-125"
       title="Remove item"
       @click="removeItemHandler()"
+      :disabled="isLoading ? true : false"
     >
-      <IconCross class="h-5 w-5" />
+      <IconCross class="h-5 w-5 stroke-chilled-chilly" />
     </button>
 
     <ProductCard :product="product" :quantity="quantity" overlay-bg />

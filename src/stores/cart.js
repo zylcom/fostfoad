@@ -1,107 +1,65 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { useMutation, useQuery } from "@vue/apollo-composable";
 import {
-  DELETE_CART_ITEM_BY_ID_QUERY,
-  GET_MY_CART_QUERY,
-  UPDATE_MY_CART_QUERY,
-} from "@/config";
-import { useLoadingStore } from "./loading";
+  calculateTotalItems,
+  calculateTotalPrice,
+  saveCartToLocalstorage,
+} from "../utils";
 
 export const useCartStore = defineStore("Cart", () => {
-  const loadingStore = useLoadingStore();
   const cart = ref({});
-  const getMyCart = computed(() => cart);
+  const getMyCart = computed(() => cart.value);
 
   function setMyCart(cartData) {
-    cart.value = cartData;
+    cart.value = {
+      ...cartData,
+      totalItems: calculateTotalItems(cartData.cartItems),
+      totalPrice: calculateTotalPrice(cartData.cartItems),
+    };
+
+    saveCartToLocalstorage(cart.value);
   }
 
-  function fetchMyCart() {
-    loadingStore.showLoading();
+  function upsertItem(item) {
+    const updatedItems = [
+      ...cart.value.cartItems.filter(
+        (val) => val.productSlug !== item.productSlug
+      ),
+      { ...item },
+    ];
 
-    const { onResult, onError } = useQuery(
-      GET_MY_CART_QUERY,
-      {},
-      { fetchPolicy: "no-cache" }
+    const infoMessage =
+      cart.value.cartItems.length === updatedItems.length ? "Updated" : "Added";
+
+    setMyCart({ cartItems: updatedItems });
+
+    return infoMessage;
+  }
+
+  function getItem(productSlug) {
+    const cart = getMyCart;
+
+    return cart.value.cartItems.find(
+      (item) => item.product?.slug === productSlug
+    );
+  }
+
+  function deleteItem(itemProductSlug) {
+    const updatedItems = cart.value.cartItems.filter(
+      (item) => item.product.slug !== itemProductSlug
     );
 
-    onResult((queryResult) => {
-      if (queryResult.data.getMyCart.__typename === "Cart") {
-        setMyCart(queryResult.data.getMyCart);
-      }
+    setMyCart({ cartItems: updatedItems });
 
-      loadingStore.hideLoading();
-    });
-
-    onError(({ networkError }) => {
-      if (networkError) {
-        alert(networkError.message);
-      }
-
-      loadingStore.hideLoading();
-    });
-  }
-
-  function updateMyCart(productId, quantity) {
-    loadingStore.showLoading();
-
-    const { mutate, onDone, onError } = useMutation(UPDATE_MY_CART_QUERY, {
-      fetchPolicy: "no-cache",
-    });
-
-    mutate({ productId, quantity });
-
-    onDone((mutateResult) => {
-      if (mutateResult.data.updateMyCart.__typename === "Cart") {
-        setMyCart(mutateResult.data.updateMyCart);
-      }
-
-      loadingStore.hideLoading();
-    });
-
-    onError(({ networkError }) => {
-      if (networkError) {
-        alert(networkError.message);
-      }
-
-      loadingStore.hideLoading();
-    });
-  }
-
-  function deleteCartItemById(id) {
-    loadingStore.showLoading();
-
-    const { mutate, onDone, onError } = useMutation(
-      DELETE_CART_ITEM_BY_ID_QUERY,
-      { fetchPolicy: "no-cache" }
-    );
-
-    mutate({ cartItemId: id });
-
-    onDone((mutateResult) => {
-      if (mutateResult.data.deleteCartItemById.__typename === "Cart") {
-        setMyCart(mutateResult.data.deleteCartItemById);
-      }
-
-      loadingStore.hideLoading();
-    });
-
-    onError(({ networkError }) => {
-      if (networkError) {
-        alert(networkError.message);
-      }
-
-      loadingStore.hideLoading();
-    });
+    return "Item deleted!";
   }
 
   return {
     cart,
     getMyCart,
-    deleteCartItemById,
-    fetchMyCart,
+    deleteItem,
+    getItem,
     setMyCart,
-    updateMyCart,
+    upsertItem,
   };
 });

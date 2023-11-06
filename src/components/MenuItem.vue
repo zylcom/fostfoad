@@ -1,19 +1,13 @@
 <script setup>
 import { computed } from "vue";
 import MenuItemAction from "./MenuItemAction.vue";
-import { allStore } from "../stores";
-import { formatNumberToIDR, getCartItem } from "../utils";
+import { formatNumberToIDR } from "../utils";
 
 const props = defineProps({
   product: Object,
 });
 
-const { authUserStore, cartStore } = allStore();
-const myCart = cartStore.getMyCart;
-const product = computed(() => props.product.node);
-const cartItem = computed(() =>
-  getCartItem(myCart.value.cartItems, +product.value.id)
-);
+const product = computed(() => props.product);
 const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
 </script>
 
@@ -29,10 +23,6 @@ const formattedPrice = computed(() => formatNumberToIDR(product.value.price));
       <span class="text-xs text-gray-500">{{ formattedPrice }}</span>
     </RouterLink>
 
-    <MenuItemAction
-      :cartItem="cartItem"
-      :productId="+product.id"
-      v-if="authUserStore.authUser"
-    />
+    <MenuItemAction :product="product" />
   </div>
 </template>

@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      meta: { requiresAuth: false },
+      meta: { requiresAuth: false, transition: "slide-right" },
       components: {
         default: () => import("@/views/HomeView.vue"),
         NavigationTab: () => import("@/components/NavigationTab.vue"),
@@ -40,7 +40,7 @@ const router = createRouter({
     {
       path: "/settings",
       name: "settings",
-      meta: { requiresAuth: false },
+      meta: { requiresAuth: false, transition: "slide-left" },
       components: {
         default: () => import("@/views/SettingView.vue"),
         NavigationTab: () => import("@/components/NavigationTab.vue"),
@@ -49,7 +49,7 @@ const router = createRouter({
     {
       path: "/cart",
       name: "cart",
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       component: () => import("@/views/CartView.vue"),
     },
     {
@@ -61,20 +61,20 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      meta: { requiresAuth: false },
+      meta: { requiresAuth: false, transition: "slide-right" },
       component: () => import("@/views/AuthenticationView.vue"),
     },
     {
       path: "/register",
       name: "register",
-      meta: { requiresAuth: false },
+      meta: { requiresAuth: false, transition: "slide-left" },
       component: () => import("@/views/AuthenticationView.vue"),
     },
     {
-      path: "/checkout-success",
-      name: "checkout-success",
-      meta: { requiresAuth: true },
-      component: () => import("@/views/CheckoutSuccessView.vue"),
+      path: "/payment/:sessionId",
+      name: "payment",
+      meta: { requiresAuth: false },
+      component: () => import("@/views/PaymentView.vue"),
     },
     {
       path: "/order/:id",
@@ -82,13 +82,19 @@ const router = createRouter({
       meta: { requiresAuth: true },
       component: () => import("@/views/OrderDetailView.vue"),
     },
+    {
+      path: "/feedback",
+      name: "feedback",
+      meta: { requiresAuth: false },
+      component: () => import("@/views/FeedbackView.vue"),
+    },
   ],
 });
 
 router.beforeEach(async (to) => {
   const authUserStore = useAuthUserStore();
 
-  authUserStore.preload();
+  await authUserStore.preload();
 
   if (to.meta.requiresAuth && !(await authUserStore.preload())) {
     return { path: "/login" };

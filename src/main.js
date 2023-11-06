@@ -1,26 +1,23 @@
-import { createApp, h, provide } from "vue";
+import { createApp, h } from "vue";
 import { createPinia } from "pinia";
-import { DefaultApolloClient } from "@vue/apollo-composable";
+import { VueQueryPlugin } from "@tanstack/vue-query";
+import ToastPlugin from "vue-toast-notification";
 import VueTelInput from "vue-tel-input";
 import "vue-tel-input/vue-tel-input.css";
-
-import vuetify from "@/plugins/vuetify";
-import apolloClient from "@/plugins/apollo";
+import "vue-toast-notification/dist/theme-sugar.css";
 
 import App from "./App.vue";
 import router from "./router";
 import "./assets/index.css";
 
 const app = createApp({
-  setup() {
-    provide(DefaultApolloClient, apolloClient);
-  },
   render: () => h(App),
 });
 
 app.use(createPinia());
 app.use(router);
+app.use(ToastPlugin);
 app.use(VueTelInput);
-app.use(vuetify);
+app.use(VueQueryPlugin);
 
 app.mount("#app");

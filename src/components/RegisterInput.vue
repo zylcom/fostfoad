@@ -1,64 +1,73 @@
 <script setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { allStore } from "../stores";
+import IconLoading from "../components/icons/IconLoading.vue";
+import userService from "../services/user-service";
+import { saveAccessToken } from "../utils";
 
 const route = useRouter();
-const { authUserStore, errorStore } = allStore();
+const { authUserStore, errorStore, loadingStore } = allStore();
 const name = ref("");
-const email = ref("");
-const phoneNumber = ref("");
+const username = ref("");
+const phonenumber = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const confirmPasswordInput = ref("");
 const phoneCountryCode = ref("ID");
-const authUser = authUserStore.getAuthUser;
+const authUser = computed(() => authUserStore.authUser);
 const error = errorStore.getError;
 
-function onSubmitHandler() {
-  authUserStore.register({
-    name: name.value,
-    email: email.value,
-    phoneNumber: phoneNumber.value,
-    password: password.value,
-    confirmationPassword: confirmPassword.value,
-    countryCode: phoneCountryCode.value,
-  });
+async function onSubmitHandler() {
+  loadingStore.showLoading();
+
+  try {
+    const result = await userService.register({
+      name: name.value,
+      username: username.value,
+      phonenumberForm: {
+        number: phonenumber.value,
+        countryCode: phoneCountryCode.value,
+      },
+      passwordForm: {
+        password: password.value,
+        confirm: confirmPassword.value,
+      },
+    });
+
+    saveAccessToken(result.data.data.token);
+    authUserStore.preload();
+  } catch (error) {
+    if (error.response) {
+      errorStore.setError({
+        general: { _errors: [error.response.data.errors] },
+      });
+    } else {
+      errorStore.setError(error.issues);
+    }
+  } finally {
+    loadingStore.hideLoading();
+  }
 }
 
 function onPhoneNumberInput(number, phoneObject) {
-  phoneNumber.value = number;
+  phonenumber.value = number;
   phoneCountryCode.value = phoneObject.country?.iso2 || "ID";
 }
 
-watch([name, email, phoneNumber], () => {
-  errorStore.$reset();
-});
-
-watch([password, confirmPassword], ([newPassword, newConfirmPassword]) => {
-  if (newPassword !== "" || newConfirmPassword !== "") {
-    errorStore.$reset();
-  }
-});
-
-watch(error, (newValue) => {
-  if (newValue) {
-    password.value = "";
-    confirmPassword.value = "";
-  }
-});
-
 watch(authUser, () => {
-  if (authUser.value) {
-    route.push({ path: "/" });
-  }
+  route.push({ path: "/" });
+});
+
+watch([password, confirmPassword], () => {
+  errorStore.$reset();
 });
 </script>
 
 <template>
   <form
     action=""
-    class="mx-5 mt-8 text-sm [&>label]:block [&>*]:mt-5"
+    class="mx-5 mt-8 text-sm [&>*]:mt-5 [&>label]:block"
     data-cy="form-register"
     @submit.prevent="onSubmitHandler()"
   >
@@ -75,29 +84,30 @@ watch(authUser, () => {
         autofocus
         required
       />
+
+      <span v-if="error && error.name" class="block text-xs text-red-500">
+        {{ error.name._errors[0] }}
+      </span>
     </label>
 
-    <label for="email">
-      Email
+    <label for="username">
+      Username
 
       <input
         type="text"
-        id="email"
+        id="username"
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
         :class="{
-          'border border-red-400': error && error.errorType === 'email',
+          'border border-red-400': error && error.username,
         }"
-        placeholder="email@example.com"
-        v-model="email"
-        data-cy="email-input"
+        placeholder="john doe"
+        v-model="username"
+        data-cy="username-input"
         required
       />
 
-      <span
-        v-if="error && error.errorType === 'email'"
-        class="block text-xs text-red-500"
-      >
-        {{ error.message }}
+      <span v-if="error && error.username" class="block text-xs text-red-500">
+        {{ error.username._errors[0] }}
       </span>
     </label>
 
@@ -105,12 +115,12 @@ watch(authUser, () => {
       Phone Number
 
       <vue-tel-input
-        class="rounded-[10px] text-sm placeholder:font-roboto [&_ul]:w-[80vw] [&_ul]:max-w-[390px] [&_input]:rounded-r-[10px] [&_input]:bg-bleached-silk [&_input]:py-4 [&>div]:rounded-l-[10px]"
-        v-model="phoneNumber"
+        class="rounded-[10px] text-sm placeholder:font-roboto [&>div]:rounded-l-[10px] [&_input]:rounded-r-[10px] [&_input]:bg-bleached-silk [&_input]:py-4 [&_ul]:w-[80vw] [&_ul]:max-w-[390px]"
+        v-model="phonenumber"
         @on-input="onPhoneNumberInput"
         defaultCountry="ID"
         :class="{
-          'border border-red-400': error && error.errorType === 'phone-number',
+          'border border-red-400': error && error?.phonenumberForm?.number,
         }"
         :inputOptions="{
           id: 'phone-number-input',
@@ -121,10 +131,10 @@ watch(authUser, () => {
       />
 
       <span
-        v-if="error && error.errorType === 'phone-number'"
+        v-if="error && error?.phonenumberForm?.number"
         class="block text-xs text-red-500"
       >
-        {{ error.message }}
+        {{ error.phonenumberForm.number._errors[0] }}
       </span>
     </div>
 
@@ -136,7 +146,7 @@ watch(authUser, () => {
         id="password"
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
         :class="{
-          'border border-red-400': error && error.errorType === 'password',
+          'border border-red-400': error && error.passwordForm,
         }"
         placeholder="Password"
         minlength="8"
@@ -146,10 +156,13 @@ watch(authUser, () => {
       />
 
       <span
-        v-if="error && error.errorType === 'password'"
+        v-if="error && error.passwordForm"
         class="block text-xs text-red-500"
       >
-        {{ error.message }}
+        {{
+          error.passwordForm?.confirm?._errors[0] ||
+          error.passwordForm.password._errors[0]
+        }}
       </span>
     </label>
 
@@ -161,7 +174,7 @@ watch(authUser, () => {
         id="confirm-password"
         class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none"
         :class="{
-          'border border-red-400': error && error.errorType === 'password',
+          'border border-red-400': error && error.passwordForm,
         }"
         placeholder="Confirm Your Password"
         v-model="confirmPassword"
@@ -173,16 +186,23 @@ watch(authUser, () => {
 
     <div>
       <span
-        v-if="error && error.errorType === 'general'"
-        class="mt-2 block text-center text-sm text-red-500"
+        v-if="!!error && !!error.general"
+        class="block text-sm text-red-500"
       >
-        {{ error.message }}
+        {{ error.general._errors[0] }}
       </span>
 
       <button
         type="submit"
-        class="mt-6 w-full rounded-lg bg-torii-red/95 py-2 font-rubik text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red"
+        class="my-6 flex w-full items-center justify-center gap-x-2 rounded-lg py-2 font-rubik text-charolais-cattle"
+        :class="
+          loadingStore.isLoading
+            ? 'bg-gray-400 hover:bg-gray-400'
+            : 'bg-torii-red/95 hover:bg-torii-red/90 active:bg-torii-red'
+        "
+        :disabled="loadingStore.isLoading"
       >
+        <IconLoading class="my-0" v-if="loadingStore.isLoading" />
         Register
       </button>
     </div>

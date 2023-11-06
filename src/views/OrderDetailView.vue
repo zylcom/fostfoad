@@ -1,194 +1,221 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import IconArrow from "@/components/icons/IconArrow.vue";
+import { useToast } from "vue-toast-notification";
+import BackButton from "@/components/BackButton.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import orderService from "@/services/order-service";
 import { allStore } from "@/stores";
 import { formatDateToLocaleId, formatNumberToIDR } from "@/utils";
+import { useHideOnScroll } from "@/composables/useHideOnScroll";
+import { useLoading } from "@/composables/useLoading";
 
 const route = useRoute();
-const { loadingStore, orderStore } = allStore();
-const orderId = +route.params.id;
-const sessionId = route.query.session_id;
-const loadingOrder = ref(true);
-const showAlert = computed(() => orderStore.isPaymentValid);
+const $toast = useToast();
+const { orderStore } = allStore();
+const order = computed(() => orderStore.order);
+const orderId = route.params.id;
+const navElement = ref(null);
+const { isLoading, showLoading, hideLoading } = useLoading();
+const {
+  isLoading: isFetching,
+  showLoading: showFetching,
+  hideLoading: hideFetching,
+} = useLoading();
 
-function checkoutOrderHandler() {
-  orderStore.checkoutOrder(orderId);
+useHideOnScroll(navElement);
+
+async function checkout() {
+  showFetching();
+
+  try {
+    const result = await orderService.checkout(orderId);
+
+    if (result.data.data.url) {
+      $toast.success("You will be redirect to payment form in 3 seconds!", {
+        position: "top",
+      });
+
+      setTimeout(() => {
+        window.location.replace(result.data.data.url);
+      }, 3000);
+    }
+  } catch (error) {
+    $toast.error("Oops something went wrong!", { position: "top" });
+  } finally {
+    hideFetching();
+  }
 }
 
-onMounted(() => {
-  loadingOrder.value = orderStore.getOrderById(orderId, sessionId);
+async function cancel() {
+  const confirmResponse = confirm(
+    "Are you sure want to cancel the order? It will canceled permanently!"
+  );
+
+  showFetching();
+
+  try {
+    if (confirmResponse) {
+      await orderService.cancel(orderId);
+    }
+
+    $toast.success("Order has been canceled!", { position: "top" });
+  } catch (error) {
+    $toast.error("Oops something went wrong!", { position: "top" });
+  } finally {
+    hideFetching();
+  }
+}
+
+onMounted(async () => {
+  showLoading();
+
+  try {
+    await orderService.get(orderId);
+  } catch (error) {
+    error;
+  } finally {
+    hideLoading();
+  }
 });
 </script>
 
 <template>
-  <v-layout>
-    <v-app-bar
-      class="bg-cloud-break"
-      scroll-behavior="hide"
-      scroll-threshold="10"
+  <header class="inline">
+    <nav
+      class="fixed top-0 z-30 flex w-full justify-between px-6 pb-3 pt-5 backdrop-blur-md transition-all duration-500"
+      ref="navElement"
     >
-      <template v-slot:prepend>
-        <RouterLink to="/history">
-          <IconArrow />
-        </RouterLink>
-      </template>
-    </v-app-bar>
+      <BackButton />
+    </nav>
+  </header>
 
-    <v-main>
-      <v-overlay
-        :model-value="loadingOrder.value"
-        class="align-center justify-center"
-        v-if="loadingOrder.value"
-        persistent
+  <LoadingSpinner v-show="isFetching" />
+
+  <main
+    class="flex min-h-screen items-center justify-center py-14"
+    v-if="!isLoading"
+  >
+    <div class="mx-4 w-full rounded-3xl bg-white px-6 pt-8" v-if="order">
+      <p class="text-[0.65rem] leading-[0] text-blood-moon">
+        ID# {{ orderId }}
+      </p>
+      <span class="text-[0.65rem]">
+        {{ formatDateToLocaleId({ date: Date.now(), showTime: true }) }}
+      </span>
+
+      <h2
+        class="my-4 text-center text-sm font-medium text-blood-moon"
+        v-if="order.status === 'uncomplete'"
       >
-        <v-progress-circular color="primary" indeterminate size="64" />
-      </v-overlay>
+        Your order is uncomplete! Checkout to complete the order.
+      </h2>
 
-      <v-container
-        class="flex min-h-screen flex-col items-center justify-center"
+      <h2
+        class="my-4 text-center text-sm font-medium text-blood-moon"
+        v-else-if="order.status === 'canceled'"
+      >
+        Your order is canceled!.
+      </h2>
+
+      <h2 class="my-4 text-center text-sm font-medium text-blood-moon" v-else>
+        Your order is on its way!
+      </h2>
+
+      <img
+        class="mx-auto w-4/5"
+        src="../assets/images/order_uncomplete.svg"
+        alt=""
+        v-if="order.status === 'canceled'"
+      />
+      <img
+        class="mx-auto w-4/5"
+        src="../assets/images/order_success.svg"
+        alt=""
+        v-else-if="order.status === 'complete'"
+      />
+      <img
+        class="mx-auto w-4/5"
+        src="../assets/images/order_delivered.svg"
+        alt=""
+        v-else-if="order.status === 'delivered'"
+      />
+      <img
+        class="mx-auto w-4/5"
+        src="../assets/images/order_uncomplete.svg"
+        alt=""
         v-else
-        fluid
-      >
-        <v-container v-if="!orderStore.order" class="text-center" fluid>
-          Nothing to show
+      />
 
-          <RouterLink to="/">
-            <v-btn color="success" block>Go Home</v-btn>
-          </RouterLink>
-        </v-container>
+      <p class="mt-4 font-rubik">Here's your order items</p>
 
-        <v-container v-else fluid>
-          <v-alert
-            class="mb-4"
-            type="success"
-            title="Payment Successfully!"
-            v-if="showAlert"
-            closable
-          />
+      <ul class="my-4 max-h-60 overflow-y-auto">
+        <li
+          class="flex w-full items-center gap-x-4 border-b border-dashed py-2 text-sm"
+          v-for="item in order.items"
+          :key="item.id"
+        >
+          <div class="flex w-full justify-between gap-x-2 overflow-x-hidden">
+            <p class="truncate">{{ item.product.name }}</p>
 
-          <v-card class="w-full border-t-4 border-t-torii-red">
-            <v-card-title class="my-2 font-rubik">
-              <p class="text-sm text-chilled-chilly">
-                Order ID #<span class="text-dark-tone-ink">{{
-                  orderStore.order.id
-                }}</span>
-              </p>
+            <span class="mr-4 whitespace-nowrap">Qty: {{ item.quantity }}</span>
+          </div>
 
-              <p class="text-xs text-gray-500">
-                {{
-                  formatDateToLocaleId({
-                    date: orderStore.order.createdAt,
-                    showTime: true,
-                  })
-                }}
-              </p>
-            </v-card-title>
+          <span>
+            {{ formatNumberToIDR(item.quantity * item.product.price) }}
+          </span>
+        </li>
+      </ul>
 
-            <v-card-subtitle>
-              <h2
-                class="my-3 whitespace-break-spaces text-center text-base font-medium text-torii-red"
-              >
-                {{
-                  orderStore.order.status === "uncomplete"
-                    ? "Your order is uncomplete. Checkout to complete the order."
-                    : "Your order is on its way!"
-                }}
-              </h2>
+      <div class="flex justify-end gap-x-4 text-sm font-medium">
+        <span>Total: </span>
+        <span>{{ formatNumberToIDR(order.subTotal) }}</span>
+      </div>
 
-              <v-img
-                class="mx-auto"
-                :width="500"
-                :height="200"
-                src="../src/assets/images/order_uncomplete.svg"
-                lazy-src="../src/assets/images/order_uncomplete.svg"
-                aspect-ratio="1"
-                cover
-                v-if="orderStore.order.status === 'uncomplete'"
-              >
-                <template v-slot:placeholder>
-                  <div class="d-flex align-center fill-height justify-center" />
-                </template>
-              </v-img>
+      <div class="pb-2 pt-5">
+        <div
+          class="my-4 flex justify-evenly gap-x-4"
+          v-if="order.status !== 'canceled'"
+        >
+          <button
+            class="rounded bg-transparent p-1 font-medium uppercase tracking-wider text-chilled-chilly transition-all hover:scale-110"
+            @click="cancel()"
+            :disabled="isFetching"
+            v-if="order.status === 'uncomplete'"
+          >
+            CANCEL
+          </button>
 
-              <v-img
-                class="mx-auto"
-                :width="500"
-                :height="200"
-                src="../src/assets/images/order_success.svg"
-                lazy-src="../src/assets/images/order_success.svg"
-                aspect-ratio="1"
-                cover
-                v-else-if="orderStore.order.status === 'success'"
-              >
-                <template v-slot:placeholder>
-                  <div class="d-flex align-center fill-height justify-center" />
-                </template>
-              </v-img>
+          <button
+            type="button"
+            class="flex gap-x-2 rounded p-1 px-2 font-medium uppercase tracking-wider text-white"
+            :class="
+              isFetching
+                ? 'cursor-default bg-gray-400'
+                : 'bg-spandex-green/95 hover:bg-spandex-green/90 active:bg-spandex-green'
+            "
+            :disabled="isFetching"
+            @click="checkout()"
+            v-if="order.status === 'uncomplete'"
+          >
+            Checkout
+          </button>
+        </div>
 
-              <v-img
-                class="mx-auto"
-                :width="500"
-                :height="200"
-                src="../src/assets/images/order_waiting.svg"
-                lazy-src="../src/assets/images/order_waiting.svg"
-                aspect-ratio="1"
-                cover
-                v-else
-              >
-                <template v-slot:placeholder>
-                  <div class="d-flex align-center fill-height justify-center" />
-                </template>
-              </v-img>
-            </v-card-subtitle>
+        <p class="pt-3 text-center text-[0.65rem]">
+          Have any troubles? Please contact
+          <span class="text-seljuk-blue">the support</span>
+        </p>
+      </div>
+    </div>
 
-            <v-card-text>
-              <h2 class="font-semibold">Here's your receipt</h2>
+    <div v-else>Order not found!</div>
+  </main>
 
-              <div class="my-4 max-h-60 overflow-scroll">
-                <ul
-                  class="grid w-full grid-cols-6 items-center gap-x-4 border-b border-dashed py-2"
-                  v-for="item in orderStore.order.orderItems"
-                  :key="item.id"
-                >
-                  <li class="col-span-3">{{ item.product.name }}</li>
-
-                  <li class="mr-4 whitespace-nowrap">
-                    qty: {{ item.quantity }}
-                  </li>
-                  <li class="col-end-7 place-self-end self-center">
-                    {{ formatNumberToIDR(item.product.price) }}
-                  </li>
-                </ul>
-              </div>
-
-              <div class="flex justify-end gap-x-4 font-medium">
-                <span>Total: </span>
-                <span>{{
-                  formatNumberToIDR(orderStore.order.amountSubtotal)
-                }}</span>
-              </div>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer />
-
-              <v-btn color="error" :disabled="loadingStore.isLoading">
-                Delete
-              </v-btn>
-
-              <v-btn
-                :loading="loadingStore.isLoading"
-                color="success"
-                @click="checkoutOrderHandler()"
-                v-if="orderStore.order.status === 'uncomplete'"
-              >
-                Checkout
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-container>
-      </v-container>
-    </v-main>
-  </v-layout>
+  <div
+    class="flex h-screen items-center justify-center bg-zhen-zhu-bai-pearl"
+    v-else
+  >
+    <strong class="text-2xl">Loading...</strong>
+  </div>
 </template>

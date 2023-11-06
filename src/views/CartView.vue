@@ -1,25 +1,42 @@
 <script setup>
 import { computed, ref } from "vue";
+import { useToast } from "vue-toast-notification";
 import BackButton from "@/components/BackButton.vue";
 import CartItem from "@/components/CartItem.vue";
 import IconPlus from "@/components/icons/IconPlus.vue";
-import { allStore } from "@/stores";
+import IconLoading from "../components/icons/IconLoading.vue";
+import orderService from "../services/order-service";
+import { useCartStore } from "@/stores/cart";
 import { formatNumberToIDR } from "@/utils";
 import { useHideOnScroll } from "@/composables/useHideOnScroll";
+import { useLoading } from "@/composables/useLoading";
 
-const { authUserStore, cartStore, orderStore } = allStore();
-const authUser = authUserStore.getAuthUser;
-const myCart = cartStore.getMyCart;
-
-const loading = ref(false);
+const $toast = useToast();
+const cartStore = useCartStore();
+const myCart = computed(() => cartStore.cart);
+const items = computed(() => cartStore.cart.cartItems);
+const totalPrice = computed(() =>
+  formatNumberToIDR(myCart.value.totalPrice || 0)
+);
 const navElement = ref(null);
-
-const totalPrice = computed(() => formatNumberToIDR(myCart.value.totalPrice));
+const { isLoading, showLoading, hideLoading } = useLoading();
 
 useHideOnScroll(navElement);
 
-function checkoutHandler() {
-  orderStore.checkoutOrder();
+async function checkoutHandler() {
+  showLoading();
+
+  try {
+    const result = await orderService.create(myCart.value);
+
+    if (result.data.data.url) {
+      window.location.replace(result.data.data.url);
+    }
+  } catch (error) {
+    $toast.error("Something went wrong!", { position: "top" });
+  } finally {
+    hideLoading();
+  }
 }
 </script>
 
@@ -37,11 +54,8 @@ function checkoutHandler() {
     </div>
   </header>
 
-  <main
-    class="flex min-h-screen flex-col items-center justify-center pt-24"
-    v-if="authUser !== null"
-  >
-    <div v-if="myCart.cartItems?.length < 1">
+  <main class="flex min-h-screen flex-col items-center justify-center pt-24">
+    <div v-if="items?.length < 1">
       <p class="mb-4">Your cart is empty!</p>
 
       <RouterLink
@@ -56,18 +70,17 @@ function checkoutHandler() {
     </div>
 
     <div
-      class="relative z-20 w-full -translate-y-2 rounded-t-2xl bg-zhen-zhu-bai-pearl"
+      class="relative z-20 w-full -translate-y-2 rounded-t-2xl bg-zhen-zhu-bai-pearl px-4"
       v-else
     >
       <div
-        class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 px-3 pb-6 pt-6 [&>div]:relative"
+        class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 pb-6 pt-6 [&>div]:relative"
       >
         <CartItem
-          v-for="cartItem in myCart.cartItems"
-          :key="cartItem.id"
-          :cartItemId="+cartItem.id"
-          :product="cartItem.product"
-          :quantity="cartItem.quantity"
+          v-for="item in items"
+          :key="item.product.id"
+          :product="item.product"
+          :quantity="item.quantity"
         />
 
         <RouterLink
@@ -87,17 +100,21 @@ function checkoutHandler() {
         Total: <span class="font-normal">{{ totalPrice }}</span>
       </p>
 
-      <v-container fluid>
-        <v-btn
-          :loading="loading.value"
-          class="text-white"
-          color="#34a853"
-          @click="checkoutHandler()"
-          block
-        >
-          Checkout Order
-        </v-btn>
-      </v-container>
+      <button
+        class="flex w-full justify-center gap-x-2 rounded py-4 font-medium uppercase tracking-wider text-white"
+        type="button"
+        :class="
+          isLoading
+            ? 'cursor-default bg-gray-400'
+            : 'bg-spandex-green/95 hover:bg-spandex-green/90 active:bg-spandex-green'
+        "
+        :disabled="isLoading"
+        @click="checkoutHandler()"
+      >
+        <IconLoading class="my-0" v-if="isLoading" />
+
+        Checkout Order
+      </button>
     </div>
   </main>
 </template>

@@ -1,18 +1,51 @@
 <script setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
+import IconLoading from "../components/icons/IconLoading.vue";
+import userService from "../services/user-service";
 import { allStore } from "../stores";
+import { saveAccessToken } from "../utils";
 
 const route = useRouter();
-const email = ref("");
+const username = ref("");
 const password = ref("");
 
-const { authUserStore, errorStore } = allStore();
-const authUser = authUserStore.getAuthUser;
+const { authUserStore, errorStore, loadingStore } = allStore();
+const authUser = computed(() => authUserStore.authUser);
 const error = errorStore.getError;
 
-function onSubmitHandler() {
-  authUserStore.login(email.value, password.value);
+const $toast = useToast();
+
+async function onSubmitHandler() {
+  loadingStore.showLoading();
+
+  try {
+    const result = await userService.login({
+      username: username.value,
+      password: password.value,
+    });
+
+    saveAccessToken(result.data.data.token);
+
+    await authUserStore.preload();
+  } catch (error) {
+    if (error.code === "ERR_NETWORK") {
+      $toast.error("Something went wrong!", { position: "top" });
+
+      return;
+    }
+
+    if (error.response) {
+      errorStore.setError({
+        general: { _errors: [error.response.data.errors] },
+      });
+    } else {
+      errorStore.setError(error.issues);
+    }
+  } finally {
+    loadingStore.hideLoading();
+  }
 }
 
 watch(authUser, () => {
@@ -21,7 +54,7 @@ watch(authUser, () => {
   }
 });
 
-watch([email, password], () => {
+watch([username, password], () => {
   errorStore.$reset();
 });
 </script>
@@ -33,21 +66,27 @@ watch([email, password], () => {
     @submit.prevent="onSubmitHandler()"
     data-cy="form-login"
   >
-    <label for="email">
-      Email
+    <label for="username">
+      Username
 
       <input
-        type="email"
-        id="email"
-        class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
-        :class="error ? 'border border-red-400' : ''"
-        v-model="email"
-        placeholder="email@example.com"
+        type="text"
+        id="username"
+        class="block w-full rounded-[10px] bg-bleached-silk px-1 py-3 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
+        :class="!!error && !!error.username ? 'border border-red-400' : ''"
+        v-model="username"
+        placeholder="john doe"
         autocomplete="username"
-        data-cy="email-input"
+        data-cy="username-input"
         autofocus
-        required
       />
+
+      <span
+        v-if="!!error && !!error.username"
+        class="block text-xs text-red-500"
+      >
+        {{ error.username._errors[0] }}
+      </span>
     </label>
 
     <label for="password" class="mt-3 block">
@@ -56,14 +95,20 @@ watch([email, password], () => {
       <input
         type="password"
         id="password"
-        class="block w-full rounded-[10px] bg-bleached-silk px-1 py-4 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
-        :class="error ? 'border border-red-400' : ''"
+        class="block w-full rounded-[10px] bg-bleached-silk px-1 py-3 text-sm placeholder:font-roboto focus:outline-none focus:ring-0"
+        :class="!!error && !!error.password ? 'border border-red-400' : ''"
         v-model="password"
         placeholder="Password"
         autocomplete="current-password"
         data-cy="password-input"
-        required
       />
+
+      <span
+        v-if="!!error && !!error.password"
+        class="mb-2 block text-xs text-red-500"
+      >
+        {{ error.password._errors[0] }}
+      </span>
     </label>
 
     <label
@@ -79,14 +124,24 @@ watch([email, password], () => {
       Forgot password?
     </a>
 
-    <span v-if="error" class="mt-2 block text-sm text-red-500">
-      {{ error.message }}
+    <span
+      v-if="!!error && !!error.general"
+      class="mt-2 block text-sm text-red-500"
+    >
+      {{ error.general._errors[0] }}
     </span>
 
     <button
       type="submit"
-      class="my-6 w-full rounded-lg bg-torii-red/95 py-2 font-rubik text-charolais-cattle hover:bg-torii-red/90 active:bg-torii-red"
+      class="my-6 flex w-full items-center justify-center gap-x-2 rounded-lg py-2 font-rubik text-charolais-cattle"
+      :class="
+        loadingStore.isLoading
+          ? 'bg-gray-400 hover:bg-gray-400'
+          : 'bg-torii-red/95 hover:bg-torii-red/90 active:bg-torii-red'
+      "
+      :disabled="loadingStore.isLoading"
     >
+      <IconLoading class="my-0" v-if="loadingStore.isLoading" />
       Login
     </button>
   </form>

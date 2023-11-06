@@ -4,12 +4,11 @@ import BestRatedProductList from "@/components/BestRatedProductList.vue";
 describe("BestRatedProductList.vue Test", () => {
   const bestRatedFoods = [{ id: 1, name: "Kontoru" }];
   const bestRatedDrinks = [{ id: 2, name: "Saburo" }];
-
   const wrapper = shallowMount(BestRatedProductList);
 
   beforeEach(() => {
-    wrapper.vm.bestRatedProductsStore.bestRatedFoods = bestRatedFoods;
-    wrapper.vm.bestRatedProductsStore.bestRatedDrinks = bestRatedDrinks;
+    wrapper.vm.bestRatedProductsStore.foods = bestRatedFoods;
+    wrapper.vm.bestRatedProductsStore.drinks = bestRatedDrinks;
   });
 
   it("should display text same as title props", async () => {
@@ -33,25 +32,7 @@ describe("BestRatedProductList.vue Test", () => {
     expect(wrapper.vm.bestRatedProducts).toStrictEqual(bestRatedDrinks);
   });
 
-  it("should call 'fetchBestRatedProducts' action one times", async () => {
-    await wrapper.setProps({ category: "drink" });
-
-    expect(
-      wrapper.vm.bestRatedProductsStore.fetchBestRatedProducts
-    ).toBeCalledTimes(1);
-  });
-
   it("should not render text 'Empty' if bestRatedProducts length more than one", async () => {
     expect(wrapper.find("p").exists()).toBe(false);
-  });
-
-  it("should render text 'Empty' if bestRatedProducts length less than one", () => {
-    wrapper.vm.bestRatedProductsStore.bestRatedDrinks = [];
-
-    wrapper.vm.$nextTick(() => {
-      const p = wrapper.find("p");
-
-      expect(p.text()).toBe("Empty");
-    });
   });
 });

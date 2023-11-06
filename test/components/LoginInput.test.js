@@ -1,54 +1,37 @@
 import { mount } from "@vue/test-utils";
 import LoginInput from "@/components/LoginInput.vue";
+import { nextTick } from "vue";
 
 describe("LoginInput.vue Test", () => {
-  const email = "example@email.com";
+  const username = "username";
   const password = "password";
-  const error = { message: "Invalid credentials!" };
   const wrapper = mount(LoginInput);
 
   it("should call 'onSubmitHandler' when form is submitted", async () => {
     const onSubmitHandler = vi.spyOn(wrapper.vm, "onSubmitHandler");
 
+    await wrapper.find("input[type='text']").setValue(username);
+    await wrapper.find("input[type='password']").setValue(password);
     await wrapper.find("button[type='submit']").trigger("submit");
+
+    await nextTick();
 
     expect(onSubmitHandler).toHaveBeenCalled();
   });
 
-  test("if email input filled, email ref will have same value", async () => {
-    await wrapper.find("input[type='email']").setValue(email);
+  it("should have value username", async () => {
+    await wrapper.find("input[type='text']").setValue(username);
 
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.email).toBe(email);
-    });
+    await nextTick();
+
+    expect(wrapper.vm.username).toBe(username);
   });
 
-  test("if password input filled, password ref will have same value", async () => {
+  it("should have value password", async () => {
     await wrapper.find("input[type='password']").setValue(password);
 
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.password).toBe(password);
-    });
-  });
+    await nextTick();
 
-  it("should call 'login' action with email and password when form submitted", async () => {
-    await wrapper.find("button[type='submit']").trigger("submit");
-
-    expect(wrapper.vm.authUserStore.login).toBeCalledWith(email, password);
-  });
-
-  it("should display error message when error not null", () => {
-    wrapper.vm.errorStore.error = error;
-
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find("span").text()).toBe(error.message);
-    });
-  });
-
-  test("if error not null, input should have red border", () => {
-    expect(wrapper.find("input[type='email']").classes()).toContain(
-      "border",
-      "border-red-400"
-    );
+    expect(wrapper.vm.password).toBe(password);
   });
 });

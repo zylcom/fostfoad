@@ -1,28 +1,26 @@
 <script setup>
 import { computed, ref } from "vue";
 import AddToCartButton from "./AddToCartButton.vue";
-import IconLove from "./icons/IconLove.vue";
 import IconStar from "./icons/IconStar.vue";
+import LikeButton from "./LikeButton.vue";
 import QuantityInput from "./QuantityInput.vue";
+import { allStore } from "../stores";
 import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
-import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({
-  cartItem: Object,
   product: Object,
   isLiked: Boolean,
-  likeProductHandler: Function,
 });
 
-const authUserStore = useAuthUserStore();
+const { cartStore } = allStore();
 const formattedPrice = computed(() => formatNumberToIDR(props.product.price));
 const product = computed(() => props.product);
-const cartItem = computed(() => props.cartItem);
+const cartItem = computed(() => cartStore.getItem(product.value.slug));
 const formattedAverageRating = computed(() =>
   formatFloatNumber(product.value.averageRating)
 );
 
-const quantity = ref(cartItem.value.quantity || 1);
+const quantity = ref(cartItem.value?.quantity || 1);
 const total = computed(() =>
   formatNumberToIDR(product.value.price * quantity.value)
 );
@@ -30,7 +28,7 @@ const total = computed(() =>
 
 <template>
   <div
-    class="relative z-10 mt-48 rounded-t-2xl bg-zhen-zhu-bai-pearl py-4 px-5"
+    class="relative z-10 mt-48 rounded-t-2xl bg-zhen-zhu-bai-pearl px-5 py-4"
   >
     <div class="flex items-center justify-between gap-x-3 pb-5">
       <h1 class="text-2xl font-medium text-dark-tone-ink">
@@ -44,16 +42,10 @@ const total = computed(() =>
           {{ formattedAverageRating }}
         </span>
 
-        <button
-          class="order-2 cursor-pointer transition duration-300 hover:scale-125 active:scale-100"
-          title="Like"
-          @click="likeProductHandler()"
-        >
-          <IconLove :class="isLiked ? 'fill-blood-moon' : ''" />
-        </button>
+        <LikeButton :isLiked="isLiked" />
 
         <span class="order-4 font-rubik text-sm">
-          {{ formatNumber(product.likedBy.length) }}
+          {{ formatNumber(product?.likes.length || 0) }}
         </span>
       </div>
     </div>
@@ -67,10 +59,7 @@ const total = computed(() =>
       Price: <span class="font-normal">{{ formattedPrice }}</span>
     </p>
 
-    <div
-      class="flex flex-col gap-y-6 pt-6 text-sm"
-      v-if="authUserStore.authUser"
-    >
+    <div class="flex flex-col gap-y-6 pt-6 text-sm">
       <div class="flex flex-col gap-y-6">
         <div class="flex items-center gap-x-2">
           <span class="text-sm">Quantity:</span>
@@ -85,9 +74,8 @@ const total = computed(() =>
     </div>
 
     <AddToCartButton
-      v-if="authUserStore.authUser"
       :quantity="quantity"
-      :productId="+product.id"
+      :product="product"
       :cartItem="cartItem"
     />
   </div>

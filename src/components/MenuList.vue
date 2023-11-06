@@ -1,89 +1,81 @@
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
-import LoadingSpinner from "./LoadingSpinner.vue";
-import MenuItem from "../components/MenuItem.vue";
-import { allStore } from "../stores";
-import { clearKeyword } from "../utils";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import MenuItem from "@/components/MenuItem.vue";
+import MenuItemSkeleton from "@/components/MenuItemSkeleton.vue";
+import { allStore } from "@/stores";
+import { clearKeyword } from "@/utils";
+import { useInfinite } from "@/composables/useInfinite";
 
 const props = defineProps({ category: String, tag: String, keyword: String });
 
-const { productsStore, loadingStore } = allStore();
+const { productsStore } = allStore();
 const productCategory = computed(() => props.category);
 const productTag = computed(() => props.tag);
 const searchKeyword = computed(() => clearKeyword(props.keyword));
-const target = ref(null);
-const observer = ref(null);
 const products = computed(() => productsStore.products);
 const hasNextPage = computed(() => productsStore.hasNextPage);
-const endCursor = computed(() => productsStore.endCursor);
+const cursor = computed(() => productsStore.cursor);
+const target = ref(null);
 
-function loadMore() {
-  productsStore.fetchMore(products.value, {
+const { fetchData, fetchNextPage, infiniteScroll, isLoading } = useInfinite();
+
+watch([productCategory, productTag], async () => {
+  productsStore.$reset();
+
+  await fetchData({
     category: productCategory.value,
+    name: searchKeyword.value,
     tag: productTag.value,
-    keyword: searchKeyword.value,
-    cursor: { id: endCursor.value },
   });
-}
+});
 
 onMounted(() => {
-  productsStore.fetchFilteredProducts({
-    category: productCategory.value,
-    tag: productTag.value,
-    keyword: searchKeyword.value,
-  });
+  productsStore.$reset();
 
-  const options = {
-    threshold: 1.0,
-  };
-
-  observer.value = new IntersectionObserver(([entry]) => {
-    if (entry && entry.isIntersecting && hasNextPage.value) {
-      loadMore();
-    }
-  }, options);
-  observer.value.observe(target.value);
-});
-
-watch([productCategory, productTag], () => {
-  productsStore.fetchFilteredProducts({
-    category: productCategory.value,
-    tag: productTag.value,
-    keyword: searchKeyword.value,
-  });
-});
-
-watch(searchKeyword, (newValue) => {
-  if (!newValue) {
-    productsStore.fetchFilteredProducts({
+  infiniteScroll(target, async () => {
+    await fetchNextPage({
       category: productCategory.value,
+      name: searchKeyword.value,
       tag: productTag.value,
-      keyword: newValue,
+      cursor: cursor.value,
     });
-  }
+  });
+});
+
+onMounted(async () => {
+  await fetchData({
+    category: productCategory.value,
+    name: searchKeyword.value,
+    tag: productTag.value,
+  });
+});
+
+onUnmounted(() => {
+  productsStore.$reset();
 });
 </script>
 
 <template>
-  <LoadingSpinner />
-
   <div class="mt-2 flex flex-col">
     <div v-if="products.length > 0">
       <MenuItem
         v-for="product in products"
-        :key="product.node.id"
+        :key="product.id"
         :product="product"
       />
     </div>
 
-    <div class="pt-5 pb-16 text-center" ref="target">
-      <span v-if="loadingStore.isLoading">Loading...</span>
+    <div class="pb-16 text-center" ref="target">
+      <div v-if="isLoading">
+        <MenuItemSkeleton v-for="i in 3" :key="i" />
+      </div>
+
       <span v-else-if="products.length < 1">Products not found!</span>
       <span v-else-if="!hasNextPage">That's a wrap!</span>
       <button
         v-else
         class="mt-3 cursor-pointer rounded bg-seljuk-blue/50 px-5 py-1"
-        @click="loadMore()"
+        @click="fetchNextPage()"
       >
         Load more!
       </button>
