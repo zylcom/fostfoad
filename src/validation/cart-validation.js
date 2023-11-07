@@ -1,10 +1,15 @@
 import { z } from "zod";
 
+const productSlug = z
+  .string({
+    required_error: "Product slug is required!",
+    invalid_type_error: "Product slug must be a string!",
+  })
+  .nonempty({ message: "Product slug is not allowed to be empty!" });
+
 const upsertCartItemValidation = z
   .object({
-    productSlug: z
-      .string({ required_error: "Product slug is required!" })
-      .nonempty({ message: "Product slug is not allowed to be empty!" }),
+    productSlug,
     quantity: z.coerce
       .number({
         invalid_type_error: "Quantity must be number!",
@@ -15,11 +20,4 @@ const upsertCartItemValidation = z
   })
   .strict();
 
-const deleteItemValidation = z.coerce
-  .number({
-    invalid_type_error: "Item id must be number!",
-    required_error: "Item id is required!",
-  })
-  .positive();
-
-export { upsertCartItemValidation, deleteItemValidation };
+export { upsertCartItemValidation, productSlug };

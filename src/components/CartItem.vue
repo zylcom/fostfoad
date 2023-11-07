@@ -25,13 +25,17 @@ async function removeItemHandler() {
 
     try {
       if (authUser.value) {
-        await cartService.deleteItem(product.value.id);
+        await cartService.deleteItem(product.value.slug);
+
+        cartStore.deleteItem(product.value.slug);
       } else {
-        cartStore.deleteItem(product.value.id);
+        cartStore.deleteItem(product.value.slug);
       }
 
       $toast.success("Item deleted!", { position: "top" });
     } catch (error) {
+      console.log(error);
+
       $toast.error("Something went wrong!", { position: "top" });
     } finally {
       hideLoading();

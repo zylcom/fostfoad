@@ -1,9 +1,8 @@
-import { computed } from "vue";
 import validate from "../validation/validation";
 import { allStore } from "../stores";
-import { axios, calculateTotalPrice, getAccessToken } from "../utils";
+import { axios, getAccessToken } from "../utils";
 import {
-  deleteItemValidation,
+  productSlug,
   upsertCartItemValidation,
 } from "../validation/cart-validation";
 
@@ -28,26 +27,14 @@ async function upsert({ productSlug, quantity }) {
     });
 }
 
-async function deleteItem(itemProductId) {
-  const { cartStore, cartItemsStore } = allStore();
-  const cart = computed(() => cartStore.cart);
-  const items = computed(() => cartItemsStore.items);
-  itemProductId = validate(deleteItemValidation, itemProductId);
+async function deleteItem(itemProductSlug) {
+  itemProductSlug = validate(productSlug, itemProductSlug);
 
   return axios
-    .delete(`/users/current/carts/items/${itemProductId}`, {
+    .delete(`/users/current/carts/items/${itemProductSlug}`, {
       headers: { Authorization: getAccessToken() },
     })
     .then((response) => {
-      const newItems = items.value.filter(
-        (item) => item.product.id !== itemProductId
-      );
-
-      cartItemsStore.$reset();
-      cartItemsStore.set(newItems);
-
-      cart.value.totalPrice = calculateTotalPrice(newItems);
-
       return response;
     });
 }
