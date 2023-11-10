@@ -12,7 +12,7 @@ export const useReviewsStore = defineStore("Reviews", () => {
   const getMyReview = computed(() => myReview);
 
   function setReviews(productReviews) {
-    const authUser = computed(() => authUserStore.getAuthUser);
+    const authUser = computed(() => authUserStore.authUser);
 
     reviews.value = productReviews;
     myReview.value = null;
