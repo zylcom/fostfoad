@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import validate from "../validation/validation";
 import { axios, getAccessToken } from "../utils";
 import {
@@ -7,13 +8,10 @@ import {
   likeValidation,
 } from "../validation/product-validation";
 import { allStore } from "../stores";
-import { computed } from "vue";
 
 async function get(slug) {
-  const { loadingStore, productDetailStore } = allStore();
+  const { productDetailStore, reviewsStore } = allStore();
   slug = validate(getProductValidation, slug);
-
-  loadingStore.showLoading();
 
   await axios
     .get(`/products/${slug}`, {
@@ -24,11 +22,10 @@ async function get(slug) {
     })
     .then((response) => {
       productDetailStore.setData(response.data.data);
+      reviewsStore.setReviews(response.data.data.reviews);
 
       return response;
     });
-
-  loadingStore.hideLoading();
 }
 
 async function infinite({ category, name, tag, size, cursor }) {
