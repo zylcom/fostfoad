@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  VITE_BASE_API_URL: https://foody-order-rest-api-git-feedback-service-zylcom.vercel.app/api
+  VITE_BASE_API_URL: https://foody-order-rest-api-git-preview-zylcom.vercel.app/api
 
 jobs:
   install:
