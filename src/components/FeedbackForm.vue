@@ -27,11 +27,11 @@ async function onSubmitHandler() {
 </script>
 
 <template>
-  <form action="" class="m-4" @submit.prevent="onSubmitHandler()">
+  <form action="" @submit.prevent="onSubmitHandler()">
     <textarea
-      class="m-auto mt-16 max-h-screen w-full rounded-md border border-dark-tone-ink/40 p-3 py-2 font-rubik focus:outline-none focus:ring-0"
+      class="m-auto max-h-screen w-full rounded-md border border-dark-tone-ink/40 p-3 py-2 font-rubik focus:outline-none focus:ring-0"
       name="description"
-      placeholder="I found a bug..., add a new feature..., some feature not work..."
+      placeholder="Tell us whats going on..."
       id="description"
       v-model="description"
       cols="30"
@@ -42,11 +42,14 @@ async function onSubmitHandler() {
       :class="{
         'w-full rounded-md  py-3 text-white': true,
         'cursor-default bg-gray-400 text-mercury':
-          isLoading || description.length < 1,
-        'bg-prunus-avium text-white': !isLoading && description.length > 0,
+          isLoading || description.length < 1 || !Boolean(description.trim()),
+        'bg-prunus-avium text-white':
+          !isLoading && description.length > 0 && Boolean(description.trim()),
       }"
       type="submit"
-      :disabled="isLoading || description.length < 1"
+      :disabled="
+        isLoading || description.length < 1 || !Boolean(description.trim())
+      "
     >
       Send Feedback
     </button>

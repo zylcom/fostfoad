@@ -4,28 +4,6 @@ import FeedbackForm from "@/components/FeedbackForm.vue";
 </script>
 
 <template>
-  <!-- <div
-    class="flex min-h-screen items-center justify-center gap-x-2 [&_div:hover]:scale-105 [&_div]:flex [&_div]:cursor-pointer [&_div]:flex-col [&_div]:items-center [&_div]:justify-center [&_div]:rounded-md [&_div]:bg-mint-jelly/20 [&_div]:px-6 [&_div]:py-4"
-  >
-    <div>
-      <IconBug class="h-9 w-9" />
-
-      <h2>Bug</h2>
-    </div>
-
-    <div>
-      <IconLightBulb class="h-9 w-9" />
-
-      <h2>Idea</h2>
-    </div>
-
-    <div>
-      <IconSparkle class="h-9 w-9" />
-
-      <h2>Other</h2>
-    </div>
-  </div> -->
-
   <header class="bg-cloud-break">
     <div
       class="fixed top-0 z-50 flex w-full items-center bg-cloud-break px-6 pb-2 pt-3 shadow transition-all duration-500"
@@ -39,7 +17,11 @@ import FeedbackForm from "@/components/FeedbackForm.vue";
     </div>
   </header>
 
-  <main class="flex min-h-screen items-center justify-center">
+  <main class="m-4 flex min-h-screen flex-col items-center justify-center">
+    <h2 class="mb-4 mt-16">
+      What would you like to share with the developer teams?*
+    </h2>
+
     <FeedbackForm />
   </main>
 </template>

@@ -34,9 +34,9 @@ const likesCount = computed(() => props.product.likes?.length || 0);
           overlayBg,
       }"
     >
-      <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
+      <div class="relative h-0 w-full bg-explosive-grey pt-[100%] shadow-md">
         <img
-          :src="`https://picsum.photos/1920/1280.webp?random=${product.id}`"
+          :src="product.image"
           :alt="product.name"
           class="absolute left-0 top-0 block max-h-[1280px] w-full object-cover object-center"
           loading="lazy"
