@@ -35,7 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="relative mb-36">
+  <section class="relative mb-52">
     <h1 class="text-sm font-medium">{{ title }}</h1>
 
     <GalleryWrapper v-if="isLoading">

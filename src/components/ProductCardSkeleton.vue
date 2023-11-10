@@ -3,7 +3,7 @@
 <template>
   <div class="shadow-md">
     <div
-      class="relative h-0 w-full animate-pulse bg-explosive-grey pt-[66.7%] shadow-md"
+      class="relative h-0 w-full animate-pulse bg-explosive-grey pt-[100%] shadow-md"
     />
 
     <div class="pt-3">

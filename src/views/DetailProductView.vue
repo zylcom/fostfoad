@@ -59,7 +59,7 @@ onMounted(async () => {
     >
       <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
         <img
-          src="https://picsum.photos/1920/1280.webp"
+          :src="product.image"
           :alt="product.name"
           class="absolute left-0 top-0 block max-h-screen w-full object-cover object-center shadow-md"
           loading="lazy"
