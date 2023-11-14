@@ -39,7 +39,7 @@ async function addToCartHandler() {
       });
     }
 
-    $toast.success(`${result} success!`, { position: "top" });
+    $toast.success(`${result} success!`, { position: "top", duration: 1000 });
   } catch (error) {
     $toast.error("Something went wrong!", { position: "top" });
   } finally {

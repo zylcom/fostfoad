@@ -32,7 +32,7 @@ async function createReviewHandler({ description, rating, productSlug }) {
   <div class="relative z-10 bg-zhen-zhu-bai-pearl">
     <MyReviewCard v-if="reviewsStore.myReview" />
 
-    <h4 class="pb-3 pl-5 pt-8 font-bold text-dark-tone-ink">
+    <h4 class="pb-3 font-bold text-dark-tone-ink">
       All Reviews ({{ reviewsLength }})
     </h4>
 

@@ -22,16 +22,18 @@ function switchTab(newPath) {
 <template>
   <header class="inline">
     <nav
-      class="fixed z-30 flex w-full justify-between px-6 pb-3 pt-5 backdrop-blur-md transition-all duration-500"
+      class="fixed top-0 z-30 flex w-full justify-between px-6 pb-3 pt-5 backdrop-blur-md transition-all duration-500"
       ref="navElement"
     >
       <BackButton class="" />
     </nav>
 
     <div
-      class="sticky top-0 after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
+      class="fixed left-0 top-0 h-screen w-full after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
     >
-      <div class="relative h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md">
+      <div
+        class="absolute top-0 h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md"
+      >
         <img
           src="https://picsum.photos/480/320.webp"
           alt=""
@@ -42,7 +44,9 @@ function switchTab(newPath) {
     </div>
   </header>
 
-  <div class="-translate-y-5 rounded-t-[20px] bg-white pt-2 font-rubik">
+  <div
+    class="relative z-10 mt-48 rounded-t-[20px] bg-white pb-4 pt-2 font-rubik md:mx-auto md:w-3/5 md:rounded-[20px]"
+  >
     <div class="flex w-full justify-around text-sm">
       <button
         class="px-4 py-1"

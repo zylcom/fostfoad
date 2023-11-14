@@ -4,6 +4,7 @@ import AddToCartButton from "./AddToCartButton.vue";
 import IconStar from "./icons/IconStar.vue";
 import LikeButton from "./LikeButton.vue";
 import QuantityInput from "./QuantityInput.vue";
+import ReviewComponent from "@/components/ReviewComponent.vue";
 import { allStore } from "../stores";
 import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
 
@@ -28,55 +29,92 @@ const total = computed(() =>
 
 <template>
   <div
-    class="relative z-10 mt-48 rounded-t-2xl bg-zhen-zhu-bai-pearl px-5 py-4"
+    class="relative mt-64 rounded-t-2xl bg-zhen-zhu-bai-pearl px-5 py-4 pt-8 md:mt-16 md:overflow-scroll md:pt-0"
   >
-    <div class="flex items-center justify-between gap-x-3 pb-5">
-      <h1 class="text-2xl font-medium text-dark-tone-ink">
+    <div class="sticky top-0 z-10 bg-zhen-zhu-bai-pearl pb-5">
+      <span class="pb-3 text-xs font-semibold uppercase">Foods</span>
+
+      <h1 class="mb-3 font-roboto text-2xl font-medium text-dark-tone-ink">
         {{ product.name }}
       </h1>
 
-      <div class="grid grid-cols-2 justify-items-center gap-x-2">
-        <IconStar class="order-1 h-6 w-6 fill-spandex-green" />
+      <div class="flex items-center justify-between">
+        <span class="font-rubik font-semibold">{{ formattedPrice }}</span>
 
-        <span class="order-3 font-rubik text-sm font-bold" title="Rating">
-          {{ formattedAverageRating }}
-        </span>
+        <div class="grid grid-cols-2 justify-items-center gap-x-2">
+          <IconStar class="order-1 h-6 w-6 fill-spandex-green" />
 
-        <LikeButton :isLiked="isLiked" />
+          <span class="order-3 font-rubik text-sm font-bold" title="Rating">
+            {{ formattedAverageRating }}
+          </span>
 
-        <span class="order-4 font-rubik text-sm">
-          {{ formatNumber(product?.likes.length || 0) }}
-        </span>
+          <LikeButton :isLiked="isLiked" />
+
+          <span class="order-4 font-rubik text-sm">
+            {{ formatNumber(product?.likes.length || 0) }}
+          </span>
+        </div>
       </div>
     </div>
 
-    <h4 class="text-sm text-dark-tone-ink">Ingredients:</h4>
-    <p class="text-xs text-gray-500">
-      {{ product.ingredients }}
-    </p>
+    <div
+      class="container grid grid-cols-3 [&>div]:order-2 [&>div]:col-span-3 [&>div]:hidden [&>div]:min-h-[200px] [&>div]:pt-4 [&>input:checked+label+div]:block [&>input:checked+label]:border-b-2 [&>input:checked+label]:border-b-torii-red [&>input]:order-1 [&>input]:hidden [&>label]:sticky [&>label]:top-32 [&>label]:z-10 [&>label]:cursor-pointer [&>label]:border-b-2 [&>label]:border-b-torii-red/40 [&>label]:bg-zhen-zhu-bai-pearl"
+    >
+      <input type="radio" name="tab" id="tab-1" checked />
+      <label for="tab-1">Description</label>
+      <div>
+        <p class="text-sm">{{ product.description }}</p>
 
-    <p class="pt-6 text-sm font-medium">
-      Price: <span class="font-normal">{{ formattedPrice }}</span>
-    </p>
+        <div class="mt-11 grid grid-cols-2">
+          <div class="">
+            <span class="mb-1 ml-3 block text-sm uppercase text-dark-tone-ink">
+              Quantity
+            </span>
 
-    <div class="flex flex-col gap-y-6 pt-6 text-sm">
-      <div class="flex flex-col gap-y-6">
-        <div class="flex items-center gap-x-2">
-          <span class="text-sm">Quantity:</span>
+            <div
+              class="flex w-fit rounded-2xl bg-mercury px-3 py-1 text-thamar-black"
+            >
+              <button class="mr-3 block" @click="quantity--">-</button>
 
-          <QuantityInput v-model:quantity="quantity" />
+              <QuantityInput v-model:quantity="quantity" />
+
+              <button @click="quantity++">+</button>
+            </div>
+          </div>
+
+          <div class="">
+            <span class="mb-1 ml-2 block text-sm uppercase text-dark-tone-ink">
+              Total Price
+            </span>
+
+            <span
+              class="block w-fit min-w-[100px] rounded-2xl bg-mercury px-3 py-1 text-thamar-black"
+            >
+              {{ total }}
+            </span>
+          </div>
         </div>
 
-        <span class="font-medium">
-          Total: <span class="break-words font-normal">{{ total }}</span>
-        </span>
+        <AddToCartButton
+          :quantity="quantity"
+          :product="product"
+          :cartItem="cartItem"
+        />
+      </div>
+
+      <input type="radio" name="tab" id="tab-2" />
+      <label class="text-center" for="tab-2">Details</label>
+      <div>
+        <h3 class="mb-2 font-semibold text-thamar-black">Ingredients:</h3>
+
+        <p class="text-sm">{{ product.ingredients }}</p>
+      </div>
+
+      <input type="radio" name="tab" id="tab-3" />
+      <label class="text-right" for="tab-3">Reviews</label>
+      <div class="relative z-0 px-1">
+        <ReviewComponent :reviewsLength="product.reviews.length" />
       </div>
     </div>
-
-    <AddToCartButton
-      :quantity="quantity"
-      :product="product"
-      :cartItem="cartItem"
-    />
   </div>
 </template>

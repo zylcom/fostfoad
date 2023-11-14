@@ -1,7 +1,9 @@
-<script setup></script>
+<script setup>
+defineProps({ isLoading: Boolean });
+</script>
 
 <template>
-  <div class="shadow-md">
+  <div class="shadow-md" v-show="isLoading">
     <div
       class="relative h-0 w-full animate-pulse bg-explosive-grey pt-[100%] shadow-md"
     />

@@ -39,7 +39,12 @@ onMounted(async () => {
     <h1 class="text-sm font-medium">{{ title }}</h1>
 
     <GalleryWrapper v-if="isLoading">
-      <ProductCardSkeleton class="p-2" v-for="i in 5" :key="i" />
+      <ProductCardSkeleton
+        class="p-2"
+        v-for="i in 5"
+        :key="i"
+        :isLoading="isLoading"
+      />
     </GalleryWrapper>
 
     <GalleryWrapper v-else-if="!isLoading && bestRatedProducts.length > 0">

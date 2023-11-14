@@ -74,7 +74,7 @@ async function checkoutHandler() {
       v-else
     >
       <div
-        class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 pb-6 pt-6 [&>div]:relative"
+        class="grid grid-cols-2 items-center gap-4 border-b border-torii-red/50 pb-6 pt-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 [&>div]:relative"
       >
         <CartItem
           v-for="item in items"
