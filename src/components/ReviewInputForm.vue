@@ -19,7 +19,7 @@ function changeRate(rateStars) {
 
 <template>
   <form
-    class="sticky bottom-0 left-0 z-30 w-full bg-bleached-silk px-5 py-3"
+    class="sticky -bottom-4 left-0 z-30 w-full bg-bleached-silk px-5 py-3"
     @submit.prevent="
       sendReview({
         description,

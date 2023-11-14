@@ -15,12 +15,6 @@ const isModalOpen = ref(false);
 
 function toggleModalBox() {
   isModalOpen.value = !isModalOpen.value;
-
-  if (isModalOpen.value) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "";
-  }
 }
 
 async function updateReviewHandler({ description, rating, productSlug }) {
@@ -31,9 +25,9 @@ async function updateReviewHandler({ description, rating, productSlug }) {
       productSlug,
     });
 
-    $toast.success("Review updated", { position: "bottom" });
+    $toast.success("Review updated", { position: "top" });
   } catch (error) {
-    $toast.error("Something went wrong!", { position: "bottom" });
+    $toast.error("Something went wrong!", { position: "top" });
   } finally {
     toggleModalBox();
   }
@@ -41,33 +35,34 @@ async function updateReviewHandler({ description, rating, productSlug }) {
 
 onUnmounted(() => {
   isModalOpen.value = false;
-  document.body.style.overflow = "";
 });
 </script>
 
 <template>
-  <h4 class="pb-3 pl-5 pt-8 font-bold text-dark-tone-ink">My Review</h4>
+  <h4 class="pb-3 font-bold text-dark-tone-ink">My Review</h4>
 
   <ReviewItem :review="myReview" />
 
   <button
-    class="pl-5 pt-2 text-xs font-medium text-heirloom-hydrangea hover:underline"
+    class="mb-7 pt-2 text-xs font-medium text-heirloom-hydrangea hover:underline"
     @click="toggleModalBox()"
   >
     Edit My review
   </button>
 
   <div
-    class="fixed left-0 top-0 z-50 flex h-screen w-full items-center backdrop-blur"
+    class="absolute left-0 top-0 z-50 h-full w-full items-center md:fixed md:flex"
     v-show="isModalOpen"
     ref="modalBoxElement"
   >
-    <div class="mx-3 w-full rounded-sm bg-bleached-silk shadow-md">
+    <div
+      class="w-full overflow-hidden rounded-md bg-bleached-silk shadow-md md:ml-28 md:mr-auto md:w-2/5"
+    >
       <div class="flex items-center justify-between border-b p-3">
         <span class="font-rubik font-semibold">Edit review</span>
 
         <button
-          class="cursor-pointer transition duration-300 hover:scale-125"
+          class="h-5 w-5 cursor-pointer transition duration-300 hover:scale-125"
           title="Cancel edit"
           @click="toggleModalBox()"
         >

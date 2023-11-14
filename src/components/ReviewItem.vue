@@ -13,7 +13,7 @@ const formattedDate = computed(() =>
 
 <template>
   <div
-    class="grid grid-cols-[3rem_auto_auto] grid-rows-[min-content_auto] items-center gap-y-3 px-5"
+    class="grid grid-cols-[3rem_auto_auto] grid-rows-[min-content_auto] items-center gap-y-3"
   >
     <div class="h-10 w-10">
       <img
