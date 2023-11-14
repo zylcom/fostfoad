@@ -1,6 +1,4 @@
-<script setup>
-import ReceiptCard from "../components/ReceiptCard.vue";
-</script>
+<script setup></script>
 
 <template>
   <div class="min-h-screen">
