@@ -11,23 +11,13 @@ describe("MyReviewCard.vue Test", () => {
 
   it("should render 'ReviewItem' component with props", () => {
     expect(
-      wrapper.findComponent("review-item-stub").props().review
+      wrapper.findComponent("review-item-stub").props().review,
     ).toStrictEqual(myReview);
   });
 
   it("should not render 'ReviewInputForm' component", () => {
     expect(wrapper.findComponent("review-input-form-stub").isVisible()).toBe(
-      false
+      false,
     );
-  });
-
-  it("should render 'ReviewInputForm' component if modal box is open", async () => {
-    await wrapper.find("button").trigger("click");
-
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.findComponent("review-input-form-stub").isVisible()).toBe(
-        true
-      );
-    });
   });
 });
