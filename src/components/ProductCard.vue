@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from "vue";
-import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
+import { computed, onMounted } from "vue";
 import IconLove from "./icons/IconLove.vue";
 import IconStar from "./icons/IconStar.vue";
+import { formatFloatNumber, formatNumber, formatNumberToIDR } from "../utils";
 import { useAuthUserStore } from "../stores/authUser";
 
 const props = defineProps({
@@ -15,19 +15,24 @@ const props = defineProps({
 const authUserStore = useAuthUserStore();
 const authUser = computed(() => authUserStore.authUser);
 const formattedPrice = computed(() =>
-  formatNumberToIDR(props.product.price * (props.quantity || 1))
+  formatNumberToIDR(props.product.price * (props.quantity || 1)),
 );
 const formattedAverageRating = computed(() =>
-  formatFloatNumber(props.product.averageRating)
+  formatFloatNumber(props.product.averageRating),
 );
 const isLiked = computed(() =>
-  props.product.likes.some((val) => val.username === authUser.value?.username)
+  props.product.likes.some((val) => val.username === authUser.value?.username),
 );
 const likesCount = computed(() => props.product.likes?.length || 0);
+
+onMounted(() => {});
 </script>
 
 <template>
-  <RouterLink :to="`/menu/${product.slug}`" class="cursor-pointer shadow-md">
+  <RouterLink
+    :to="`/menu/${product.slug}`"
+    class="cursor-pointer shadow-md product-card"
+  >
     <div
       :class="{
         'relative after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-[\'\']':

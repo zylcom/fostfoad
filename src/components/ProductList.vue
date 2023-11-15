@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import ProductCard from "./ProductCard.vue";
+import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 import { allStore } from "@/stores";
 import { useInfinite } from "@/composables/useInfinite";
-import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 
 const props = defineProps({
   title: String,
@@ -11,7 +11,7 @@ const props = defineProps({
 });
 
 const { productsStore } = allStore();
-const target = ref(null);
+const target = ref();
 const products = computed(() => productsStore.products);
 const hasNextPage = computed(() => productsStore.hasNextPage);
 const cursor = computed(() => productsStore.cursor);
@@ -47,11 +47,13 @@ onMounted(async () => {
           :product="product"
           class="p-2"
           showLikesCountAndAverageRating
+          data-aos="zoom-in"
+          data-aos-once="true"
         />
 
         <ProductCardSkeleton
           class="p-2"
-          v-for="i in 3"
+          v-for="i in 10"
           :key="i"
           :isLoading="isLoading"
         />
