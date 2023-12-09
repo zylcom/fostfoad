@@ -4,12 +4,11 @@ import { useOrderStore } from "@/stores/order";
 import { orderIdValidation } from "../validation/order-validation";
 
 async function create(cart) {
-  const authToken = getAccessToken();
   const guestUserId = getGuestUserId();
 
   return axios
     .post(`/orders${guestUserId ? "?guest_uid=" + guestUserId : ""}`, cart, {
-      headers: { Authorization: authToken },
+      headers: { Authorization: "Bearer ".concat(getAccessToken()) },
     })
     .then(async (response) => {
       if (response.status === 200) {
@@ -22,7 +21,6 @@ async function create(cart) {
 
 async function checkout(orderId, cart) {
   orderId = validate(orderIdValidation, orderId);
-  const authToken = getAccessToken();
   const guestUserId = getGuestUserId();
 
   return axios.post(
@@ -30,13 +28,12 @@ async function checkout(orderId, cart) {
       guestUserId ? "&guest_uid=" + guestUserId : ""
     }`,
     cart,
-    { headers: { Authorization: authToken } }
+    { headers: { Authorization: "Bearer ".concat(getAccessToken()) } },
   );
 }
 
 async function get(orderId) {
   const orderStore = useOrderStore();
-  const authToken = getAccessToken();
   const guestUserId = getGuestUserId();
 
   orderId = validate(orderIdValidation, orderId);
@@ -44,7 +41,7 @@ async function get(orderId) {
   return axios
     .get(
       `/orders/${orderId}${guestUserId ? "?guest_uid=" + guestUserId : ""}`,
-      { headers: { Authorization: authToken } }
+      { headers: { Authorization: "Bearer ".concat(getAccessToken()) } },
     )
     .then((response) => {
       orderStore.set(response.data.data);
@@ -62,7 +59,7 @@ async function cancel(orderId) {
     .post(
       `/orders/${orderId}/cancel`,
       {},
-      { headers: { Authorization: getAccessToken() } }
+      { headers: { Authorization: getAccessToken() } },
     )
     .then((response) => {
       console.log(response.data);

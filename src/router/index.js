@@ -94,15 +94,15 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const authUserStore = useAuthUserStore();
 
-  await authUserStore.preload();
+  const result = await authUserStore.preload();
 
-  if (to.meta.requiresAuth && !(await authUserStore.preload())) {
+  if (to.meta.requiresAuth && !result.isLoggedIn) {
     return { path: "/login" };
   }
 
   if (
     (to.fullPath === "/login" || to.fullPath === "/register") &&
-    (await authUserStore.preload())
+    result.isLoggedIn
   ) {
     return { path: "/" };
   }

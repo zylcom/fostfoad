@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { allStore } from ".";
 import userService from "../services/user-service";
 import {
+  getAccessToken,
   getCartFromLocalstorage,
   getGuestUserId,
   removeAccessToken,
@@ -23,21 +24,23 @@ export const useAuthUserStore = defineStore("User", () => {
         invalid_type_error: "Guest user id must be a string!",
         required_error: "Guest user id is required!",
       })
-      .nonempty({ message: "Guest user id is not allowed to be empty!" })
+      .min(1, { message: "Guest user id is not allowed to be empty!" })
       .uuid({ message: "Guest user id is invalid!" })
       .safeParse(getGuestUserId());
 
     if (data.isLoggedIn) {
-      authUser.value = data.userPayload;
+      localStorage.removeItem("guest_uid");
 
+      authUser.value = data.userPayload;
       cartStore.setMyCart(data.userPayload.cart);
     } else {
+      authUser.value = null;
       removeAccessToken();
 
-      if (data.userPayload === null) {
-        await preload();
-        return;
-      }
+      // if (data.userPayload === null) {
+      //   await preload();
+      //   return;
+      // }
 
       if (!validGuestUserId.success) {
         saveGuestUserId(data.userPayload.guestUserId);
@@ -56,13 +59,38 @@ export const useAuthUserStore = defineStore("User", () => {
   async function preload() {
     errorStore.$reset();
 
-    return await userService.getMyProfile().then(async (result) => {
-      isLoggedIn.value = result.isLoggedIn;
+    const token = getAccessToken();
+    const guestUserId = getGuestUserId();
+    const validGuestUserId = z
+      .string({
+        invalid_type_error: "Guest user id must be a string!",
+        required_error: "Guest user id is required!",
+      })
+      .min(1, { message: "Guest user id is not allowed to be empty!" })
+      .uuid({ message: "Guest user id is invalid!" })
+      .safeParse(guestUserId);
+    let userData = { isLoggedIn: false, userPayload: null };
 
-      await setAuthUser(result);
+    if (token) {
+      const result = await userService.getMyProfile();
 
-      return result.isLoggedIn;
-    });
+      if (result !== null) {
+        userData.isLoggedIn = true;
+        userData.userPayload = result.data.data;
+      } else {
+        window.location.reload();
+      }
+    } else if (guestUserId && validGuestUserId.success) {
+      userData.userPayload = { guestUserId };
+    } else {
+      const result = await userService.createGuestUser();
+
+      userData.userPayload = result.data.data;
+    }
+
+    setAuthUser(userData);
+
+    return userData;
   }
 
   function $reset() {
