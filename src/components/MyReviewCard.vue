@@ -27,7 +27,6 @@ async function updateReviewHandler({ description, rating, productSlug }) {
 
     $toast.success("Review updated", { position: "top" });
   } catch (error) {
-    console.log(error);
     if (error.response.data.errors === "jwt expired") {
       $toast.error("Your session has ended. Please re-login.", {
         position: "top",

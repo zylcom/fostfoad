@@ -1,6 +1,7 @@
-import { ref } from "vue";
 import { defineStore } from "pinia";
-import { allStore } from ".";
+import { ref } from "vue";
+import { z } from "zod";
+import cartService from "../services/cart-service";
 import userService from "../services/user-service";
 import {
   getAccessToken,
@@ -9,11 +10,10 @@ import {
   removeAccessToken,
   saveGuestUserId,
 } from "../utils";
-import cartService from "../services/cart-service";
-import { z } from "zod";
+import { useCartStore } from "./cart";
 
 export const useAuthUserStore = defineStore("User", () => {
-  const { cartStore, errorStore } = allStore();
+  const cartStore = useCartStore();
   const authUser = ref(null);
   const isLoggedIn = ref(false);
 
@@ -37,11 +37,6 @@ export const useAuthUserStore = defineStore("User", () => {
       authUser.value = null;
       removeAccessToken();
 
-      // if (data.userPayload === null) {
-      //   await preload();
-      //   return;
-      // }
-
       if (!validGuestUserId.success) {
         saveGuestUserId(data.userPayload.guestUserId);
       }
@@ -57,8 +52,6 @@ export const useAuthUserStore = defineStore("User", () => {
   }
 
   async function preload() {
-    errorStore.$reset();
-
     const token = getAccessToken();
     const guestUserId = getGuestUserId();
     const validGuestUserId = z

@@ -29,10 +29,15 @@ async function upsert({ productSlug, quantity }) {
 
 async function deleteItem(itemProductSlug) {
   itemProductSlug = validate(productSlug, itemProductSlug);
+  const { cartStore } = allStore();
 
-  return axios.delete(`/carts/items/${itemProductSlug}`, {
-    headers: { Authorization: "Bearer ".concat(getAccessToken()) },
-  });
+  return axios
+    .delete(`/carts/items/${itemProductSlug}`, {
+      headers: { Authorization: "Bearer ".concat(getAccessToken()) },
+    })
+    .then(() => {
+      cartStore.deleteItem(itemProductSlug);
+    });
 }
 
 async function revalidateCart(cart) {
@@ -49,4 +54,18 @@ async function revalidateCart(cart) {
     });
 }
 
-export default { upsert, deleteItem, revalidateCart };
+async function clearCart() {
+  const { cartStore } = allStore();
+
+  return axios
+    .post(
+      "/carts/clear",
+      {},
+      { headers: { Authorization: "Bearer ".concat(getAccessToken()) } },
+    )
+    .then((response) => {
+      cartStore.setMyCart(response.data.data);
+    });
+}
+
+export default { upsert, clearCart, deleteItem, revalidateCart };

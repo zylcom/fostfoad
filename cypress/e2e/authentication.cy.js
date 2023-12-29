@@ -89,7 +89,9 @@ describe(
       cy.getBySel("password-input").type("123");
       cy.getBySel("confirm-password-input").type("123");
       cy.getBySel("form-register").submit();
-      cy.contains("Password length must be 8 or more!").should("be.visible");
+      cy.contains("Your password must be at least 8 characters").should(
+        "be.visible",
+      );
     });
 
     it("should fail register if password and confirmation password not equal", () => {
