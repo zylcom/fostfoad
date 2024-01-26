@@ -1,9 +1,14 @@
 <script setup>
+import gsap from "gsap";
 import { computed, onMounted, ref } from "vue";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProductCard from "./ProductCard.vue";
 import ProductCardSkeleton from "./ProductCardSkeleton.vue";
 import { allStore } from "@/stores";
 import { useInfinite } from "@/composables/useInfinite";
+import { useLoading } from "@/composables/useLoading";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps({
   title: String,
@@ -17,18 +22,33 @@ const hasNextPage = computed(() => productsStore.hasNextPage);
 const cursor = computed(() => productsStore.cursor);
 const searchKeyword = computed(() => props.keyword);
 
-const { fetchData, fetchNextPage, infiniteScroll, isLoading } = useInfinite();
+const { fetchData, fetchNextPage, infiniteScroll } = useInfinite();
+const { isLoading, showLoading, hideLoading } = useLoading();
 
-onMounted(() => {
+onMounted(async () => {
+  showLoading();
+
   productsStore.$reset();
 
   infiniteScroll(target, async () => {
-    await fetchNextPage({ name: searchKeyword.value, cursor: cursor.value });
-  });
-});
+    showLoading();
 
-onMounted(async () => {
-  await fetchData({ name: searchKeyword.value });
+    try {
+      await fetchNextPage({ name: searchKeyword.value, cursor: cursor.value });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      hideLoading();
+    }
+  });
+
+  try {
+    await fetchData({ name: searchKeyword.value });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    hideLoading();
+  }
 });
 </script>
 
@@ -42,9 +62,10 @@ onMounted(async () => {
         class="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         <ProductCard
-          v-for="product in products"
+          v-for="(product, index) in products"
           :key="product.id"
           :product="product"
+          :id="'product-card-' + (index + 1)"
           class="p-2"
           showLikesCountAndAverageRating
         />

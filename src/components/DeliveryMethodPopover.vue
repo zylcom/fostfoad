@@ -33,7 +33,7 @@ onMounted(() => {
       method.value = "reguler";
     }
   } catch {
-    console.log("Data malformed");
+    method.value = "reguler";
   }
 });
 </script>
