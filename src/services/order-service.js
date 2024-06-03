@@ -75,22 +75,41 @@ async function get(orderId) {
 
 async function cancel(orderId) {
   const orderStore = useOrderStore();
+  const guestUserId = getGuestUserId();
 
   orderId = validate(orderIdValidation, orderId);
 
   return axios
     .post(
-      `/orders/${orderId}/cancel`,
+      `/orders/${orderId}/cancel${
+        guestUserId ? "?guest_uid=" + guestUserId : ""
+      }`,
       {},
-      { headers: { Authorization: accessToken } },
+      {
+        headers: {
+          Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+        },
+      },
     )
     .then((response) => {
       console.log(response.data);
 
-      orderStore.set(response.data.data);
+      orderStore.setOrderDetails(response.data.data);
 
       return response;
     });
 }
 
-export default { create, checkout, get, cancel };
+async function listOrder() {
+  const guestUserId = getGuestUserId();
+
+  return axios
+    .get(`/orders${guestUserId ? "?guest_uid=" + guestUserId : ""}`, {
+      headers: {
+        Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+      },
+    })
+    .then((response) => response);
+}
+
+export default { create, checkout, get, cancel, listOrder };

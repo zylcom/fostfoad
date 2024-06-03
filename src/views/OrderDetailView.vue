@@ -64,11 +64,11 @@ async function cancelOrder() {
   try {
     if (confirmResponse) {
       await orderService.cancel(orderId);
-    }
 
-    $toast.success("Order has been canceled!", { position: "top" });
+      $toast.success("Order has been canceled!", { position: "top" });
+    }
   } catch (error) {
-    $toast.error("Oops something went wrong!", { position: "top" });
+    $toast.error("Cancel order failed! Try again.", { position: "top" });
   } finally {
     hideFetching();
   }
@@ -152,19 +152,19 @@ onMounted(async () => {
 
       <ul class="mt-4 max-h-60 overflow-y-auto">
         <li
-          class="grid w-full grid-cols-6 items-center gap-x-4 border-b border-dashed py-2 text-sm hover:bg-mercury"
+          class="grid w-full grid-cols-6 items-center gap-x-4 rounded-md border-b border-dashed px-1 py-2 text-sm hover:bg-mercury"
           v-for="item in order.items"
           :key="item.id"
         >
           <RouterLink
-            class="col-span-3 truncate"
+            class="col-span-3 truncate hover:underline"
             :to="'/menu/' + item.productSlug"
             :title="item.productName"
           >
             {{ item.productName }}
           </RouterLink>
 
-          <span class="mr-4 whitespace-nowrap">Qty: {{ item.quantity }}</span>
+          <span class="mr-4 whitespace-nowrap">{{ item.quantity }}*</span>
 
           <span
             class="col-span-2 overflow-hidden truncate text-right font-medium"
@@ -175,16 +175,20 @@ onMounted(async () => {
       </ul>
 
       <div
-        class="mb-4 flex w-full items-center justify-between gap-x-4 border-b border-dashed py-2 text-sm"
+        class="grid w-full grid-cols-6 items-center gap-x-4 rounded-md border-b border-dashed px-1 py-2 text-sm hover:bg-mercury"
       >
-        <span class="truncate">Delivery Cost</span>
+        <span class="col-span-3 truncate">Delivery Cost</span>
 
-        <span class="font-medium">
+        <span class="mr-4 whitespace-nowrap">1*</span>
+
+        <span
+          class="col-span-2 overflow-hidden truncate text-right font-medium"
+        >
           {{ formatNumberToIDR(order.shipment.cost) }}
         </span>
       </div>
 
-      <div class="flex justify-end gap-x-2 text-sm">
+      <div class="mt-4 flex justify-end gap-x-2 text-xs">
         <span class="whitespace-nowrap uppercase">Total :</span>
         <span class="font-medium">
           {{ formatNumberToIDR(order.total) }}
@@ -218,6 +222,10 @@ onMounted(async () => {
             Checkout
           </button>
         </div>
+
+        <p class="text-center text-xs" v-else-if="order.status === 'canceled'">
+          Order will automatically deleted after a week.
+        </p>
 
         <span class="block pt-3 text-center text-[0.65rem]">
           Have any troubles? Please contact
