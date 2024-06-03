@@ -109,7 +109,7 @@ watch(qty, (newValue) => {
 
 <template>
   <div
-    class="relative flex h-20 w-full items-center overflow-hidden rounded-md bg-bleached-silk shadow-md transition-all duration-700 before:absolute before:top-0 before:h-full before:w-0 before:rounded-md before:bg-red-500/80 before:transition-all before:duration-500 before:content-['']"
+    class="relative flex h-20 w-full basis-1/4 items-center gap-x-1 overflow-hidden rounded-md bg-bleached-silk shadow-md transition-all duration-700 before:absolute before:top-0 before:h-full before:w-0 before:rounded-md before:bg-red-500/80 before:transition-all before:duration-500 before:content-['']"
     ref="itemWrapper"
   >
     <button
@@ -131,19 +131,20 @@ watch(qty, (newValue) => {
       "
     >
       <img
-        class="h-14 w-14 min-w-max rounded-md"
+        class="h-14 w-14 rounded-md"
         :src="product.image"
         :alt="product.name"
       />
+
       <IconTrash
         class="absolute top-0 mx-auto h-14 rounded-md bg-black/80 stroke-torii-red opacity-5 transition-all duration-700 group-hover:opacity-100"
       />
     </button>
 
-    <div class="relative w-max overflow-hidden font-rubik">
+    <div class="relative basis-1/2 overflow-hidden font-rubik">
       <RouterLink
         :to="'/menu/' + product.slug"
-        class="overflow-hidden truncate text-xs font-semibold tracking-widest"
+        class="overflow-hidden truncate text-xs font-semibold tracking-widest hover:underline"
         :title="product.name"
       >
         {{ product.name }}
@@ -158,9 +159,9 @@ watch(qty, (newValue) => {
       </span>
     </div>
 
-    <div class="ml-auto mr-2">
+    <div class="ml-auto mr-2 basis-1/3 sm:basis-1/6 md:basis-1/4">
       <div
-        class="relative flex w-fit rounded-2xl bg-mercury px-1 py-1.5 text-thamar-black"
+        class="relative flex rounded-2xl bg-mercury px-1 py-1 text-thamar-black"
       >
         <button
           class="mr-3 block"
@@ -170,7 +171,7 @@ watch(qty, (newValue) => {
           <IconMinus class="w-4 stroke-dark-tone-ink hover:scale-110" />
         </button>
 
-        <QuantityInput v-model:quantity="qty" />
+        <QuantityInput class="w-full" v-model:quantity="qty" />
 
         <button
           @click="qty > 999 ? qty : qty++"

@@ -42,7 +42,7 @@ defineProps({
         </thead>
 
         <tbody>
-          <tr v-for="item in order.items">
+          <tr v-for="item in order.items" :key="item.productSlug">
             <td class="text-sm text-gray-500">{{ item.productName }}</td>
 
             <td class="text-center text-sm text-gray-500">

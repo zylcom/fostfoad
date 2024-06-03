@@ -51,7 +51,7 @@ async function onSubmitHandler() {
 
 watch(authUser, () => {
   if (authUser.value) {
-    router.push({ path: route.query.redirect });
+    router.push({ path: route.query.redirect || "/" });
   }
 });
 

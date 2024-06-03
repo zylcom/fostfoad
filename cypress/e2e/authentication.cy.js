@@ -5,14 +5,14 @@ describe(
   {
     env: {
       baseApiUrl:
-        "https://foody-order-rest-api-git-preview-zylcom.vercel.app/api",
+        "https://foody-order-rest-api-git-preview-sabilillahs-projects.vercel.app/api",
     },
   },
   () => {
     const password = "rahasia123";
-    const randomName = faker.name.fullName();
+    const randomName = faker.person.fullName();
     const randomUsername = faker.internet.userName();
-    const randomPhoneNumber = faker.phone.number("0### #### ####");
+    const randomPhoneNumber = faker.phone.number();
 
     it("should logged as guest user if not have access token", () => {
       cy.intercept("GET", `${Cypress.env("baseApiUrl")}/users/guest`).as(
