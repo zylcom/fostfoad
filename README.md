@@ -1,48 +1,225 @@
-# foody-order
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a id="readme-top"></a>
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-## Customize configuration
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <!--<a href="https://github.com/zylcom/bar-resto">-->
+  <!--  <img src="images/logo.png" alt="Logo" width="80" height="80">-->
+  <!--</a>-->
 
-```sh
-npm install
-```
+<h3 align="center">BarResto</h3>
 
-### Compile and Hot-Reload for Development
+  <p align="center">
+    Aplikasi pemesanan makanan berbasis website. Beli makanan favorit-mu dengan mudah dan cepat.
+    <br />
+    <!--<a href="https://github.com/zylcom/bar-resto"><strong>Explore the docs »</strong></a>-->
+    <br />
+    <br />
+    <a href="https://bar-resto.vercel.app">View Demo</a>
+    ·
+    <a href="https://github.com/zylcom/bar-resto/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    ·
+    <a href="https://github.com/zylcom/bar-resto/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
 
-```sh
-npm run dev
-```
 
-### Compile and Minify for Production
 
-```sh
-npm run build
-```
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
 
-```sh
-npm run test:unit
-```
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-```sh
-npm run build
-npm run test:e2e # or `npm run test:e2e:ci` for headless testing
-```
+Ini adalah project yang saya buat ketika sedang belajar sebagai web developer. Bagi kalian yang ingin menggunakan atau berkontribusi dipersilakan.
 
-### Lint with [ESLint](https://eslint.org/)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-```sh
-npm run lint
-```
+
+
+### Built With
+
+* [![Vue][Vue.js]][Vue-url]
+* [![Tailwindcss][Tailwindcss.com]][Tailwind-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+Berikut adalah cara dan persiapan yang diperlukan untuk menggunakan project ini.
+
+### Prerequisites
+
+This is an example of how to list things you need to use the software and how to install them.
+* node.js - v20.x
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/zylcom/bar-resto.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Enter your API url in `.env` file. If you don't, create one
+   ```env
+   # This is backend api url
+   VITE_BASE_API_URL="http://localhost:4000/api"
+   ```
+4. Change git remote url to avoid accidental pushes to base project
+   ```sh
+   git remote set-url origin zylcom/bar-resto
+   git remote -v # confirm the changes
+   ```
+5. Start server
+   ```sh
+   npm run dev
+   ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [x] Product review
+- [ ] Live search
+    - [ ] Search completion with AI
+
+See the [open issues](https://github.com/zylcom/bar-resto/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Top contributors:
+
+<a href="https://github.com/zylcom/bar-resto/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=zylcom/bar-resto" alt="contrib.rocks image" />
+</a>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Sabilillah - sabilillah272@gmail.com
+
+Project Link: [https://github.com/zylcom/bar-resto](https://github.com/zylcom/bar-resto)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* []()
+* []()
+* []()
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/zylcom/bar-resto.svg?style=for-the-badge
+[contributors-url]: https://github.com/zylcom/bar-resto/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/zylcom/bar-resto.svg?style=for-the-badge
+[forks-url]: https://github.com/zylcom/bar-resto/network/members
+[stars-shield]: https://img.shields.io/github/stars/zylcom/bar-resto.svg?style=for-the-badge
+[stars-url]: https://github.com/zylcom/bar-resto/stargazers
+[issues-shield]: https://img.shields.io/github/issues/zylcom/bar-resto.svg?style=for-the-badge
+[issues-url]: https://github.com/zylcom/bar-resto/issues
+[license-shield]: https://img.shields.io/github/license/zylcom/bar-resto.svg?style=for-the-badge
+[license-url]: https://github.com/zylcom/bar-resto/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/sabilillah
+[product-screenshot]: images/screenshot.png
+[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
+[Vue-url]: https://vuejs.org/
+[Tailwindcss.com]: https://img.shields.io/badge/tailwindcss-0769AD?style=for-the-badge&logo=tailwindcss&logoColor=white
+[Tailwind-url]: https://jquery.com 
