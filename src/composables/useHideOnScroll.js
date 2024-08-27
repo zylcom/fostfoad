@@ -13,7 +13,7 @@ export function useHideOnScroll(target) {
     ) {
       targetElement.style.top = "0";
     } else {
-      targetElement.style.top = "-65px";
+      targetElement.style.top = "-71px";
     }
 
     prevScrollpos = currentScrollpos;

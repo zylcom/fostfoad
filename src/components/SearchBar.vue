@@ -73,7 +73,7 @@ async function searchHandler(redirectPath) {
 </script>
 
 <template>
-  <div class="relative flex w-full">
+  <div class="relative flex w-full max-w-sm">
     <form @submit.prevent="searchHandler(redirectTo)" class="w-full">
       <input
         type="text"
