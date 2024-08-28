@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <!--<a href="https://github.com/zylcom/bar-resto">-->
+  <!--<a href="https://github.com/zylcom/fostfoad">-->
   <!--  <img src="images/logo.png" alt="Logo" width="80" height="80">-->
   <!--</a>-->
 
@@ -39,14 +39,14 @@
   <p align="center">
     Aplikasi pemesanan makanan berbasis website. Beli makanan favorit-mu dengan mudah dan cepat.
     <br />
-    <!--<a href="https://github.com/zylcom/bar-resto"><strong>Explore the docs »</strong></a>-->
+    <!--<a href="https://github.com/zylcom/fostfoad"><strong>Explore the docs »</strong></a>-->
     <br />
     <br />
-    <a href="https://bar-resto.vercel.app">View Demo</a>
+    <a href="https://fostfoad.vercel.app">View Demo</a>
     ·
-    <a href="https://github.com/zylcom/bar-resto/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/zylcom/fostfoad/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/zylcom/bar-resto/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/zylcom/fostfoad/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -106,26 +106,29 @@ Berikut adalah cara dan persiapan yang diperlukan untuk menggunakan project ini.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* node.js - v20.x
+* Node.js - v20.x
+* Git
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/zylcom/bar-resto.git
+   git clone https://github.com/zylcom/fostfoad.git
    ```
 2. Install NPM packages
    ```sh
    npm install
    ```
-3. Enter your API url in `.env` file. If you don't, create one
+3. Enter your back-end API url in `.env` file. If you don't, create one
    ```env
    # This is backend api url
    VITE_BASE_API_URL="http://localhost:4000/api"
+
+   # If you don't have the back-end server. You can clone in repo [https://github.com/zylcom/fostfoad-rest-api](https://github.com/zylcom/fostfoad-rest-api)
    ```
 4. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin zylcom/bar-resto
+   git remote set-url origin your_username/repo_name
    git remote -v # confirm the changes
    ```
 5. Start server
@@ -143,7 +146,7 @@ This is an example of how to list things you need to use the software and how to
 - [ ] Live search
     - [ ] Search completion with AI
 
-See the [open issues](https://github.com/zylcom/bar-resto/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/zylcom/fostfoad/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -167,8 +170,8 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/zylcom/bar-resto/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=zylcom/bar-resto" alt="contrib.rocks image" />
+<a href="https://github.com/zylcom/fostfoad/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=zylcom/fostfoad" alt="contrib.rocks image" />
 </a>
 
 
@@ -187,7 +190,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Sabilillah - sabilillah272@gmail.com
 
-Project Link: [https://github.com/zylcom/bar-resto](https://github.com/zylcom/bar-resto)
+Project Link: [https://github.com/zylcom/fostfoad](https://github.com/zylcom/fostfoad)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -196,9 +199,8 @@ Project Link: [https://github.com/zylcom/bar-resto](https://github.com/zylcom/ba
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
+* [Tailwindcss Documentation](https://tailwindcss.com/docs/installation)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -206,16 +208,16 @@ Project Link: [https://github.com/zylcom/bar-resto](https://github.com/zylcom/ba
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/zylcom/bar-resto.svg?style=for-the-badge
-[contributors-url]: https://github.com/zylcom/bar-resto/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/zylcom/bar-resto.svg?style=for-the-badge
-[forks-url]: https://github.com/zylcom/bar-resto/network/members
-[stars-shield]: https://img.shields.io/github/stars/zylcom/bar-resto.svg?style=for-the-badge
-[stars-url]: https://github.com/zylcom/bar-resto/stargazers
-[issues-shield]: https://img.shields.io/github/issues/zylcom/bar-resto.svg?style=for-the-badge
-[issues-url]: https://github.com/zylcom/bar-resto/issues
-[license-shield]: https://img.shields.io/github/license/zylcom/bar-resto.svg?style=for-the-badge
-[license-url]: https://github.com/zylcom/bar-resto/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/zylcom/fostfoad.svg?style=for-the-badge
+[contributors-url]: https://github.com/zylcom/fostfoad/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/zylcom/fostfoad.svg?style=for-the-badge
+[forks-url]: https://github.com/zylcom/fostfoad/network/members
+[stars-shield]: https://img.shields.io/github/stars/zylcom/fostfoad.svg?style=for-the-badge
+[stars-url]: https://github.com/zylcom/fostfoad/stargazers
+[issues-shield]: https://img.shields.io/github/issues/zylcom/fostfoad.svg?style=for-the-badge
+[issues-url]: https://github.com/zylcom/fostfoad/issues
+[license-shield]: https://img.shields.io/github/license/zylcom/fostfoad.svg?style=for-the-badge
+[license-url]: https://github.com/zylcom/fostfoad/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/sabilillah
 [product-screenshot]: images/screenshot.png
