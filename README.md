@@ -69,7 +69,6 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -83,7 +82,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Ini adalah project yang saya buat ketika sedang belajar sebagai web developer. Bagi kalian yang ingin menggunakan atau berkontribusi dipersilakan.
+Fostfoad is application about online shop, this app including authentication feature, cart system, order & payment gateway. I created this project for my portfolio when I'm learning the Vue.js framework. If you want to use the project you can start by cloning this project. Feel free to contrib in this project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -101,13 +100,15 @@ Ini adalah project yang saya buat ketika sedang belajar sebagai web developer. B
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Berikut adalah cara dan persiapan yang diperlukan untuk menggunakan project ini.
+This is front-end project that using Vue.js framework. Before run this project your computer should meet the prerequisites section to make this project work properly.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+This is the list sofware you need to running the project and how to install them.
 * Node.js - v20.x
+> Download the node.js installer from official [website](https://nodejs.org/en/download/package-manager). Make sure the installation is work by test using `node -v` command in your terminal. If the terminal print the node.js version thats mean your installation is successfully.
 * Git
+> Download the Git installer from official [website](https://git-scm.com/downloads). Make sure the installation is work by test using `git -v` command in your terminal. If the terminal print the git version thats mean your installation is successfully.
 
 ### Installation
 
@@ -115,23 +116,27 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/zylcom/fostfoad.git
    ```
-2. Install NPM packages
+2. Change directory to fostfoad folder
+   ```sh
+   cd fostfoad
+   ```
+3. Install NPM packages
    ```sh
    npm install
    ```
-3. Enter your back-end API url in `.env` file. If you don't, create one
+4. Enter your back-end API url in `.env` file. If you don't, create one
    ```env
    # This is backend api url
    VITE_BASE_API_URL="http://localhost:4000/api"
 
    # If you don't have the back-end server. You can clone in repo https://github.com/zylcom/fostfoad-rest-api
    ```
-4. Change git remote url to avoid accidental pushes to base project
+5. Change git remote url to avoid accidental pushes to base project
    ```sh
    git remote set-url origin https://github.com/your_username/repo_name.git
    git remote -v # confirm the changes
    ```
-5. Start the development server
+6. Start the development server
    ```sh
    npm run dev
    ```
