@@ -217,7 +217,7 @@ Project Link: [https://github.com/zylcom/fostfoad](https://github.com/zylcom/fos
 [issues-shield]: https://img.shields.io/github/issues/zylcom/fostfoad.svg?style=for-the-badge
 [issues-url]: https://github.com/zylcom/fostfoad/issues
 [license-shield]: https://img.shields.io/github/license/zylcom/fostfoad.svg?style=for-the-badge
-[license-url]: https://github.com/zylcom/fostfoad/blob/main/LICENSE.txt
+[license-url]: https://github.com/zylcom/fostfoad/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/sabilillah
 [product-screenshot]: images/screenshot.png
