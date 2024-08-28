@@ -34,7 +34,7 @@
   <!--  <img src="images/logo.png" alt="Logo" width="80" height="80">-->
   <!--</a>-->
 
-<h3 align="center">BarResto</h3>
+<h3 align="center">FostFoad</h3>
 
   <p align="center">
     Aplikasi pemesanan makanan berbasis website. Beli makanan favorit-mu dengan mudah dan cepat.
@@ -124,14 +124,14 @@ This is an example of how to list things you need to use the software and how to
    # This is backend api url
    VITE_BASE_API_URL="http://localhost:4000/api"
 
-   # If you don't have the back-end server. You can clone in repo [https://github.com/zylcom/fostfoad-rest-api](https://github.com/zylcom/fostfoad-rest-api)
+   # If you don't have the back-end server. You can clone in repo https://github.com/zylcom/fostfoad-rest-api
    ```
 4. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin your_username/repo_name
+   git remote set-url origin https://github.com/your_username/repo_name.git
    git remote -v # confirm the changes
    ```
-5. Start server
+5. Start the development server
    ```sh
    npm run dev
    ```

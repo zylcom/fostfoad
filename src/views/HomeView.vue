@@ -34,7 +34,7 @@ useHideOnScroll(navElement);
         href="/"
         class="order-1 col-span-2 text-center text-3xl text-snowbank md:order-2 md:col-span-5 md:text-left"
       >
-        baR<sup class="-top-5 text-xs">2</sup><span class="-ml-2">esto</span>
+        FostFoad
       </a>
 
       <CartButton
