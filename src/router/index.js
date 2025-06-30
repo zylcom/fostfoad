@@ -92,18 +92,20 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
+  const overlayDiv = document.querySelector(".overlay-bg");
   const authUserStore = useAuthUserStore();
-
   const result = await authUserStore.preload();
+
+  if (overlayDiv.classList.contains("block")) {
+    overlayDiv.classList.replace("block", "hidden");
+    document.body.style = "height: auto; overflow-y: auto;";
+  }
 
   if (to.meta.requiresAuth && !result.isLoggedIn) {
     return { path: "/login", query: { redirect: to.fullPath } };
   }
 
-  if (
-    (to.fullPath === "/login" || to.fullPath === "/register") &&
-    result.isLoggedIn
-  ) {
+  if ((to.fullPath === "/login" || to.fullPath === "/register") && result.isLoggedIn) {
     return { path: "/" };
   }
 });

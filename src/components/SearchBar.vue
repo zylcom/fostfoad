@@ -73,11 +73,11 @@ async function searchHandler(redirectPath) {
 </script>
 
 <template>
-  <div class="relative flex w-full max-w-sm">
-    <form @submit.prevent="searchHandler(redirectTo)" class="w-full">
+  <div class="relative flex w-full">
+    <form @submit.prevent="searchHandler(redirectTo)" class="flex w-full items-center">
       <input
         type="text"
-        class="h-10 w-full rounded-[10px] bg-white pl-9 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-1"
+        class="w-full rounded-[10px] bg-white py-2 pl-10 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-1"
         :class="router.currentRoute.value.path === '/' ? 'pr-8' : 'pr-16'"
         :value="keyword"
         @input="$emit('update:keyword', $event.target.value)"
@@ -86,25 +86,19 @@ async function searchHandler(redirectPath) {
       />
     </form>
 
-    <button
-      class="absolute left-3 top-1/2 -mt-2 cursor-pointer"
-      @click="searchHandler(redirectTo)"
-      title="Search"
-      :disabled="searchKeyword === ''"
-    >
+    <button class="absolute bottom-0 left-3 top-0 cursor-pointer" @click="searchHandler(redirectTo)" title="Search" :disabled="searchKeyword === ''">
       <IconSearch class="h-5 w-5" />
+      <span class="sr-only">Search products</span>
     </button>
 
     <button
       v-show="searchKeyword !== undefined"
-      class="group absolute top-1/2 -mt-1.5 cursor-pointer"
+      class="group absolute bottom-0 top-0 cursor-pointer"
       :class="router.currentRoute.value.path === '/' ? 'right-3' : 'right-10'"
       @click="$emit('update:keyword', '')"
       title="Clear"
     >
-      <IconCross
-        class="h-4 w-4 transition-all duration-300 group-hover:scale-110"
-      />
+      <IconCross class="h-4 w-4 transition-all duration-300 group-hover:scale-110" />
 
       <span class="sr-only">Clear search keyword</span>
     </button>
